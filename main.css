@@ -23,6 +23,7 @@ header{
 }
 .title{
     height:auto;
+    margin-left: 12.5%;
     width:auto;
     padding-left:20px;
     padding-top: 5px;
@@ -34,8 +35,19 @@ header{
     text-align: center;
     width:auto;
     background-color: black;
+    letter-spacing: 55px;
 }
 h1{
     font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     font-weight: 100;
+}
+footer{
+    width: 100%;
+    background-color: black;
+    height:auto;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: center;
+    color:white;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
