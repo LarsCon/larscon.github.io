@@ -55,13 +55,29 @@ header{
 .link{
     height:auto;
 }
+.workContainer{
+    width:100%;
+    padding-top: 10px;
+    height: auto;
+    display: flex;
+}
 .seeWork{
     font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-    font-size: 35px;
+    font-size: 34px;
     text-align: center;
-    padding-top: 15px;
     font-weight: bold;
-    width:100%;
+    width:50%;
+    flex: 1;
+}
+.arrowR{
+    flex: 1;
+    width: 25%;
+    text-align: right;
+}
+.arrowL{
+    width: 25%;
+    flex: 1;
+    text-align: left;
 }
 .bannerImg{
     width: 50%;
@@ -73,7 +89,7 @@ header{
 }
 .contactInfo{
     width:100%;
-    font-size: 20px;
+    font-size: 18px;
     font-weight: lighter;
     font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     height:auto;
