@@ -1,6 +1,7 @@
 .widgetbox{
     width: 85%;
     margin-left: 7.5%;
+    float:right;
     margin-right: 7.5%;
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     color:green;
@@ -16,32 +17,20 @@
     left: 12.5%;
     right: 12.5%;
 }
-header{
+/* header{
     width: 100%;
     height:auto;
     z-index: 9999999;
-}
-
-.banner{
-    padding-top: 25px;
-    width:100%;
-    height:auto;
-    display:flex;
-    border-top: 0px;
-    border-left: 0px;
-    border-right: 0px;
-    border-bottom: 5px;
-    border-style: solid;
-    border-color: black;
-}
-.bannerContent{
+} */
+/* .bannerContent{
     width:42.5%;
     padding-left:7.5%;
     padding-top:50px;
     height:auto;
     flex:1;
     align-items: center;
-}
+    background-color: yellow;
+} */
 .links{
     width: 60%;
     padding-right: 25%;
@@ -56,6 +45,7 @@ header{
     height:auto;
 }
 .workContainer{
+    float:right;
     width:100%;
     padding-top: 10px;
     height: auto;
@@ -80,7 +70,8 @@ header{
     text-align: left;
 }
 .bannerImg{
-    width: 50%;
+    width:42.5%;
+    padding-right:7.5%;
     padding-bottom: 50px;
     text-align: center;
     height:auto;
@@ -119,13 +110,12 @@ header{
 h1{
     font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     font-weight: 50;
-    font-size: 72px;
-    margin-top: 15px;
-    margin-bottom: 15px;
+    font-size: 38px;
 }
 h2{
     font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     font-weight: 100;
+    
 }
 footer{
     width: 100%;
@@ -136,4 +126,65 @@ footer{
     text-align: center;
     color:white;
     font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+.myName{
+    width:50%;
+    text-align: left;
+    float:left;
+}
+#container {
+    justify-content: right;
+    float:right;
+    align-items: right;
+    float:right;
+    height: auto;
+    padding-right: 0;
+    padding-top: 10px;
+    padding-right: 50px;
+}
+#cube-container {
+    perspective: 1000px;
+}
+.banner{
+    width:100%;
+    float:right;
+    height:auto;
+    border-top: 0px;
+    border-left: 0px;
+    border-right: 0px;
+    border-bottom: 5px;
+    border-style: solid;
+    border-color: black;
+}
+
+.cube {
+    width: 150px;
+    height: 150px; 
+    transform-style: preserve-3d;
+    animation: rotate 5s infinite linear;
+}
+
+.face {
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    background-color:aquamarine;
+    border: 5px solid rgb(128, 216, 187);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+}
+
+.front { transform: translateZ(75px); }
+.back { transform: translateZ(-75px) rotateY(180deg); }
+.right { transform: rotateY(90deg) translateZ(75px); }
+.left { transform: rotateY(-90deg) translateZ(75px); }
+.top { transform: rotateX(90deg) translateZ(75px); }
+.bottom { transform: rotateX(-90deg) translateZ(75px); }
+
+.aboutMe{
+    width:100%;
+    float:right;
 }
