@@ -1,7 +1,7 @@
 const contentBox = document.querySelector('.contentBox');
 const scrollLeft = document.querySelector('.scroll-left');
 const scrollRight = document.querySelector('.scroll-right');
-const scrollAmount = 525;
+const scrollAmount = 275;
 
 scrollLeft.addEventListener('click', () => {
     smoothScroll(-scrollAmount);
@@ -14,7 +14,7 @@ scrollRight.addEventListener('click', () => {
 function smoothScroll(amount) {
     let start = contentBox.scrollLeft;
     const end = start + amount;
-    const step = amount > 0 ? 10 : -10;
+    const step = amount > 0 ? 5 : -5;
     let timer;
 
     function scroll() {
