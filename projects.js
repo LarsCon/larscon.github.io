@@ -1,20 +1,20 @@
 const contentBox = document.querySelector('.contentBox');
 const scrollLeft = document.querySelector('.scroll-left');
 const scrollRight = document.querySelector('.scroll-right');
-const scrollAmount = 525; // Adjust the scroll amount for smoothness
+const scrollAmount = 525;
 
 scrollLeft.addEventListener('click', () => {
-    smoothScroll(-scrollAmount); // Scroll left by the specified amount
+    smoothScroll(-scrollAmount);
 });
 
 scrollRight.addEventListener('click', () => {
-    smoothScroll(scrollAmount); // Scroll right by the specified amount
+    smoothScroll(scrollAmount);
 });
 
 function smoothScroll(amount) {
     let start = contentBox.scrollLeft;
     const end = start + amount;
-    const step = amount > 0 ? 10 : -10; // Adjust the step size for smoother scrolling
+    const step = amount > 0 ? 10 : -10;
     let timer;
 
     function scroll() {

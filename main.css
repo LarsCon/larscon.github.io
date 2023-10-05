@@ -24,6 +24,7 @@
     height:auto;
     display:flex;
     justify-content: space-between;
+    background-color: rgb(200, 229, 255);
     padding-top:10px;
     padding-bottom: 10px;
     border-top: 0px;
@@ -163,12 +164,17 @@ footer{
     position: absolute;
     width: 150px;
     height: 150px;
-    background-color:aquamarine;
-    border: 5px solid rgb(128, 216, 187);
+    background-color: rgb(200, 229, 255);
+    border: 5px solid rgb(0, 0, 0);
     display: flex;
     justify-content: center;
     align-items: center;
     font-size: 24px;
+}
+@media (max-width: 768px) {
+    .face {
+        display: none;
+    }
 }
 
 .front { transform: translateZ(75px); }
@@ -253,6 +259,7 @@ footer{
     width: 100%;
     overflow: hidden;
     position: relative;
+    background-color: rgb(200, 229, 255);
 }
 
 .contentBox {
@@ -264,12 +271,17 @@ footer{
     overflow-x: auto;
     overflow-x: hidden;
 }
-
+@media screen and (min-width: 1500px) {
+    .contentBox {
+      justify-content: center;
+    }
+  }
 .projectBox {
-    height: 260px;
-    width: 500px;
+    height: 500px;
+    width: 260px;
     margin: 15px;
     flex-shrink: 0;
+    position: relative;
 }
 .projectBoxPic{
     width: 250px;
@@ -283,6 +295,7 @@ footer{
 .projectBoxTitle{
     width: 200px;
     height: 200px;
+    text-align: center;
     float:right;
     padding: 25px;
 
@@ -316,3 +329,46 @@ footer{
     font-style: italic;
     color: red;
 }
+
+.textBox {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(11, 0, 161, 0.7);
+  opacity: 0;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.projectBox:hover .textBox {
+  opacity: 1;
+}
+.projectHover{
+    font-size: 18px;
+    padding: 10px;
+    text-align: center;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+.projectHover a {
+    color: white;
+    text-decoration: underline;
+    font-weight: 900;
+  }
+.projectHover a:hover {
+    color: white;
+    text-decoration: none;
+  }
+  .projectHover a:visited {
+    color:white;
+    text-decoration: none;
+    font-weight: 900;
+  }
+.projectHover a:active {
+    color: white;
+    text-decoration: none;
+  }
