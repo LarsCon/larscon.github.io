@@ -127,16 +127,6 @@ footer{
     text-align: left;
     float:left;
 }
-#container {
-    justify-content: right;
-    float:right;
-    align-items: right;
-    float:right;
-    height: auto;
-    padding-right: 0;
-    padding-top: 10px;
-    padding-right: 50px;
-}
 #cube-container {
     perspective: 1000px;
 }
@@ -152,7 +142,16 @@ footer{
     border-style: solid;
     border-color: black;
 }
-
+#container {
+    justify-content: right;
+    float:right;
+    align-items: right;
+    height: auto;
+    width: 5%;
+    margin-left: 25%;
+    padding-top: 10px;
+    margin-right: 15%;
+}
 .cube {
     width: 150px;
     height: 150px; 
