@@ -14,7 +14,7 @@ scrollRight.addEventListener('click', () => {
 function smoothScroll(amount) {
     let start = contentBox.scrollLeft;
     const end = start + amount;
-    const step = amount > 0 ? 5 : -5;
+    const step = amount > 0 ? 15 : -15;
     let timer;
 
     function scroll() {
