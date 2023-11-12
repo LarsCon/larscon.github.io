@@ -194,7 +194,7 @@ footer{
     align-items: center;
 }
 .aboutMeWords{
-    width:auto;
+    width:57.5%;
     float:right;
     height: 100%;
     margin-right: 7.5%;
@@ -207,16 +207,16 @@ footer{
 
 .aboutMeText{
     text-align: left;
-    text-indent: 25px;
     font-size: 16px;
+    text-indent: 25px;
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
 .bannerImg{
-    width:32.5%;
+    width:22.5%;
     margin-top: 25px;
     text-align: center;
-    height:auto;
+    height:50%;
     float:left;
     margin-left: 7.5%;
 }
