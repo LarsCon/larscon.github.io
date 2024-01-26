@@ -1,0 +1,29 @@
+.jumbotron{
+    background-image:url("./donut.png");
+    background-position:center center;
+    background-size:cover;
+    color:white;
+    height:500px;
+    text-align: center;
+    padding:25px;
+}
+body{
+    background-color: rgb(119,70,152);
+    padding: 50px;
+    box-sizing: content-box;
+    border: 30px solid rgb(172,133,98);
+}
+html{
+    background-color: rgb(172,133,98);
+}
+h1, h3{
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 120px;
+    color:rgb(172,133,98);
+    text-align: center;
+}
+p{
+    font-family: 'Dosis', sans-serif;
+    color:white;
+    font-size: 24px;
+}
