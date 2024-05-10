@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Display Saved Data</title>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <nav>
+        <a href="../index.html"><img src="../pics/home.png" class="icons" title="Home"></a></br>
+        <a href="#" onclick="printDocument()"><img src="../pics/print.png" class="icons" title="Print"></a>
+    </nav>
+    <div>
+        <h2 id="main-table-title"></h2>
+        <table id="main-table">
+            <thead>
+                <tr>
+                    <th>Bin #</th>
+                    <th>Game Name</th>
+                    <th>Game #</th>
+                    <th>Book #</th>
+                    <th>Start</th>
+                    <th>End</th>
+                    <th>Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Table rows will be dynamically added here -->
+            </tbody>
+        </table>
+    </div>
+ 
+    <div>
+        <h2>Cash Drawer Balance</h2>
+        <table id="additional-table">
+            <thead>
+                <tr>
+                    <th>Opening Balance</th>
+                    <th>Net Sales & Credits Due</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Table rows will be dynamically added here -->
+            </tbody>
+        </table>
+    </div>
+
+    <div>
+        <h2>Totals</h2>
+        <p>Total Instant Sales: <b><span id="total-sales"></span></b></p>
+        <p>Grand Balance: <b><span id="grand-balance"></span></b></p>
+    </div>
+    <footer>
+        Ver 1.0
+    </footer>
+    <script src="display.js"></script>
+    <script>
+        function printDocument() {
+            // Hide the navigation bar before printing
+            const navBar = document.querySelector("nav");
+            navBar.style.display = "none";
+
+            // Print the document
+            window.print();
+
+            // Show the navigation bar again after printing
+            navBar.style.display = "block";
+        }
+    </script>
+</body>
+</html>

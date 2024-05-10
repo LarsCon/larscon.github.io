@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Table with Form</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav>
+        <a href="index.html"><img src="pics/home.png" class="icons" title="Home"></a></br>
+        <a onclick="window.location.href='./pages/edit.html'"><img title="Add Sheet" src="pics/add.png" class="icons"></a></br>
+        <a href="#" onclick="clearStorage()"><img title="Delete ALL data" src="pics/delete.png" class="icons"></a>
+    </nav>
+    <h2>Budgeting Sheets</h2>
+    <table id="summary-table">
+        <tr>
+            <th>Day and Time</th>
+            <th>Actions</th>
+        </tr>
+        <!-- Table rows will be dynamically added here -->
+    </table>
+    <h3 class="HTU hide-element">How to use</h3>
+    <div class="HTUtxt hide-element">
+        <p>This is a budgeting tool to help retailers manage the budgetting of their ticket sales. This WebApp allows you to:
+        <ol>
+            <li>Create sheets for Full Day shift options</li>
+            <li>View/Edit/Print/Delete any previously created sheet</li>
+        </ol>
+        Totals will populate when sufficient data is saved</br>
+        Page actions and navigation are located in the top left, hover over them to learn more</br>
+        Currently, data is stored in your browser's local storage. As such, changes will only be seen/saved through your machine</br>
+        If you encounter bugs, <b>please let me know!</b></br>
+    </br>
+    - Lars
+        </p>
+    </div>
+
+    <button id="hideButton" class="hide-element">Got it!</button>
+
+    <footer>
+        Ver 1.0
+    </footer>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Check if user has clicked the "Got It" button previously
+            const gotIt = localStorage.getItem("gotIt") === "true";
+
+            // Add event listener to "Hide Elements" button
+            const hideButton = document.getElementById("hideButton");
+            hideButton.addEventListener("click", function() {
+                const elements = document.querySelectorAll(".hide-element");
+                elements.forEach(element => {
+                    element.style.display = "none";
+                });
+
+                // Update the state in localStorage
+                localStorage.setItem("gotIt", "true");
+            });
+
+            // Remove hide-element class to show the elements if "Got It" button is not clicked
+            if (!gotIt) {
+                const elements = document.querySelectorAll(".hide-element");
+                elements.forEach(element => {
+                    element.style.display = "block";
+                });
+            }
+        });
+    </script>
+
+    <script src="summary.js"></script>
+    <script>
+        function clearStorage() {
+            // Prompt the user for confirmation
+            const confirmClear = confirm("This will clear ALL saved data. Are you sure?");
+            
+            // If user confirms, clear the local storage
+            if (confirmClear) {
+                localStorage.clear();
+                alert("All saved data has been cleared!");
+                // Force page refresh
+                location.reload();
+            }
+        }
+    </script>    
+</body>
+</html>
