@@ -25,3 +25,7 @@
   "Leave without saving?"
 
   Load active games, select from drop down (instead of gamename,#,price)
+
+  CHANGE TITLES
+
+  Got it! Button shouldn't dissapear

@@ -5,6 +5,17 @@ document.addEventListener("DOMContentLoaded", function() {
     const sumDisplay = document.getElementById("sum-display");
     const grandBalanceDisplay = document.getElementById("grand-balance-display");
 
+    function loadCurrentBinData() {
+        const savedData = localStorage.getItem("currentBin");
+        if (savedData) {
+            const parsedData = JSON.parse(savedData);
+            parsedData.tickets.forEach(rowData => {
+                createMainTableRow(rowData);
+            });
+        }
+    }
+    loadCurrentBinData();
+    
     // Function to calculate the sum of all deltas
     function calculateSumOfDeltas() {
         const allRows = mainTableBody.querySelectorAll("tr");
@@ -52,46 +63,53 @@ document.addEventListener("DOMContentLoaded", function() {
         grandBalanceDisplay.textContent = `${grandBalance}`;
     }
 
-    // Function to create a row in the main table
     function createMainTableRow(data) {
         const newRow = document.createElement("tr");
         
-        // Loop through the data to create table cells
-        data.forEach((value, index) => {
+        // Create cells for Bin #, Game Name, Game #, Book #, Start, End, and Price
+        for (let i = 0; i < 7; i++) {
             const cell = document.createElement("td");
-            cell.textContent = value;
+            if (i < 4) {
+                // For the first 4 columns, use data as is
+                cell.textContent = data[i] || "";
+            } else if (i === 4 || i === 5) {
+                // Leave the "Start" and "End" columns empty
+                cell.textContent = "";
+            } else if (i === 6) {
+                // Put the price (last item in data) in the "Price" column
+                cell.textContent = data[data.length - 1] || "";
+            }
             newRow.appendChild(cell);
-        });
-
+        }
+    
         // Create a cell for buttons in column 8
         const buttonCell = document.createElement("td");
-
+    
         // Create an "Edit" button
         const editButton = document.createElement("button");
         editButton.textContent = "Edit";
         editButton.classList.add("edit-btn");
         buttonCell.appendChild(editButton);
-
+    
         // Create a "Delete" button
         const deleteButton = document.createElement("button");
         deleteButton.textContent = "Delete";
         deleteButton.classList.add("delete-btn");
         buttonCell.appendChild(deleteButton);
-
+    
         newRow.appendChild(buttonCell);
-
+    
         // Append the new row to the main table
         mainTableBody.appendChild(newRow);
-
+    
         // Update the sum display
         updateSumDisplay();
     }
 
-   // Function to handle the edit button click event
     function handleEditButtonClick(event) {
         const row = event.target.parentElement.parentElement;
         const cells = row.querySelectorAll("td");
-
+    
         if (event.target.textContent === "Edit") {
             // Replace text content with input fields for editing
             cells.forEach((cell, index) => {
@@ -103,34 +121,31 @@ document.addEventListener("DOMContentLoaded", function() {
                     cell.appendChild(input);
                 }
             });
-
+    
             event.target.textContent = "Save";
         } else {
             // Update cell values with input field values
             let isValid = true;
+            const requiredColumns = [0, 1, 2, 3, 6]; // Columns 1, 2, 3, 4, and 7 (0-based index)
+            
             cells.forEach((cell, index) => {
                 if (index < cells.length - 1) { // Excluding the last cell (buttons)
                     const inputValue = cell.querySelector("input").value.trim();
-                    cell.textContent = inputValue || ""; // Set empty string if inputValue is null
-                    if (![0, 1, 4, 6].includes(index)) { // Check if not in required columns
-                        return;
-                    }
-                    if (!inputValue) {
+                    cell.textContent = inputValue;
+                    if (requiredColumns.includes(index) && !inputValue) {
                         isValid = false;
-                        return;
                     }
                 }
             });
-
+    
             if (isValid) {
                 event.target.textContent = "Edit";
+                // Update the sum display
+                updateSumDisplay();
             } else {
+                alert("Please fill all required fields (Bin #, Game Name, Game #, Book #, and Price).");
                 event.target.textContent = "Save";
-                event.target.disabled = true;
             }
-
-            // Update the sum display
-            updateSumDisplay();
         }
     }
 
@@ -180,21 +195,16 @@ document.addEventListener("DOMContentLoaded", function() {
             const saveButton = row.querySelector(".edit-btn");
     
             let requiredFieldsFilled = true;
-            const requiredColumns = [0, 1, 4, 6]; // Columns 1, 2, 5, and 7
+            const requiredColumns = [0, 1, 2, 3, 6]; // Columns 1, 2, 3, 4, and 7 (0-based index)
     
             requiredColumns.forEach(index => {
-                const cellValue = cells[index].querySelector("input").value.trim();
-                if (!cellValue) {
+                const input = cells[index].querySelector("input");
+                if (input && !input.value.trim()) {
                     requiredFieldsFilled = false;
-                    return;
                 }
             });
     
-            if (requiredFieldsFilled) {
-                saveButton.disabled = false;
-            } else {
-                saveButton.disabled = true;
-            }
+            saveButton.disabled = !requiredFieldsFilled;
         }
     });
 

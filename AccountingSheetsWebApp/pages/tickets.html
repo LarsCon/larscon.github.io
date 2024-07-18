@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Current Bin</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <nav>
+        <a href="/index.html"><img src="/pics/home.png" class="icons" title="Home"></a></br>
+        <a id="saveBin"><img title="Save" src="/pics/save.png" class="icons"></a></br>
+        <a href="#" id="clearBin"><img title="Clear Current Bin" src="/pics/delete.png" class="icons"></a></br>
+    </nav>
+    <h2>Current Bin</h2>
+    <div class="tableContainer">
+        <table id="ticketTable">
+            <thead>
+                <tr>
+                    <th>Bin #</th>
+                    <th>Game Name</th>
+                    <th>Game #</th>
+                    <th>Book #</th>
+                    <th>Price</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Table rows will be dynamically added here -->
+            </tbody>
+        </table>
+    </div>
+    <form id="ticketTableForm" class="editAddRow">
+        <input type="number" name="column1" placeholder="Bin Number" required>
+        <input type="text" name="column2" placeholder="Game Name" required>
+        <input type="number" name="column3" placeholder="Game Number" required>
+        <input type="number" name="column4" placeholder="Book Number" required>
+        <input type="number" name="column5" placeholder="Price" required>
+        <button type="submit">Add Row</button>
+    </form>
+    <footer>
+        Beta Ver 1.1
+    </footer>
+    <script src="tickets.js"></script>
+    <script>
+        document.getElementById('clearBin').addEventListener('click', function(e) {
+            e.preventDefault();
+            if (confirm("Are you sure you want to clear all current bin data?")) {
+                localStorage.removeItem("currentBin");
+                location.reload();
+            }
+        });
+    </script>
+</body>
+</html>

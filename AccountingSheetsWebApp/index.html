@@ -10,6 +10,7 @@
     <nav>
         <a href="index.html"><img src="pics/home.png" class="icons" title="Home"></a></br>
         <a onclick="window.location.href='./pages/edit.html'"><img title="Add Sheet" src="pics/add.png" class="icons"></a></br>
+        <a href="pages/tickets.html"><img src="pics/tickets.png" class="icons" title="Edit Current Bin"></a></br>
         <a href="#" onclick="clearStorage()"><img title="Delete ALL data" src="pics/delete.png" class="icons"></a>
     </nav>
     <h2>Budgeting Sheets</h2>
@@ -20,8 +21,8 @@
         </tr>
         <!-- Table rows will be dynamically added here -->
     </table>
-    <h3 class="HTU hide-element">How to use</h3>
-    <div class="HTUtxt hide-element">
+    <h3 id="htuTitle" class="HTU">How to use</h3>
+    <div id="htuText" class="HTUtxt">
         <p>This is a budgeting tool to help retailers manage the budgetting of their ticket sales. This web app allows you to:
         <ol>
             <li>Create sheets for Full Day shift options</li>
@@ -33,38 +34,51 @@
         If you encounter bugs, <b>please let me know!</b></br>
     </br>
     - Lars
+    <h3 id="htuTitle" class="HTU">Ver 1.1 Updates</h3>
+    <ol>
+        <li>Current bin functionality</li>
+        <li>Prompts now for all required fields</li>
+        <li>Many Bug fixes, keep em comin'!</li>
+    </ol>
         </p>
     </div>
 
-    <button id="hideButton" class="hide-element">Got it!</button>
+    <button id="helpButton">Got it!</button>
 
     <footer>
-        Beta Ver 1.0
+        Beta Ver 1.1
     </footer>
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            // Check if user has clicked the "Got It" button previously
-            const gotIt = localStorage.getItem("gotIt") === "true";
+            const helpButton = document.getElementById("helpButton");
+            const htuTitle = document.getElementById("htuTitle");
+            const htuText = document.getElementById("htuText");
 
-            // Add event listener to "Hide Elements" button
-            const hideButton = document.getElementById("hideButton");
-            hideButton.addEventListener("click", function() {
-                const elements = document.querySelectorAll(".hide-element");
-                elements.forEach(element => {
-                    element.style.display = "none";
-                });
+            // Check if help text is hidden
+            const helpHidden = localStorage.getItem("helpHidden") === "true";
 
-                // Update the state in localStorage
-                localStorage.setItem("gotIt", "true");
-            });
+            // Function to toggle help text visibility
+            function toggleHelpText() {
+                const isVisible = htuText.style.display !== "none";
+                htuTitle.style.display = isVisible ? "none" : "block";
+                htuText.style.display = isVisible ? "none" : "block";
+                helpButton.textContent = isVisible ? "Help" : "Got it!";
+                localStorage.setItem("helpHidden", isVisible);
+            }
 
-            // Remove hide-element class to show the elements if "Got It" button is not clicked
-            if (!gotIt) {
-                const elements = document.querySelectorAll(".hide-element");
-                elements.forEach(element => {
-                    element.style.display = "block";
-                });
+            // Add event listener to help button
+            helpButton.addEventListener("click", toggleHelpText);
+
+            // Set initial state
+            if (helpHidden) {
+                htuTitle.style.display = "none";
+                htuText.style.display = "none";
+                helpButton.textContent = "Help";
+            } else {
+                htuTitle.style.display = "block";
+                htuText.style.display = "block";
+                helpButton.textContent = "Got it!";
             }
         });
     </script>

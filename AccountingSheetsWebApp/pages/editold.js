@@ -135,7 +135,7 @@ function handleEditButtonClick(event) {
             if (index < cells.length - 1) { // Excluding the last cell (buttons)
                 const inputValue = cell.querySelector("input").value.trim();
                 cell.textContent = inputValue || ""; // Set empty string if inputValue is null
-                if (![0, 1, 4, 6].includes(index)) { // Check if not in required columns
+                if (![0, 1, 2, 3, 6].includes(index)) { // Check if not in required columns
                     return;
                 }
                 if (!inputValue) {
@@ -215,7 +215,7 @@ function handleEditButtonClick(event) {
             const saveButton = row.querySelector(".edit-btn");
 
             let requiredFieldsFilled = true;
-            const requiredColumns = [0, 1, 4, 6]; // Columns 1, 2, 5, and 7
+            const requiredColumns = [0, 1, 2, 3, 6];
 
             requiredColumns.forEach(index => {
                 const cellValue = cells[index].querySelector("input").value.trim();
