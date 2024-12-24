@@ -271,9 +271,7 @@ footer{
     overflow-x: hidden;
 }
 @media screen and (min-width: 1500px) {
-    .contentBox {
-      justify-content: center;
-    }
+
   }
 .projectBox {
     height: 450px;

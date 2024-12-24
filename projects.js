@@ -1,14 +1,13 @@
-const contentBox = document.querySelector('.contentBox');
-const scrollLeft = document.querySelector('.scroll-left');
-const scrollRight = document.querySelector('.scroll-right');
-const scrollAmount = 275;
+const scrollContainer = document.querySelector('.contentBox');
+const scrollLeftButton = document.querySelector('.scroll-left');
+const scrollRightButton = document.querySelector('.scroll-right');
 
-scrollLeft.addEventListener('click', () => {
-    smoothScroll(-scrollAmount);
+scrollLeftButton.addEventListener('click', () => {
+    scrollContainer.scrollBy({ left: -300, behavior: 'smooth' });
 });
 
-scrollRight.addEventListener('click', () => {
-    smoothScroll(scrollAmount);
+scrollRightButton.addEventListener('click', () => {
+    scrollContainer.scrollBy({ left: 300, behavior: 'smooth' });
 });
 
 function smoothScroll(amount) {
