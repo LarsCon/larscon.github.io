@@ -1,15 +1,15 @@
 .widgetbox{
     width: 85%;
-    margin-left: 7.5%;
+    padding-left: 7.5%;
     float:right;
-    margin-right: 7.5%;
+    padding-right: 7.5%;
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     color:green;
     position: relative;
 }
 .hider{
     position:absolute;
-    background-color:white;
+    background-color:rgb(200, 229, 255);
     width:75%;
     height: 75px;
     z-index: 99999;
@@ -269,6 +269,8 @@ footer{
     transition: transform 0.3s ease-in-out;
     overflow-x: auto;
     overflow-x: hidden;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
 }
 @media screen and (min-width: 1500px) {
 
