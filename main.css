@@ -350,7 +350,7 @@ a:hover {
     bottom: 5px;
     left: 12.5%;
     right: 12.5%;
-    z-index: 99999999;
+    z-index: 100000;
 }
 
 /* Scroll Buttons */
