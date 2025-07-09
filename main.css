@@ -1160,6 +1160,10 @@ section {
     object-fit: contain;
     border-radius: 8px;
     flex-shrink: 0;
+    max-width: 40px;
+    max-height: 40px;
+    min-width: 40px;
+    min-height: 40px;
 }
 
 .accordion-header:hover,
@@ -1400,5 +1404,27 @@ section {
     .contact-info,
     .contact-form {
         padding: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .accordion-logo {
+        width: 32px;
+        height: 32px;
+        max-width: 32px;
+        max-height: 32px;
+        min-width: 32px;
+        min-height: 32px;
+    }
+}
+
+@media (max-width: 480px) {
+    .accordion-logo {
+        width: 28px;
+        height: 28px;
+        max-width: 28px;
+        max-height: 28px;
+        min-width: 28px;
+        min-height: 28px;
     }
 }
