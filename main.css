@@ -674,6 +674,9 @@ section {
 .portfolio-content h3 {
     color: var(--text-primary);
     margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+    word-break: break-word;
+    line-height: 1.2;
 }
 
 .portfolio-content p {

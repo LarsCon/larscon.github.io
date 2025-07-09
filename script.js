@@ -12,7 +12,7 @@ const portfolioItems = [
         categories: ["Programming", "Recreational"],
         image: "assets/design/tradeSpot.PNG",
         description: "This is a passion project of mine, a website for trading physical trading cards! It's currently being worked on, so no public demo yet. Inquire to learn more!",
-        tags: ["HTML", "CSS", "JavaScript", "2025"],
+        tags: ["HTML", "CSS", "JavaScript", "Python", "SQL", "2025"],
         link: "#",
         details: "This is a passion project of mine, a website for trading physical trading cards! It's currently being worked on, so no public demo yet. Inquire to learn more!"
     },
@@ -123,7 +123,7 @@ const portfolioItems = [
         image: "assets/IGT/IGT/accountingPhoto.png",
         description: "This is an application, currently still under construction, to help retailers under IGT to manage their ticket sales.",
         tags: ["HTML", "CSS", "Javascript", "2024"],
-        link: "#",
+        link: "https://larscon.github.io/oldProjects/AccountingSheetsWebApp/index.html",
         details: "This is an application, currently still under construction, to help retailers under IGT to manage their ticket sales."
     },
     {
@@ -430,7 +430,7 @@ const portfolioItems = [
         id: 43,
         title: "My Custom CNC Machine",
         categories: ["Engineering", "Recreational"],
-        image: "assets/engineering/unnamed (1).jpg",
+        image: "assets/engineering/unnamed (2).jpg",
         description: "Custom CNC machine built from scratch demonstrating mechanical engineering skills.",
         tags: ["CNC", "Engineering", "Custom Build"],
         link: "#",
@@ -923,17 +923,22 @@ function initializeNavigation() {
     // Smooth scrolling for navigation links
     navLinks.forEach(link => {
         link.addEventListener('click', (e) => {
-            e.preventDefault();
-            const targetId = link.getAttribute('href');
-            const targetSection = document.querySelector(targetId);
-
-            if (targetSection) {
-                const offsetTop = targetSection.offsetTop - 70; // Account for fixed navbar
-                window.scrollTo({
-                    top: offsetTop,
-                    behavior: 'smooth'
-                });
+            const href = link.getAttribute('href');
+            // Only prevent default for internal links (anchors)
+            if (href && href.startsWith('#')) {
+                e.preventDefault();
+                const targetSection = document.querySelector(href);
+                if (targetSection) {
+                    const offsetTop = targetSection.offsetTop - 70; // Account for fixed navbar
+                    window.scrollTo({
+                        top: offsetTop,
+                        behavior: 'smooth'
+                    });
+                }
             }
+            // Always close mobile menu
+            navMenu.classList.remove('active');
+            hamburger.classList.remove('active');
         });
     });
 
@@ -976,27 +981,50 @@ function initializeTimeline() {
     });
 }
 
-// Accordion functionality for work experience
+// Accordion functionality for work experience and education
 function initializeAccordion() {
-    const accordion = document.getElementById('experience-accordion');
-    if (!accordion) return;
-    const items = accordion.querySelectorAll('.accordion-item');
-    const headers = accordion.querySelectorAll('.accordion-header');
+    const experienceAccordion = document.getElementById('experience-accordion');
+    const educationAccordion = document.getElementById('education-accordion');
 
-    headers.forEach((header, idx) => {
-        header.addEventListener('click', () => {
-            items.forEach((item, i) => {
-                if (i === idx) {
-                    const isOpen = item.classList.contains('open');
-                    item.classList.toggle('open', !isOpen);
-                    header.classList.toggle('active', !isOpen);
-                } else {
-                    item.classList.remove('open');
-                    headers[i].classList.remove('active');
-                }
+    if (experienceAccordion) {
+        const experienceItems = experienceAccordion.querySelectorAll('.accordion-item');
+        const experienceHeaders = experienceAccordion.querySelectorAll('.accordion-header');
+
+        experienceHeaders.forEach((header, idx) => {
+            header.addEventListener('click', () => {
+                experienceItems.forEach((item, i) => {
+                    if (i === idx) {
+                        const isOpen = item.classList.contains('open');
+                        item.classList.toggle('open', !isOpen);
+                        header.classList.toggle('active', !isOpen);
+                    } else {
+                        item.classList.remove('open');
+                        experienceHeaders[i].classList.remove('active');
+                    }
+                });
             });
         });
-    });
+    }
+
+    if (educationAccordion) {
+        const educationItems = educationAccordion.querySelectorAll('.accordion-item');
+        const educationHeaders = educationAccordion.querySelectorAll('.accordion-header');
+
+        educationHeaders.forEach((header, idx) => {
+            header.addEventListener('click', () => {
+                educationItems.forEach((item, i) => {
+                    if (i === idx) {
+                        const isOpen = item.classList.contains('open');
+                        item.classList.toggle('open', !isOpen);
+                        header.classList.toggle('active', !isOpen);
+                    } else {
+                        item.classList.remove('open');
+                        educationHeaders[i].classList.remove('active');
+                    }
+                });
+            });
+        });
+    }
 }
 
 // --- Filtering: Only one category at a time ---
