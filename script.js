@@ -459,7 +459,7 @@ const portfolioItems = [
     {
         id: 46,
         title: "Interstellar Corvette",
-        categories: ["Art", "Educational"],
+        categories: ["Design", "Educational"],
         image: "assets/design/interstellar_corvette.jpg",
         description: "Interstellar Corvette digital artwork.",
         tags: ["Digital Art", "Sci-Fi", "2017"],
@@ -938,6 +938,26 @@ function initializeNavigation() {
             // Always close mobile menu
             navMenu.classList.remove('active');
             hamburger.classList.remove('active');
+        });
+    });
+
+    // Smooth scrolling for hero buttons
+    const heroButtons = document.querySelectorAll('.hero-buttons .btn');
+    heroButtons.forEach(button => {
+        button.addEventListener('click', (e) => {
+            const href = button.getAttribute('href');
+            // Only prevent default for internal links (anchors)
+            if (href && href.startsWith('#')) {
+                e.preventDefault();
+                const targetSection = document.querySelector(href);
+                if (targetSection) {
+                    const offsetTop = targetSection.offsetTop - 70; // Account for fixed navbar
+                    window.scrollTo({
+                        top: offsetTop,
+                        behavior: 'smooth'
+                    });
+                }
+            }
         });
     });
 
