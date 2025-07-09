@@ -349,10 +349,10 @@ const portfolioItems = [
     {
         id: 35,
         title: "Arduino Rover",
-        categories: ["Engineering", "Educational"],
+        categories: ["Engineering", "Recreational"],
         image: "assets/engineering/IMG_4279.jpg",
         description: "Arduino-based rover project demonstrating robotics and electronics skills.",
-        tags: ["Arduino", "Engineering"],
+        tags: ["Arduino", "Engineering", "2020"],
         link: "#",
         details: "Arduino-based rover project demonstrating robotics and electronics skills."
     },
@@ -362,7 +362,7 @@ const portfolioItems = [
         categories: ["Design", "Educational"],
         image: "assets/design/Newspaper.png",
         description: "Newspaper front page design project.",
-        tags: ["InDesign", "Typography"],
+        tags: ["InDesign", "Typography", "2023"],
         link: "#",
         details: "Newspaper front page design project."
     },
@@ -372,7 +372,7 @@ const portfolioItems = [
         categories: ["Art", "Educational"],
         image: "assets/art/65532310101__829FA6AF-2165-4913-9981-8B337B2C2C09.jpg",
         description: "Skeleton drawing with cloth study.",
-        tags: ["Drawing", "Anatomy"],
+        tags: ["Drawing", "Anatomy", "2020"],
         link: "#",
         details: "Skeleton drawing with cloth study."
     },
@@ -382,27 +382,27 @@ const portfolioItems = [
         categories: ["Design", "Professional"],
         image: "assets/design/1.png",
         description: "Tree service logo design project.",
-        tags: ["Illustrator", "Logo Design"],
+        tags: ["Illustrator", "Logo Design", "2017"],
         link: "#",
         details: "Tree service logo design project."
     },
     {
         id: 39,
         title: "Photo of Ukrainian Student",
-        categories: ["Photography", "Professional"],
+        categories: ["Photography", "Educational"],
         image: "assets/photography/IMG_0215.jpg",
         description: "Photograph of Ukrainian student.",
-        tags: ["Photography", "Portrait"],
+        tags: ["Photography", "Portrait", "2022"],
         link: "#",
         details: "Photograph of Ukrainian student."
     },
     {
         id: 40,
         title: "Rendered Donut",
-        categories: ["Art", "Educational"],
+        categories: ["Design", "Educational"],
         image: "assets/design/IMG-5513.png",
         description: "3D rendered donut created in Blender.",
-        tags: ["3D Rendering", "Blender"],
+        tags: ["3D Rendering", "Blender", "2023"],
         link: "#",
         details: "3D rendered donut created in Blender."
     },
@@ -412,7 +412,7 @@ const portfolioItems = [
         categories: ["Art", "Recreational"],
         image: "assets/art/IMG_4135.jpg",
         description: "NFT art project exploring digital ownership.",
-        tags: ["Digital Art", "NFT"],
+        tags: ["Digital Art", "NFT", "2021"],
         link: "#",
         details: "NFT art project exploring digital ownership."
     },
@@ -422,7 +422,7 @@ const portfolioItems = [
         categories: ["Engineering", "Recreational"],
         image: "assets/engineering/unnamed (4).jpg",
         description: "3D printed lithophanes created using custom 3D printer.",
-        tags: ["3D Printing", "Lithophanes"],
+        tags: ["3D Printing", "Lithophanes", "2020"],
         link: "#",
         details: "3D printed lithophanes created using custom 3D printer."
     },
@@ -439,10 +439,10 @@ const portfolioItems = [
     {
         id: 44,
         title: "Appetite Ad Agency Logo Submission",
-        categories: ["Design", "Professional"],
+        categories: ["Design", "Educational"],
         image: "assets/design/Appetite.png",
         description: "Logo submission for Appetite Ad Agency competition.",
-        tags: ["Logo Design", "Illustrator"],
+        tags: ["Logo Design", "Illustrator", "2023"],
         link: "#",
         details: "Logo submission for Appetite Ad Agency competition."
     },
@@ -459,30 +459,30 @@ const portfolioItems = [
     {
         id: 46,
         title: "Interstellar Corvette",
-        categories: ["Art", "Recreational"],
+        categories: ["Art", "Educational"],
         image: "assets/design/interstellar_corvette.jpg",
         description: "Interstellar Corvette digital artwork.",
-        tags: ["Digital Art", "Sci-Fi"],
+        tags: ["Digital Art", "Sci-Fi", "2017"],
         link: "#",
         details: "Interstellar Corvette digital artwork."
     },
     {
         id: 47,
         title: "My Old Portfolio",
-        categories: ["Design", "Educational"],
+        categories: ["Programming", "Educational"],
         image: "assets/programming/port.jpg",
         description: "Previous version of my portfolio website.",
-        tags: ["Web Design", "Portfolio"],
+        tags: ["Web Design", "Portfolio", "2018"],
         link: "#",
         details: "Previous version of my portfolio website."
     },
     {
         id: 48,
         title: "Forge Ball Digital Painting",
-        categories: ["Art", "Recreational"],
+        categories: ["Design", "Educational"],
         image: "assets/design/copy.png",
         description: "Digital painting of a forge ball created in Photoshop.",
-        tags: ["Digital Painting", "Art"],
+        tags: ["Digital Painting", "Art", "2017"],
         link: "#",
         details: "Digital painting of a forge ball created in Photoshop."
     },
@@ -492,17 +492,17 @@ const portfolioItems = [
         categories: ["Photography", "Recreational"],
         image: "assets/photography/IMG_0340.jpg",
         description: "Macro photography of insects showcasing nature photography skills.",
-        tags: ["Macro Photography", "Nature"],
+        tags: ["Macro Photography", "Nature", "2022"],
         link: "#",
         details: "Macro photography of insects showcasing nature photography skills."
     },
     {
         id: 50,
         title: "NCAA NIL Changes Concept Article",
-        categories: ["Design", "Educational"],
+        categories: ["Programming", "Educational"],
         image: "assets/programming/story.png",
         description: "Concept article about NCAA NIL changes designed in InDesign.",
-        tags: ["InDesign", "Typography", "Journalism"],
+        tags: ["InDesign", "Typography", "Journalism", "2022"],
         link: "#",
         details: "Concept article about NCAA NIL changes designed in InDesign."
     },
@@ -512,17 +512,17 @@ const portfolioItems = [
         categories: ["Art", "Educational"],
         image: "assets/art/IMG_4044.jpg",
         description: "Colored skull artwork demonstrating anatomy and color theory.",
-        tags: ["Drawing", "Anatomy", "Color"],
+        tags: ["Drawing", "Anatomy", "Color", "2021"],
         link: "#",
         details: "Colored skull artwork demonstrating anatomy and color theory."
     },
     {
         id: 52,
         title: "Squirrel in Tree",
-        categories: ["Photography", "Recreational"],
+        categories: ["Photography", "Educational"],
         image: "assets/photography/IMG_0186.jpg",
         description: "Photograph of a squirrel in a tree showcasing wildlife photography.",
-        tags: ["Wildlife Photography", "Nature"],
+        tags: ["Wildlife Photography", "Nature", "2022"],
         link: "#",
         details: "Photograph of a squirrel in a tree showcasing wildlife photography."
     },
@@ -532,7 +532,7 @@ const portfolioItems = [
         categories: ["Engineering", "Professional"],
         image: "assets/engineering/IMG-4817.jpg",
         description: "Multi PC testing setup for software development and quality assurance.",
-        tags: ["Hardware", "Testing", "Software Development"],
+        tags: ["Hardware", "Testing", "Software Development", "2022"],
         link: "#",
         details: "Multi PC testing setup for software development and quality assurance."
     },
@@ -542,7 +542,7 @@ const portfolioItems = [
         categories: ["Design", "Recreational"],
         image: "assets/design/LCD_Cube.png",
         description: "LCD logo design created in Illustrator.",
-        tags: ["Logo Design", "Illustrator"],
+        tags: ["Logo Design", "Illustrator", "2015"],
         link: "#",
         details: "LCD logo design created in Illustrator."
     },
@@ -552,17 +552,17 @@ const portfolioItems = [
         categories: ["Design", "Recreational"],
         image: "assets/design/tek.png",
         description: "Personal gaming logo design for streaming and gaming content.",
-        tags: ["Logo Design", "Gaming"],
+        tags: ["Logo Design", "Gaming", "2017"],
         link: "#",
         details: "Personal gaming logo design for streaming and gaming content."
     },
     {
         id: 56,
         title: "Tom's of Maine Concept Page",
-        categories: ["Design", "Educational"],
+        categories: ["Programming", "Educational"],
         image: "assets/programming/toms.jpg",
         description: "Concept page design for Tom's of Maine brand.",
-        tags: ["Web Design", "Concept"],
+        tags: ["Web Design", "Concept", "2022"],
         link: "#",
         details: "Concept page design for Tom's of Maine brand."
     },
@@ -572,7 +572,7 @@ const portfolioItems = [
         categories: ["Design", "Recreational"],
         image: "assets/design/offline.png",
         description: "Twitch offline screen design for streaming channel.",
-        tags: ["Streaming Graphics", "Twitch"],
+        tags: ["Streaming Graphics", "Twitch", "2017"],
         link: "#",
         details: "Twitch offline screen design for streaming channel."
     },
@@ -582,37 +582,37 @@ const portfolioItems = [
         categories: ["Photography", "Recreational"],
         image: "assets/photography/IMG_0451.jpg",
         description: "Photograph of a gloomy road capturing atmospheric mood.",
-        tags: ["Landscape Photography", "Mood"],
+        tags: ["Landscape Photography", "Mood", "2022"],
         link: "#",
         details: "Photograph of a gloomy road capturing atmospheric mood."
     },
     {
         id: 59,
         title: "Sharesoft Logo",
-        categories: ["Design", "Professional"],
+        categories: ["Design", "Recreational"],
         image: "assets/design/sharesoft.png",
         description: "Logo design for Sharesoft software company.",
-        tags: ["Logo Design", "Software"],
+        tags: ["Logo Design", "Software", "2017"],
         link: "#",
         details: "Logo design for Sharesoft software company."
     },
     {
         id: 60,
         title: "My Mechanical Self",
-        categories: ["Art", "Recreational"],
+        categories: ["Art", "Educational"],
         image: "assets/art/IMG_4581.jpg",
         description: "Self-portrait created in mechanical art style.",
-        tags: ["Self-Portrait", "Mechanical Art"],
+        tags: ["Self-Portrait", "Mechanical Art", "2020"],
         link: "#",
         details: "Self-portrait created in mechanical art style."
     },
     {
         id: 61,
         title: "Local Coffee Shop",
-        categories: ["Photography", "Recreational"],
+        categories: ["Photography", "Educational"],
         image: "assets/photography/IMG_0320.jpg",
         description: "Photograph of a local coffee shop showcasing street photography.",
-        tags: ["Street Photography", "Architecture"],
+        tags: ["Street Photography", "Architecture", "2022"],
         link: "#",
         details: "Photograph of a local coffee shop showcasing street photography."
     },
@@ -622,7 +622,7 @@ const portfolioItems = [
         categories: ["Design", "Recreational"],
         image: "assets/design/starting.png",
         description: "Twitch starting screen design for streaming channel.",
-        tags: ["Streaming Graphics", "Twitch"],
+        tags: ["Streaming Graphics", "Twitch", "2016"],
         link: "#",
         details: "Twitch starting screen design for streaming channel."
     },
@@ -632,17 +632,17 @@ const portfolioItems = [
         categories: ["Design", "Recreational"],
         image: "assets/design/23.png",
         description: "Personal family crest design for the Conard family.",
-        tags: ["Heraldry", "Family Crest"],
+        tags: ["Heraldry", "Family Crest", "2016"],
         link: "#",
         details: "Personal family crest design for the Conard family."
     },
     {
         id: 64,
         title: "LC Designs Logo",
-        categories: ["Design", "Professional"],
+        categories: ["Design", "Recreational"],
         image: "assets/design/lc_geo.png",
         description: "LC Designs business logo for design services.",
-        tags: ["Logo Design", "Business"],
+        tags: ["Logo Design", "Business", "2017"],
         link: "#",
         details: "LC Designs business logo for design services."
     },
@@ -652,7 +652,7 @@ const portfolioItems = [
         categories: ["Design", "Professional"],
         image: "assets/design/gfd.png",
         description: "Logo design for Gentle Family Dentistry practice.",
-        tags: ["Logo Design", "Healthcare"],
+        tags: ["Logo Design", "Healthcare", "2018"],
         link: "#",
         details: "Logo design for Gentle Family Dentistry practice."
     },
@@ -662,7 +662,7 @@ const portfolioItems = [
         categories: ["Design", "Professional"],
         image: "assets/design/2.png",
         description: "Tree service logo mock up design.",
-        tags: ["Logo Design", "Mock Up"],
+        tags: ["Logo Design", "Mock Up", "2017"],
         link: "#",
         details: "Tree service logo mock up design."
     },
@@ -672,17 +672,17 @@ const portfolioItems = [
         categories: ["Photography", "Recreational"],
         image: "assets/photography/IMG_0447.jpg",
         description: "Photograph of Atlas (apartment complex) on a rainy day.",
-        tags: ["Architecture Photography", "Weather"],
+        tags: ["Architecture Photography", "Weather", "2022"],
         link: "#",
         details: "Photograph of Atlas (apartment complex) on a rainy day."
     },
     {
         id: 68,
         title: "Charcuterie Board",
-        categories: ["Photography", "Recreational"],
+        categories: ["Art", "Educational"],
         image: "assets/art/IMG_3919.jpg",
         description: "Photograph of a beautifully arranged charcuterie board.",
-        tags: ["Food Photography", "Culinary"],
+        tags: ["Food Photography", "Culinary", "2022"],
         link: "#",
         details: "Photograph of a beautifully arranged charcuterie board."
     },
@@ -692,22 +692,21 @@ const portfolioItems = [
         categories: ["Design", "Recreational"],
         image: "assets/design/meta_.png",
         description: "Complete Twitch.TV streaming graphics package including overlays and alerts.",
-        tags: ["Streaming Graphics", "Twitch"],
+        tags: ["Streaming Graphics", "Twitch", "2016"],
         link: "#",
         details: "Complete Twitch.TV streaming graphics package including overlays and alerts."
     },
     {
         id: 70,
         title: "Concept Logo",
-        categories: ["Design", "Educational"],
+        categories: ["Design", "Recreational"],
         image: "assets/design/logo redone.png",
         description: "Concept logo design exploring different branding approaches.",
-        tags: ["Logo Design", "Concept"],
+        tags: ["Logo Design", "Concept", "2020"],
         link: "#",
         details: "Concept logo design exploring different branding approaches."
     }
 ];
-
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
     // Initialize DOM elements
