@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accounting Home Page</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav>
+        <a href="index.html"><img src="pics/home.png" class="icons" title="Home"></a></br>
+        <a onclick="window.location.href='./pages/edit.html'"><img title="Add Sheet" src="pics/add.png" class="icons"></a></br>
+        <a href="pages/tickets.html"><img src="pics/tickets.png" class="icons" title="Edit Current Bin"></a></br>
+        <a href="#" onclick="clearStorage()"><img title="Delete ALL data" src="pics/delete.png" class="icons"></a>
+    </nav>
+    <h2>Budgeting Sheets</h2>
+    <table id="summary-table">
+        <tr>
+            <th>Day and Time</th>
+            <th>Actions</th>
+        </tr>
+        <!-- Table rows will be dynamically added here -->
+    </table>
+    <h3 id="htuTitle" class="HTU">How to use</h3>
+    <div id="htuText" class="HTUtxt">
+        <p>This is a budgeting tool to help retailers manage the budgetting of their ticket sales. This web app allows you to:
+        <ol>
+            <li>Create sheets for Full Day shift options</li>
+            <li>View/Edit/Print/Delete any previously created sheet</li>
+        </ol>
+        Totals will populate when sufficient data is saved</br>
+        Page actions and navigation are located in the top left, hover over them to learn more</br>
+        Currently, data is stored in your browser's local storage. As such, changes will only be seen/saved through your machine</br></br>
+        If you encounter bugs that disrupt use or functionality, <b>please let me know!</b></br>
+        Current (known) actions to avoid that break functionality <i>(working on it)</i>:
+        <ul>
+            <li>Matching Titles</li>
+            <li>Non-numerical values edited into fields meant soley for numbers</li>
+        </ul>
+    <h3 id="htuTitle" class="HTU">Ver 1.1 Updates</h3>
+    <ol>
+        <li>Current bin functionality</li>
+        <li>Prompts now for all required fields</li>
+        <li>Many Bug fixes, keep em comin'!</li>
+    </ol>
+        If you have data displaying from an older verison, clear all saved data to prevent bugs as pathways have changed.
+        </p>
+
+    <h3 id="htuTitle" class="HTU">Soon to Come</h3>
+    <ul>
+        <li>Better UI for Mobile Users</li>
+        <li>Inventory Log Feature</li>
+        <li>Multiple Shifts Functionality</li>
+    </ul>
+        If a major change you had in mind is missing, please let me know ASAP!</br>
+    
+    </br>- <a href="mailto:lars.conard@igt.com">lars.conard@igt.com</a></br></br>
+    </div>
+
+    <button id="helpButton">Got it!</button>
+
+    <footer>
+        Beta Ver 1.1
+    </footer>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const helpButton = document.getElementById("helpButton");
+            const htuTitle = document.getElementById("htuTitle");
+            const htuText = document.getElementById("htuText");
+
+            // Check if help text is hidden
+            const helpHidden = localStorage.getItem("helpHidden") === "true";
+
+            // Function to toggle help text visibility
+            function toggleHelpText() {
+                const isVisible = htuText.style.display !== "none";
+                htuTitle.style.display = isVisible ? "none" : "block";
+                htuText.style.display = isVisible ? "none" : "block";
+                helpButton.textContent = isVisible ? "Help" : "Got it!";
+                localStorage.setItem("helpHidden", isVisible);
+            }
+
+            // Add event listener to help button
+            helpButton.addEventListener("click", toggleHelpText);
+
+            // Set initial state
+            if (helpHidden) {
+                htuTitle.style.display = "none";
+                htuText.style.display = "none";
+                helpButton.textContent = "Help";
+            } else {
+                htuTitle.style.display = "block";
+                htuText.style.display = "block";
+                helpButton.textContent = "Got it!";
+            }
+        });
+    </script>
+
+    <script src="summary.js"></script>
+    <script>
+        function clearStorage() {
+            // Prompt the user for confirmation
+            const confirmClear = confirm("This will clear ALL saved data. Are you sure?");
+            
+            // If user confirms, clear the local storage
+            if (confirmClear) {
+                localStorage.clear();
+                alert("All saved data has been cleared!");
+                // Force page refresh
+                location.reload();
+            }
+        }
+    </script>    
+</body>
+</html>

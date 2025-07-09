@@ -1,0 +1,236 @@
+/*reset*/
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+/*reset*/
+
+/*fonts
+    font-family: 'Cabin', sans-serif;
+    font-family: 'Montserrat', sans-serif;
+    font-family: 'Merriweather', serif;
+*/
+
+html{
+    background-color: rgb(152,193,217);
+}
+.workPics{
+    max-height:500px;
+    height:auto;
+    width:100%;
+    object-fit:scale-down;
+}
+.fixedHeader{
+    position: fixed;
+    width: 100%;
+}
+.fixedSpacer{
+    width:100%;
+    height:160px;
+}
+header{
+    width:auto;
+    width: 90%;
+    padding: 25px 5% 10px 5%;
+    background-color: rgb(61,90,128);
+    color:white;
+}
+header p{
+    color: rgb(238,108,77);
+    text-indent:25px;
+    font-size: 24px;
+    font-family: 'Montserrat', sans-serif;
+}
+nav{
+    width: 90%;
+    display: flex;
+    font-family: 'Montserrat', sans-serif;
+    size:18px;
+    padding-left: 5%;
+    padding-right: 5%;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    justify-content: space-between;
+    background-color:rgb(41,50,65);
+}
+nav a:link,
+nav a:visited,
+nav a:hover,
+nav a:active{
+    color: white;
+    text-decoration: none;
+}
+.navContent{
+    position: relative;
+    display: inline-block;
+}
+.leftIntro{
+    float:left;
+    width:30%;
+    margin-left: 5%;
+}
+.rightIntro{
+    float:right;
+    width:60%;
+    margin-right: 5%;
+}
+.topper{
+    background-color: white;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    padding-top: 25px;
+    padding-bottom: 25px;
+}
+.socials{
+    background-color: rgb(238,108,77);
+    display: flex;
+    justify-content: space-evenly;
+    width: 50%;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin-left: 25%;
+    margin-right: 25%;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    border-radius: 25px;
+}
+.socials img{
+    max-width: 50px;
+    display: block;
+}
+h1,h2,h3,h4,h5,h6{
+    font-family: 'Cabin', sans-serif;
+}
+h1{
+    font-size: 48px;
+    font-weight: 700;
+    text-decoration: underline;
+    margin-bottom: 2px;
+}
+h2{
+    font-size: 32px;
+    font-weight: 500;
+}
+h3{
+    font-size: 24px;
+    font-weight: 500;
+    padding-bottom: 12px;
+}
+h4{
+    font-size: 18px;
+    font-weight: 500;
+}
+p{
+    font-family: 'Merriweather', serif;
+    margin-bottom: 16px;
+    font-size:14px;
+}
+section{
+    padding: 25px 10% 25px 10%;
+    float:right;
+
+}
+.secContainer{
+    display: flex;
+    align-items: center;
+}
+.secPic{
+    width:35%;
+    float: left;
+    text-align: center;
+    padding-right: 5%;
+}
+.secTxt{
+    width:50%;
+    float:right;
+    border-radius: 25px;
+    border-left: solid 5px;
+    padding: 5%;
+}
+@media screen and (max-width: 680px) {
+    .secContainer{
+        display:contents;
+    }
+    .secPic{
+        width:100%;
+        padding-right:0%;
+        padding-bottom: 25px;
+        float:right;
+    }
+    .secTxt{
+        width:90%;
+        float:right;
+    }
+    .socials img{
+        max-width: 25px;
+    }
+    .topper p{
+        font-size: 12px;
+    }
+}
+footer{
+    float:right;
+    width:100%;
+    text-align: center;
+}
+section {
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+section.visible {
+    opacity: 1;
+}
+
+
+/*clearFix*/
+.clearfix:after {
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: " ";
+    clear: both;
+    height: 0;
+    }
+.clearfix { display: inline-block; }
+* html .clearfix { height: 1%; }
+.clearfix { display: block; }
+/*clearFix*/

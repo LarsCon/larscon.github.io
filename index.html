@@ -3,83 +3,320 @@
 
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" href="main.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lars Conard's Portfolio</title>
     <link rel="icon" type="image/x-icon" href="/assets/emoticons/faviconw.png">
+    <link rel="stylesheet" href="main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 
 <body>
-    <div class="banner">
-        <div class="myName">
-            <h1 style="font-size: 45px;">Lars Conard</h1>
-            <h2>Interactive Media Designer</h2>
-            <a href="mailto:lars.conard@gmail.com">
-                <h3>lars.conard@gmail.com</h3>
-            </a>
-        </div>
-        <div id="container">
-            <div id="cube-container">
-                <div class="cube">
-                    <div class="face front">
-                        <div class="face front" id="front-face" style="font-size: 50px;"">:&#40;</div>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <h2>Lars Conard</h2>
             </div>
-                <div class=" face back">Hello</div>
-                        <div class="face right"></div>
-                        <div class="face left"></div>
-                        <div class="face top"></div>
-                        <div class="face bottom"></div>
+            <ul class="nav-menu">
+                <li><a href="#home" class="nav-link">Home</a></li>
+                <li><a href="#experience" class="nav-link">Experience</a></li>
+                <li><a href="#portfolio" class="nav-link">Portfolio</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
+            </ul>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <section id="home" class="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1 class="hero-title">Lars Conard</h1>
+                <h2 class="hero-subtitle">Digital Designer</h2>
+                <p class="hero-description">
+                    Bridging design and technology to create visually compelling and highly functional solutions.
+                    Specializing in multimedia design, interactive experiences, and web development across digital and
+                    physical platforms.
+                </p>
+                <div class="hero-buttons">
+                    <a href="#portfolio" class="btn btn-primary">View My Work</a>
+                    <a href="#contact" class="btn btn-secondary">Get In Touch</a>
+                </div>
+                <div class="hero-social">
+                    <a href="https://github.com/LarsCon/" target="_blank" class="social-link">
+                        <i class="fab fa-github"></i>
+                    </a>
+                    <a href="https://www.linkedin.com/in/larsvconard/" target="_blank" class="social-link">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
+                    <a href="mailto:lars.conard@gmail.com" class="social-link">
+                        <i class="fas fa-envelope"></i>
+                    </a>
+                    <a href="https://drive.google.com/file/d/1bMBkPyt4bbTAp-KvzPOeXYmKwynTJZuB/view?usp=sharing"
+                        target="_blank" class="social-link">
+                        <i class="fas fa-file-alt"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="cube-container">
+                    <div class="cube">
+                        <div class="face front" id="front-face">:)</div>
+                        <div class="face back">Hello</div>
+                        <div class="face right">Design</div>
+                        <div class="face left">Code</div>
+                        <div class="face top">Create</div>
+                        <div class="face bottom">Build</div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="links">
-            <div class="link"><a
-                    href="https://drive.google.com/file/d/1bMBkPyt4bbTAp-KvzPOeXYmKwynTJZuB/view?usp=sharing"
-                    target="_blank"><img style="max-height:35px; max-width: 35px;" src="assets/emoticons/resumeb.png">
-                    <div class="image-overlay">
-                        Resume
-                    </div>
-                </a></div>
+    </section>
 
-            <div class="link"><a href="https://github.com/LarsCon/" target="_blank"><img
-                        style="max-height:35px; max-width: 35px;" src="assets/emoticons/gitb.png">
-                    <div class="image-overlay">
-                        <p>GitHub</p>
-                    </div>
-                </a></div>
-
-            <div class="link"><a href="https://www.linkedin.com/in/larsvconard/" target="_blank"><img
-                        style="max-height:35px; max-width: 35px;" src="assets/emoticons/linkedinb.png">
-                    <div class="image-overlay">
-                        <p>LinkedIn</p>
-                    </div>
-                </a></div>
-        </div>
-        <div class="intro">
-            <p>Thank you for checking out my work!</p>
-            <p>To learn more about my professional journey, check out my resume and LinkedIn, and for a glimpse into my
-                coding experience, visit my GitHub, all linked above!</p>
-            <p>Below, you'll find a selection of my work. Click a subcategory to filter the results by that category. Be
-                sure to click the shared links located in most of my work for a better viewing and/or playing
-                experience!</p>
-        </div>
-        <div class="workContainer">
-            <div class="arrowR"><img src="assets/emoticons/arrow.gif" style="max-height: 35px; padding-right: 20px;">
-            </div>
-            <div class="seeWork">See All Work</div>
-            <div class="arrowL"><img src="assets/emoticons/arrow.gif" style="max-height: 35px; padding-left: 20px;">
+    <section id="brands" class="brands">
+        <div class="container">
+            <h2 class="section-title">Brands I've Worked With</h2>
+            <div class="brands-grid">
+                <div class="brand-item">
+                    <img src="assets/logos/igt.png" alt="International Gaming Technologies" class="brand-logo">
+                </div>
+                <div class="brand-item">
+                    <img src="assets/logos/indeed.png" alt="Indeed" class="brand-logo">
+                </div>
+                <div class="brand-item">
+                    <img src="assets/logos/tide.png" alt="Tide" class="brand-logo">
+                </div>
+                <div class="brand-item">
+                    <img src="assets/logos/IU.png" alt="Indiana University" class="brand-logo">
+                </div>
+                <div class="brand-item">
+                    <img src="assets/logos/powerball.png" alt="Powerball" class="brand-logo">
+                </div>
+                <div class="brand-item">
+                    <img src="assets/logos/megaMillions.png" alt="Mega Millions" class="brand-logo">
+                </div>
+                <div class="brand-item">
+                    <img src="assets/logos/hoosierLottery.png" alt="Hoosier Lottery" class="brand-logo">
+                </div>
+                <div class="brand-item">
+                    <img src="assets/logos/newYorkLottery.png" alt="New York Lottery" class="brand-logo">
+                </div>
+                <div class="brand-item">
+                    <img src="assets/logos/barbadosLottery.png" alt="Barbados Lottery" class="brand-logo">
+                </div>
             </div>
         </div>
+    </section>
 
-        <div class="widgetbox">
-            <div class="elfsight-app-1ab0b953-6208-4709-a520-68f47d6d762c"></div>
-            <div class="hider"></div>
+    <section id="experience" class="experience">
+        <div class="container">
+            <h2 class="section-title">Work Experience</h2>
+            <div class="accordion" id="experience-accordion">
+                <div class="accordion-item">
+                    <button class="accordion-header">IGT (International Game Technology) <span
+                            class="period">2023–2024</span></button>
+                    <div class="accordion-body">
+                        <div class="company">IGT (International Game Technology)</div>
+                        <div class="role">Digital Designer, UI/UX Developer</div>
+                        <div class="period">Dec 2023 – Mar 2025</div>
+                        <div class="timeline-description">Remotely employed, invited to join multiple teams (Hoosier
+                            Lottery, Powerball, Georgia Lottery, New York Lottery, Caribbean Lottery, and more) to build
+                            interactive experiences and digital/physical products.</div>
+                        <ul class="highlights">
+                            <li>Produced graphics, animations, and videos for digital platforms</li>
+                            <li>Designed branding for lottery ticket vending machines and physical products</li>
+                            <li>Created advertising campaigns and supporting material for product launches</li>
+                            <li>Developed web components for accounting needs (HTML, CSS, JavaScript)</li>
+                            <li>Designed and stylized PowerPoint decks for retailers, employees, and clients</li>
+                        </ul>
+                        <div class="related-portfolio">
+                            <h4>Related Portfolio Work:</h4>
+                            <ul>
+                                <li><a href="#" class="portfolio-link" data-portfolio-id="2">Pick 3/4 Promotional
+                                        Material</a></li>
+                                <li><a href="#" class="portfolio-link" data-portfolio-id="3">Caribbean Lottery Front of
+                                        House</a></li>
+                                <li><a href="#" class="portfolio-link" data-portfolio-id="4">Retail Analysis Software
+                                        Documentation</a></li>
+                                <li><a href="#" class="portfolio-link" data-portfolio-id="7">Express Cash Poster</a>
+                                </li>
+                                <li><a href="#" class="portfolio-link" data-portfolio-id="12">Accounting Sheets
+                                        Management App</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <button class="accordion-header">Indiana University <span class="period">2020–2024</span></button>
+                    <div class="accordion-body">
+                        <div class="company">Indiana University</div>
+                        <div class="role">Teacher's Assistant and Lab Instructor</div>
+                        <div class="period">Jan 2024 – Mar 2024</div>
+                        <div class="timeline-description">Instructed a 200-level class of 30 students as an
+                            undergraduate, focusing on digital asset creation, storyboarding, and multimedia techniques.
+                        </div>
+                        <ul class="highlights">
+                            <li>Conducted live demonstrations and tutorials on digital techniques</li>
+                            <li>Guided students through project management, group work, and presentations</li>
+                            <li>Mentored students in file organization and effective communication</li>
+                        </ul>
+                        <!-- Related portfolio work intentionally omitted for TA role -->
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <button class="accordion-header">Brain Twins <span class="period">2022</span></button>
+                    <div class="accordion-body">
+                        <div class="company">Brain Twins</div>
+                        <div class="role">Hardware Builder, Unity Programmer, and Modeler</div>
+                        <div class="period">May 2022 – Aug 2023</div>
+                        <div class="timeline-description">Remotely employed, developed interactive museum exhibits and
+                            custom hardware systems for public installations.</div>
+                        <ul class="highlights">
+                            <li>Developed touchscreen applications in Unity for museum exhibits</li>
+                            <li>Designed and rigged 3D models for animation</li>
+                            <li>Planned and built custom hardware systems for interactive displays</li>
+                            <li>Managed and optimized multimedia files for low-power systems</li>
+                            <li>Troubleshot and tested installations for public use</li>
+                        </ul>
+                        <div class="related-portfolio">
+                            <h4>Related Portfolio Work:</h4>
+                            <ul>
+                                <li><a href="#" class="portfolio-link" data-portfolio-id="31">Framing Interactive Art
+                                        Pieces</a></li>
+                                <li><a href="#" class="portfolio-link" data-portfolio-id="53">Multi PC Testing Setup</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <button class="accordion-header">Indiana Daily Student <span class="period">2022</span></button>
+                    <div class="accordion-body">
+                        <div class="company">Indiana Daily Student</div>
+                        <div class="role">Web Programmer and IT Help</div>
+                        <div class="period">Aug 2022 – May 2023</div>
+                        <div class="timeline-description">Remotely employed, developed web solutions and provided
+                            technical support for the university newspaper's digital platform.</div>
+                        <ul class="highlights">
+                            <li>Developed article directories and user-friendly landing pages (HTML, CSS, JavaScript)
+                            </li>
+                            <li>Integrated digital content into the site’s CMS and tracked changes via Git</li>
+                            <li>Assisted in resolving software, hardware, and coding issues for new hires</li>
+                        </ul>
+                        <div class="related-portfolio">
+                            <h4>Related Portfolio Work:</h4>
+                            <ul>
+                                <li><a href="#" class="portfolio-link" data-portfolio-id="17">Roe vs Wade Landing
+                                        Page</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <button class="accordion-header">Shoemaker Motion Picture <span
+                            class="period">2016–2023</span></button>
+                    <div class="accordion-body">
+                        <div class="company">Shoemaker Motion Picture</div>
+                        <div class="role">Data Infrastructure Technician</div>
+                        <div class="period">Apr 2016 – Jun 2017, Mar 2019 – May 2022, May 2023 – Aug 2023</div>
+                        <div class="timeline-description">Designed and implemented advanced audio, internet, and digital
+                            systems for clients, including schools and businesses.</div>
+                        <ul class="highlights">
+                            <li>Provided post-installation support, troubleshooting, and maintenance of digital systems
+                            </li>
+                            <li>Tailored audiovisual and network solutions to meet diverse client needs</li>
+                            <li>Applied technical knowledge across networking protocols, AV equipment, and internet
+                                infrastructure</li>
+                        </ul>
+                        <div class="related-portfolio">
+                            <h4>Related Portfolio Work:</h4>
+                            <ul>
+                                <!-- No direct portfolio entries found for Shoemaker Motion Picture -->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
+    </section>
 
-        <script src="projects.js" type="text/JavaScript"></script>
-        <script src="https://static.elfsight.com/platform/platform.js" data-use-service-core defer></script>
-        <script src="script.js" type="text/JavaScript"></script>
+    <section id="portfolio" class="portfolio">
+        <div class="container">
+            <h2 class="section-title">Portfolio</h2>
+            <div class="portfolio-filters">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="design">Design</button>
+                <button class="filter-btn" data-filter="programming">Programming</button>
+                <button class="filter-btn" data-filter="engineering">Engineering</button>
+                <button class="filter-btn" data-filter="art">Art</button>
+                <button class="filter-btn" data-filter="photography">Photography</button>
+                <button class="filter-btn" data-filter="professional">Professional</button>
+                <button class="filter-btn" data-filter="recreational">Recreational</button>
+                <button class="filter-btn" data-filter="educational">Educational</button>
+            </div>
+            <div id="portfolio-grid" class="portfolio-grid">
+                <!-- Portfolio items will be dynamically generated here -->
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2 class="section-title">Get In Touch</h2>
+            <div class="contact-content">
+                <div class="contact-info">
+                    <h3>Let's Work Together</h3>
+                    <p>I'm always interested in new opportunities and exciting projects. Whether you have a question or
+                        just want to say hi, feel free to reach out! References available upon request.</p>
+                    <div class="contact-details">
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <span>lars.conard@gmail.com</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>Indiana</span>
+                        </div>
+                    </div>
+                </div>
+                <form id="contact-form" action="https://formspree.io/f/xovwokjy" method="POST">
+                    <div class="form-group">
+                        <input type="text" id="name" name="name" placeholder="Your Name" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" id="email" name="email" placeholder="Your Email" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" id="subject" name="subject" placeholder="Subject" required>
+                    </div>
+                    <div class="form-group">
+                        <textarea id="message" name="message" placeholder="Your Message" rows="5" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <p>You scrolled all the way down, thanks for the interest!</p>
+        </div>
+    </footer>
+
+    <div class="modal" id="portfolio-modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div class="modal-body">
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="projects.js"></script>
 </body>
 
 </html>
