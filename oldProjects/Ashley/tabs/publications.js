@@ -3,25 +3,27 @@ document.addEventListener('DOMContentLoaded', () => {
     const pubCards = document.querySelectorAll('.pub-card');
 
     pubCards.forEach(card => {
-        const expandBtn = card.querySelector('.expand-btn');
-        const pubHeader = card.querySelector('.pub-header');
+        // Make entire card clickable
+        const toggleExpand = () => {
+            card.classList.toggle('expanded');
+            card.classList.toggle('collapsed');
+        };
 
-        if (expandBtn && pubHeader) {
-            // Make both button and header clickable
-            const toggleExpand = () => {
-                card.classList.toggle('expanded');
-                card.classList.toggle('collapsed');
-            };
+        card.addEventListener('click', (e) => {
+            // Don't toggle if clicking on a link
+            if (e.target.tagName === 'A' || e.target.closest('a')) {
+                return;
+            }
+            toggleExpand();
+        });
 
-            expandBtn.addEventListener('click', (e) => {
+        // Prevent link clicks from bubbling
+        const links = card.querySelectorAll('a');
+        links.forEach(link => {
+            link.addEventListener('click', (e) => {
                 e.stopPropagation();
-                toggleExpand();
             });
-
-            pubHeader.addEventListener('click', () => {
-                toggleExpand();
-            });
-        }
+        });
     });
 });
 
