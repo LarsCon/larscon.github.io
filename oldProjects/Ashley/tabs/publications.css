@@ -385,7 +385,7 @@
     margin-bottom: 2rem;
     border-bottom: 2px solid var(--border);
     position: sticky;
-    top: 61px;
+    top: 56px;
     background-color: var(--bg-white);
     z-index: 999;
     padding-top: 0.5rem;
@@ -395,7 +395,7 @@
 /* Mobile spacing for sticky tabs */
 @media (max-width: 768px) {
     .tab-nav {
-        top: 58px;
+        top: 53px;
         padding-top: 1rem;
     }
 }
