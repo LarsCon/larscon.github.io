@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ashley Mae Conard, Ph.D.</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="components/hero.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        // Apply theme immediately to prevent flash
+        (function () {
+            const theme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
+</head>
+
+<body>
+    <!-- Navbar Component (loaded dynamically) -->
+    <div id="navbar-placeholder"></div>
+
+    <!-- Hero Component (loaded dynamically) -->
+    <div id="hero-placeholder"></div>
+
+    <!-- About & Connect -->
+    <section class="main-content" id="about">
+        <div class="container">
+            <!-- About -->
+            <div class="about-box">
+                <h2>About</h2>
+                <p>
+                    I work to build a world where people age healthily, and then die suddenly, peacefully,
+                    at a very old age. I do this through my general research theme, where I build expert-centered
+                    interpretable AI methods and interactive platforms to enable more effective human-in-the-loop
+                    <em>in-silico</em> hypothesis testing and downstream decision-making in biomedical and clinical
+                    settings. I build these tools by contributing to the data generation or aggregation process,
+                    followed by integrating omic, clinical, and environmental data, an essential combination often
+                    missing from current therapeutic practice.
+                </p>
+                <p>
+                    By day, I am a Senior Researcher at
+                    <a href="https://www.microsoft.com/en-us/research/" target="_blank">Microsoft Research</a>
+                    <a href="https://www.microsoft.com/en-us/research/lab/microsoft-health-futures/"
+                        target="_blank">Health Futures</a>
+                    in <a href="https://www.microsoft.com/en-us/research/lab/microsoft-research-new-england/"
+                        target="_blank">Cambridge, MA</a>
+                    working on building faster and more accurate AI models for
+                    <a href="https://www.broadinstitute.org/news/broad-institute-and-microsoft-collaborate-help-accelerate-disease-research-scalable-analytical"
+                        target="_blank">rare disease diagnoses</a>
+                    and <a href="https://www.microsoft.com/en-us/research/project/project-ex-vivo/"
+                        target="_blank">cancer therapeutics</a>
+                    with the <a href="https://www.broadinstitute.org/" target="_blank">Broad Institute of MIT and
+                        Harvard</a>.
+                </p>
+                <p>
+                    By night, I serve on several Boards and develop programs to empower the next generation of
+                    underrepresented groups in science, particularly computer science.
+                </p>
+                <p>
+                    Check out my biography on
+                    <a href="https://www.microsoft.com/en-us/research/people/ashleyconard/" target="_blank">my Microsoft
+                        page</a>,
+                    and connect with me on LinkedIn.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Component (loaded dynamically) -->
+    <div id="footer-placeholder"></div>
+
+    <script src="components/load-components.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
