@@ -392,6 +392,14 @@
     transition: all 0.3s ease;
 }
 
+/* Mobile spacing for sticky tabs */
+@media (max-width: 768px) {
+    .tab-nav {
+        top: 58px;
+        padding-top: 1rem;
+    }
+}
+
 .tab-nav.stuck {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }

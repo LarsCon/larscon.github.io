@@ -110,9 +110,17 @@
     }
 }
 
+@media (max-width: 768px) {
+
+    /* Extra top padding on mobile for sticky navbar */
+    .hero {
+        padding-top: 5.5rem;
+    }
+}
+
 @media (max-width: 640px) {
     .hero {
-        padding: 5rem 0 2rem;
+        padding: 5.5rem 0 2rem;
     }
 
     .hero-grid {

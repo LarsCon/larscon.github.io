@@ -43,6 +43,9 @@ fetch(basePath + 'navbar.html')
 
         // Initialize theme toggle after navbar is loaded
         initializeThemeToggle();
+
+        // Initialize hamburger menu
+        initializeHamburgerMenu();
     })
     .catch(error => console.error('Error loading navbar:', error));
 
@@ -62,6 +65,41 @@ function initializeThemeToggle() {
 
             htmlElement.setAttribute('data-theme', newTheme);
             localStorage.setItem('theme', newTheme);
+        });
+    }
+}
+
+// Hamburger Menu Initialization
+function initializeHamburgerMenu() {
+    const hamburger = document.getElementById('hamburger');
+    const navLinks = document.getElementById('nav-links');
+
+    if (hamburger && navLinks) {
+        // Add nav-ready class after a brief delay to enable transitions
+        setTimeout(() => {
+            navLinks.classList.add('nav-ready');
+        }, 50);
+
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            navLinks.classList.toggle('active');
+        });
+
+        // Close menu when clicking on a link
+        const links = navLinks.querySelectorAll('a');
+        links.forEach(link => {
+            link.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                navLinks.classList.remove('active');
+            });
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!hamburger.contains(e.target) && !navLinks.contains(e.target)) {
+                hamburger.classList.remove('active');
+                navLinks.classList.remove('active');
+            }
         });
     }
 }
