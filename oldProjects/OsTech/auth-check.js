@@ -5,11 +5,19 @@
 
     // If not authenticated and not on the gate page, redirect to gate
     if (!isAuthenticated && !window.location.pathname.endsWith('gate.html')) {
-        // Calculate relative path to gate.html
+        // Get the base directory (everything before the last file/folder)
         const currentPath = window.location.pathname;
-        const depth = (currentPath.match(/\//g) || []).length - 1;
-        const relativePath = '../'.repeat(depth) + 'gate.html';
-        window.location.href = relativePath;
+        let baseDir;
+
+        if (currentPath.includes('/pages/')) {
+            // We're in a subfolder, go to root of project
+            baseDir = currentPath.split('/pages/')[0];
+        } else {
+            // We're at root level, just get directory
+            baseDir = currentPath.substring(0, currentPath.lastIndexOf('/'));
+        }
+
+        window.location.href = baseDir + '/gate.html';
     }
 })();
 

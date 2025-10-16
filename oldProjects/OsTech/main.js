@@ -86,38 +86,49 @@ async function loadComponents() {
 // Setup Navigation Links with Correct Paths
 // ===================================
 function setupNavigationLinks() {
-    const path = window.location.pathname;
-    const inSubfolder = path.includes('/pages/');
+    const currentPath = window.location.pathname;
 
-    // Determine the base path for navigation
-    let basePath = inSubfolder ? '../../' : '';
+    // Get the project root directory
+    let projectRoot;
+    if (currentPath.includes('/pages/')) {
+        // We're in a pages subfolder
+        projectRoot = currentPath.split('/pages/')[0];
+    } else {
+        // We're at root level
+        projectRoot = currentPath.substring(0, currentPath.lastIndexOf('/'));
+    }
+
+    // Ensure project root ends with /
+    if (!projectRoot.endsWith('/')) {
+        projectRoot += '/';
+    }
 
     // Set logo link
     const logoLink = document.querySelector('.nav-home-link');
     if (logoLink) {
-        logoLink.href = basePath + 'index.html';
+        logoLink.href = projectRoot + 'index.html';
     }
 
     // Set logo image source
     const logoImg = document.querySelector('.nav-logo-top .logo-img');
     if (logoImg) {
-        logoImg.src = basePath + 'assets/rawLogo.PNG';
+        logoImg.src = projectRoot + 'assets/rawLogo.PNG';
     }
 
     // Set navigation links
     document.querySelectorAll('.nav-link[data-page]').forEach(link => {
         const page = link.getAttribute('data-page');
         if (page === 'home') {
-            link.href = basePath + 'index.html';
+            link.href = projectRoot + 'index.html';
         } else {
-            link.href = basePath + 'pages/' + page + '/';
+            link.href = projectRoot + 'pages/' + page + '/';
         }
     });
 
     // Fix footer links
     document.querySelectorAll('a[data-footer-link]').forEach(link => {
         const href = link.getAttribute('data-footer-link');
-        link.href = basePath + href;
+        link.href = projectRoot + href;
     });
 }
 
