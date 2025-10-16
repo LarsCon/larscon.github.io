@@ -5,19 +5,21 @@
 
     // If not authenticated and not on the gate page, redirect to gate
     if (!isAuthenticated && !window.location.pathname.endsWith('gate.html')) {
-        // Get the base directory (everything before the last file/folder)
-        const currentPath = window.location.pathname;
-        let baseDir;
+        // Get base URL
+        const currentURL = window.location.href;
+        let baseURL;
 
-        if (currentPath.includes('/pages/')) {
-            // We're in a subfolder, go to root of project
-            baseDir = currentPath.split('/pages/')[0];
+        if (currentURL.includes('/pages/')) {
+            // We're in a subfolder - get URL up to before /pages/
+            baseURL = currentURL.split('/pages/')[0] + '/';
         } else {
-            // We're at root level, just get directory
-            baseDir = currentPath.substring(0, currentPath.lastIndexOf('/'));
+            // We're at root - get URL up to last /
+            baseURL = currentURL.substring(0, currentURL.lastIndexOf('/') + 1);
         }
 
-        window.location.href = baseDir + '/gate.html';
+        const gateURL = baseURL + 'gate.html';
+        console.log('Auth Check - Redirecting to gate:', gateURL);
+        window.location.href = gateURL;
     }
 })();
 

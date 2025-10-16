@@ -86,49 +86,68 @@ async function loadComponents() {
 // Setup Navigation Links with Correct Paths
 // ===================================
 function setupNavigationLinks() {
+    // Get document's location to find the base URL
+    const currentURL = window.location.href;
     const currentPath = window.location.pathname;
 
-    // Get the project root directory
-    let projectRoot;
+    // Calculate base URL (works for both local and GitHub Pages)
+    let baseURL;
     if (currentPath.includes('/pages/')) {
-        // We're in a pages subfolder
-        projectRoot = currentPath.split('/pages/')[0];
+        // We're in a subfolder - get URL up to before /pages/
+        const urlParts = currentURL.split('/pages/')[0];
+        baseURL = urlParts + '/';
     } else {
-        // We're at root level
-        projectRoot = currentPath.substring(0, currentPath.lastIndexOf('/'));
+        // We're at root - get URL up to last /
+        baseURL = currentURL.substring(0, currentURL.lastIndexOf('/') + 1);
+        // Remove any # or ? from the end
+        baseURL = baseURL.split('#')[0].split('?')[0];
     }
 
-    // Ensure project root ends with /
-    if (!projectRoot.endsWith('/')) {
-        projectRoot += '/';
-    }
+    console.log('Base URL:', baseURL); // Debug logging
 
     // Set logo link
     const logoLink = document.querySelector('.nav-home-link');
     if (logoLink) {
-        logoLink.href = projectRoot + 'index.html';
+        logoLink.href = baseURL + 'index.html';
+        logoLink.onclick = (e) => {
+            e.preventDefault();
+            window.location.href = baseURL + 'index.html';
+        };
     }
 
     // Set logo image source
     const logoImg = document.querySelector('.nav-logo-top .logo-img');
     if (logoImg) {
-        logoImg.src = projectRoot + 'assets/rawLogo.PNG';
+        logoImg.src = baseURL + 'assets/rawLogo.PNG';
     }
 
-    // Set navigation links
+    // Set navigation links with click handlers
     document.querySelectorAll('.nav-link[data-page]').forEach(link => {
         const page = link.getAttribute('data-page');
+        let targetURL;
+
         if (page === 'home') {
-            link.href = projectRoot + 'index.html';
+            targetURL = baseURL + 'index.html';
         } else {
-            link.href = projectRoot + 'pages/' + page + '/';
+            targetURL = baseURL + 'pages/' + page + '/';
         }
+
+        link.href = targetURL;
+        link.onclick = (e) => {
+            e.preventDefault();
+            window.location.href = targetURL;
+        };
     });
 
-    // Fix footer links
+    // Fix footer links with click handlers
     document.querySelectorAll('a[data-footer-link]').forEach(link => {
         const href = link.getAttribute('data-footer-link');
-        link.href = projectRoot + href;
+        const targetURL = baseURL + href;
+        link.href = targetURL;
+        link.onclick = (e) => {
+            e.preventDefault();
+            window.location.href = targetURL;
+        };
     });
 }
 
