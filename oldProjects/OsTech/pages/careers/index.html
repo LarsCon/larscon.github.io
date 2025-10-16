@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Join the OS Tech team - Explore career opportunities in technology infrastructure">
+    <title>Careers | OS Tech</title>
+
+    <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div id="navbar-container"></div>
+
+    <!-- Page Hero Component (loaded via JS) -->
+    <div id="page-hero-container" data-page-title="Join Our Team"></div>
+
+    <!-- Not Hiring Message -->
+    <section class="not-hiring">
+        <div class="container">
+            <h2>Not currently hiring, sorry</h2>
+        </div>
+    </section>
+
+    <!-- Why Work With Us (Commented Out)
+    <!--
+    <section class="why-work">
+        <div class="container">
+            <h2 class="section-title">Why Work at OS Tech?</h2>
+            <p class="section-subtitle">We're more than just a workplace - we're a team committed to excellence and
+                growth</p>
+
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <h3>Professional Development</h3>
+                    <p>We invest in our team with ongoing training, certifications, and skill development opportunities.
+                    </p>
+                </div>
+
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3>Team Culture</h3>
+                    <p>Join a supportive team that values collaboration, innovation, and mutual respect.</p>
+                </div>
+
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Career Growth</h3>
+                    <p>Clear paths for advancement and opportunities to take on new challenges and responsibilities.</p>
+                </div>
+
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="fas fa-briefcase"></i>
+                    </div>
+                    <h3>Diverse Projects</h3>
+                    <p>Work on a wide variety of projects across different industries and technologies.</p>
+                </div>
+
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="fas fa-hand-holding-usd"></i>
+                    </div>
+                    <h3>Competitive Compensation</h3>
+                    <p>Fair pay, comprehensive benefits, and performance-based incentives.</p>
+                </div>
+
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="fas fa-balance-scale"></i>
+                    </div>
+                    <h3>Work-Life Balance</h3>
+                    <p>We value your time and well-being with flexible scheduling and paid time off.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Current Openings -->
+    <section class="current-openings">
+        <div class="container">
+            <h2 class="section-title">Current Opportunities</h2>
+            <p class="section-subtitle">Explore open positions and join our growing team</p>
+
+            <div class="openings-list">
+                <!-- Opening 1 -->
+                <div class="opening-card">
+                    <div class="opening-header">
+                        <div>
+                            <h3>Network Cabling Technician</h3>
+                            <div class="opening-meta">
+                                <span><i class="fas fa-map-marker-alt"></i> On-site</span>
+                                <span><i class="fas fa-clock"></i> Full-time</span>
+                                <span><i class="fas fa-briefcase"></i> Entry to Mid-level</span>
+                            </div>
+                        </div>
+                        <button class="toggle-btn" onclick="toggleOpening(this)">
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                    </div>
+                    <div class="opening-details">
+                        <h4>About the Role</h4>
+                        <p>We're seeking a skilled network cabling technician to join our infrastructure team. You'll
+                            install, terminate, and test structured cabling systems for commercial clients.</p>
+
+                        <h4>Responsibilities</h4>
+                        <ul>
+                            <li>Install Cat5e/6/6a and fiber optic cabling</li>
+                            <li>Terminate cables at patch panels and jacks</li>
+                            <li>Perform cable testing and certification</li>
+                            <li>Maintain accurate project documentation</li>
+                            <li>Follow safety protocols and building codes</li>
+                        </ul>
+
+                        <h4>Requirements</h4>
+                        <ul>
+                            <li>2+ years of cabling installation experience</li>
+                            <li>Knowledge of TIA/EIA standards</li>
+                            <li>Valid driver's license</li>
+                            <li>Ability to lift 50+ lbs and work on ladders</li>
+                            <li>BICSI certification preferred</li>
+                        </ul>
+
+                        <a href="mailto:careers@os-tech.tech" class="btn btn-primary">Apply Now</a>
+                    </div>
+                </div>
+
+                <!-- Opening 2 -->
+                <div class="opening-card">
+                    <div class="opening-header">
+                        <div>
+                            <h3>AV Systems Installer</h3>
+                            <div class="opening-meta">
+                                <span><i class="fas fa-map-marker-alt"></i> On-site</span>
+                                <span><i class="fas fa-clock"></i> Full-time</span>
+                                <span><i class="fas fa-briefcase"></i> Mid to Senior-level</span>
+                            </div>
+                        </div>
+                        <button class="toggle-btn" onclick="toggleOpening(this)">
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                    </div>
+                    <div class="opening-details">
+                        <h4>About the Role</h4>
+                        <p>Join our AV team to design and install state-of-the-art audio/video systems for corporate,
+                            education, and worship environments.</p>
+
+                        <h4>Responsibilities</h4>
+                        <ul>
+                            <li>Install and configure AV equipment (displays, projectors, speakers, etc.)</li>
+                            <li>Program control systems (Crestron, Extron, AMX)</li>
+                            <li>Troubleshoot and repair AV systems</li>
+                            <li>Provide user training and documentation</li>
+                            <li>Collaborate with clients and project managers</li>
+                        </ul>
+
+                        <h4>Requirements</h4>
+                        <ul>
+                            <li>3+ years of AV installation experience</li>
+                            <li>Control system programming experience</li>
+                            <li>Understanding of audio DSP and video signal flow</li>
+                            <li>CTS or CTS-I certification preferred</li>
+                            <li>Excellent customer service skills</li>
+                        </ul>
+
+                        <a href="mailto:careers@os-tech.tech" class="btn btn-primary">Apply Now</a>
+                    </div>
+                </div>
+
+                <!-- Opening 3 -->
+                <div class="opening-card">
+                    <div class="opening-header">
+                        <div>
+                            <h3>Project Manager</h3>
+                            <div class="opening-meta">
+                                <span><i class="fas fa-map-marker-alt"></i> Hybrid</span>
+                                <span><i class="fas fa-clock"></i> Full-time</span>
+                                <span><i class="fas fa-briefcase"></i> Senior-level</span>
+                            </div>
+                        </div>
+                        <button class="toggle-btn" onclick="toggleOpening(this)">
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                    </div>
+                    <div class="opening-details">
+                        <h4>About the Role</h4>
+                        <p>Lead technology infrastructure projects from conception to completion, ensuring quality
+                            delivery on time and within budget.</p>
+
+                        <h4>Responsibilities</h4>
+                        <ul>
+                            <li>Manage multiple infrastructure and AV projects</li>
+                            <li>Coordinate with clients, vendors, and internal teams</li>
+                            <li>Develop project schedules and budgets</li>
+                            <li>Ensure quality control and client satisfaction</li>
+                            <li>Identify and mitigate project risks</li>
+                        </ul>
+
+                        <h4>Requirements</h4>
+                        <ul>
+                            <li>5+ years of project management experience</li>
+                            <li>Background in cabling or AV industry</li>
+                            <li>PMP certification preferred</li>
+                            <li>Strong communication and leadership skills</li>
+                            <li>Proficiency with project management software</li>
+                        </ul>
+
+                        <a href="mailto:careers@os-tech.tech" class="btn btn-primary">Apply Now</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- No Current Openings Message (Hidden by default) -->
+            <div class="no-openings" style="display: none;">
+                <i class="fas fa-info-circle"></i>
+                <h3>No Current Openings</h3>
+                <p>We don't have any open positions at the moment, but we're always interested in meeting talented
+                    individuals. Feel free to send us your resume for future opportunities.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Application Process -->
+    <section class="application-process">
+        <div class="container">
+            <h2 class="section-title">Application Process</h2>
+            <div class="process-steps">
+                <div class="process-step-card">
+                    <div class="step-number">1</div>
+                    <h3>Apply</h3>
+                    <p>Submit your application or call us to express interest in a position.</p>
+                </div>
+
+                <div class="process-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+
+                <div class="process-step-card">
+                    <div class="step-number">2</div>
+                    <h3>Review</h3>
+                    <p>Our team reviews your qualifications and experience.</p>
+                </div>
+
+                <div class="process-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+
+                <div class="process-step-card">
+                    <div class="step-number">3</div>
+                    <h3>Interview</h3>
+                    <p>Meet with our hiring team to discuss the opportunity.</p>
+                </div>
+
+                <div class="process-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+
+                <div class="process-step-card">
+                    <div class="step-number">4</div>
+                    <h3>Join Us</h3>
+                    <p>Welcome to the OS Tech team!</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    -->
+
+    <div id="footer-container"></div>
+    <script src="/main.js"></script>
+    <script src="careers.js"></script>
+</body>
+
+</html>

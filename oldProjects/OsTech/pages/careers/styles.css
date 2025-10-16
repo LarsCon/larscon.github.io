@@ -1,0 +1,345 @@
+/* ===================================
+   Careers Page Specific Styles
+   =================================== */
+
+/* Not Hiring Message */
+.not-hiring {
+    padding: var(--section-padding);
+    text-align: center;
+    background-color: var(--white);
+    min-height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.not-hiring h2 {
+    font-size: 2rem;
+    color: var(--text-dark);
+}
+
+/* Why Work Section */
+.why-work {
+    padding: var(--section-padding);
+    background-color: var(--white);
+}
+
+.benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+}
+
+.benefit-card {
+    background-color: var(--light-bg);
+    padding: 2.5rem 2rem;
+    border-radius: 15px;
+    text-align: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px var(--shadow);
+}
+
+.benefit-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    background-color: var(--white);
+}
+
+.benefit-icon {
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    font-size: 2rem;
+    color: var(--white);
+}
+
+.benefit-card h3 {
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+    color: var(--text-dark);
+}
+
+.benefit-card p {
+    color: var(--text-light);
+    line-height: 1.6;
+}
+
+/* Current Openings */
+.current-openings {
+    padding: var(--section-padding);
+    background-color: var(--light-bg);
+}
+
+.openings-list {
+    max-width: 900px;
+    margin: 3rem auto 0;
+}
+
+.opening-card {
+    background-color: var(--white);
+    border-radius: 15px;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 5px 15px var(--shadow);
+    overflow: hidden;
+}
+
+.opening-header {
+    padding: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.opening-header:hover {
+    background-color: var(--light-bg);
+}
+
+.opening-header h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: var(--text-dark);
+}
+
+.opening-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin-top: 0.5rem;
+}
+
+.opening-meta span {
+    color: var(--text-light);
+    font-size: 0.9rem;
+}
+
+.opening-meta i {
+    color: var(--primary-color);
+    margin-right: 0.5rem;
+}
+
+.toggle-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--primary-color);
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    padding: 0.5rem;
+}
+
+.toggle-btn.active {
+    transform: rotate(180deg);
+}
+
+.opening-details {
+    padding: 0 2rem 2rem;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease, padding 0.3s ease;
+}
+
+.opening-details.active {
+    max-height: 1000px;
+    padding: 0 2rem 2rem;
+}
+
+.opening-details h4 {
+    font-size: 1.2rem;
+    margin: 1.5rem 0 0.75rem;
+    color: var(--text-dark);
+}
+
+.opening-details h4:first-child {
+    margin-top: 0;
+}
+
+.opening-details p {
+    color: var(--text-light);
+    line-height: 1.7;
+    margin-bottom: 1rem;
+}
+
+.opening-details ul {
+    list-style: none;
+    padding: 0;
+}
+
+.opening-details ul li {
+    color: var(--text-dark);
+    padding: 0.5rem 0;
+    padding-left: 1.5rem;
+    position: relative;
+}
+
+.opening-details ul li::before {
+    content: '▸';
+    position: absolute;
+    left: 0;
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+.opening-details .btn {
+    margin-top: 1.5rem;
+}
+
+/* No Openings Message */
+.no-openings {
+    text-align: center;
+    padding: 4rem 2rem;
+    background-color: var(--white);
+    border-radius: 15px;
+    box-shadow: 0 5px 15px var(--shadow);
+}
+
+.no-openings i {
+    font-size: 4rem;
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+}
+
+.no-openings h3 {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    color: var(--text-dark);
+}
+
+.no-openings p {
+    color: var(--text-light);
+    font-size: 1.1rem;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.7;
+}
+
+/* Application Process */
+.application-process {
+    padding: var(--section-padding);
+    background-color: var(--white);
+}
+
+.process-steps {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    max-width: 1100px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.process-step-card {
+    flex: 1;
+    min-width: 200px;
+    background-color: var(--light-bg);
+    padding: 2rem 1.5rem;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 5px 15px var(--shadow);
+    transition: all 0.3s ease;
+}
+
+.process-step-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.step-number {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: var(--white);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0 auto 1rem;
+    font-family: var(--font-heading);
+}
+
+.process-step-card h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.75rem;
+    color: var(--text-dark);
+}
+
+.process-step-card p {
+    color: var(--text-light);
+    line-height: 1.6;
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+.process-arrow {
+    color: var(--primary-color);
+    font-size: 2rem;
+}
+
+/* Responsive Design */
+@media (max-width: 968px) {
+    .benefits-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+
+    .opening-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .toggle-btn {
+        align-self: flex-end;
+        margin-top: -3rem;
+    }
+
+    .opening-meta {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .process-arrow {
+        transform: rotate(90deg);
+    }
+}
+
+@media (max-width: 640px) {
+    .benefits-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .process-steps {
+        flex-direction: column;
+    }
+
+    .process-arrow {
+        transform: rotate(90deg);
+    }
+
+    .process-step-card {
+        width: 100%;
+    }
+
+    .opening-header {
+        padding: 1.5rem;
+    }
+
+    .opening-details {
+        padding: 0 1.5rem 1.5rem;
+    }
+
+    .opening-details.active {
+        padding: 0 1.5rem 1.5rem;
+    }
+}

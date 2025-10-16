@@ -1,0 +1,49 @@
+# OS Tech Website - Git Ignore File
+
+# Operating System Files
+.DS_Store
+Thumbs.db
+desktop.ini
+*.tmp
+
+# Editor and IDE files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.swp
+*.swo
+*~
+
+# Log files
+*.log
+npm-debug.log*
+yarn-debug.log*
+
+# Environment variables
+.env
+.env.local
+
+# Temporary files
+temp/
+tmp/
+
+# Build outputs (if you add a build process later)
+dist/
+build/
+*.min.js
+*.min.css
+
+# Backup files
+*.bak
+*.backup
+
+# Node modules (if you add Node.js later)
+node_modules/
+package-lock.json
+yarn.lock
+
+# Compressed files
+*.zip
+*.tar.gz
+*.rar
