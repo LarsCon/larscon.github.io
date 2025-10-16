@@ -175,11 +175,6 @@
     display: none;
 }
 
-.project-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-}
-
 .project-image {
     height: 250px;
     position: relative;
@@ -292,12 +287,6 @@
     padding: 2.5rem;
     border-radius: 15px;
     box-shadow: 0 5px 20px var(--shadow);
-    transition: all 0.3s ease;
-}
-
-.testimonial-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
 }
 
 .testimonial-stars {

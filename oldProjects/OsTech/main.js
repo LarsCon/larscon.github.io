@@ -2,6 +2,7 @@
 // Main JavaScript File
 // ===================================
 
+
 document.addEventListener('DOMContentLoaded', function () {
     // Load Components
     loadComponents();
@@ -30,15 +31,27 @@ document.addEventListener('DOMContentLoaded', function () {
 // ===================================
 async function loadComponents() {
     try {
+        // Calculate relative path to components based on current page location
+        const path = window.location.pathname;
+        let componentsPath;
+
+        // If we're in a subdirectory (pages/), go up one level
+        if (path.includes('/pages/')) {
+            componentsPath = '../../components/';
+        } else {
+            // We're at root level
+            componentsPath = 'components/';
+        }
+
         // Load Navbar
-        const navbarResponse = await fetch('/components/navbar.html');
+        const navbarResponse = await fetch(componentsPath + 'navbar.html');
         const navbarHtml = await navbarResponse.text();
         document.getElementById('navbar-container').innerHTML = navbarHtml;
 
         // Load Page Hero (if container exists)
         const pageHeroContainer = document.getElementById('page-hero-container');
         if (pageHeroContainer) {
-            const pageHeroResponse = await fetch('/components/page-hero.html');
+            const pageHeroResponse = await fetch(componentsPath + 'page-hero.html');
             const pageHeroHtml = await pageHeroResponse.text();
             pageHeroContainer.innerHTML = pageHeroHtml;
 
@@ -53,7 +66,7 @@ async function loadComponents() {
         }
 
         // Load Footer
-        const footerResponse = await fetch('/components/footer.html');
+        const footerResponse = await fetch(componentsPath + 'footer.html');
         const footerHtml = await footerResponse.text();
         document.getElementById('footer-container').innerHTML = footerHtml;
 

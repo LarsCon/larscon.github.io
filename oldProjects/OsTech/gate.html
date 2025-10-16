@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OS Tech - Access</title>
+    <link rel="icon" type="image/png" href="assets/rawLogo.PNG">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: rgba(241, 4, 3, 0.05);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .gate-container {
+            background: white;
+            padding: 3rem 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .logo-container {
+            margin-bottom: 2rem;
+        }
+
+        .logo-container img {
+            max-width: 150px;
+            height: auto;
+        }
+
+        h1 {
+            color: #2c3e50;
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        p {
+            color: #6c757d;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        input[type="password"] {
+            width: 100%;
+            padding: 0.9rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="password"]:focus {
+            outline: none;
+            border-color: #f10403;
+        }
+
+        button {
+            width: 100%;
+            padding: 1rem;
+            background-color: #f10403;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #c10302;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(241, 4, 3, 0.3);
+        }
+
+        .error {
+            color: #f10403;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .error.show {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="gate-container">
+        <div class="logo-container">
+            <img src="assets/rawLogo.PNG" alt="OS Tech">
+        </div>
+        <h1>OS Tech</h1>
+        <p>Enter password to continue</p>
+
+        <form id="gateForm">
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" autofocus required>
+            </div>
+            <button type="submit">Enter</button>
+        </form>
+
+        <div class="error" id="error">Incorrect password. Please try again.</div>
+    </div>
+
+    <script>
+        const correctPassword = 'letmeinplease';
+        const form = document.getElementById('gateForm');
+        const passwordInput = document.getElementById('password');
+        const errorMsg = document.getElementById('error');
+
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const enteredPassword = passwordInput.value;
+
+            if (enteredPassword === correctPassword) {
+                // Store authentication in sessionStorage
+                sessionStorage.setItem('ostech_authenticated', 'true');
+                // Redirect to homepage
+                window.location.href = 'index.html';
+            } else {
+                // Show error message
+                errorMsg.classList.add('show');
+                passwordInput.value = '';
+                passwordInput.focus();
+
+                // Hide error after 3 seconds
+                setTimeout(() => {
+                    errorMsg.classList.remove('show');
+                }, 3000);
+            }
+        });
+    </script>
+</body>
+
+</html>
