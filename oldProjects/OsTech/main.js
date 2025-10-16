@@ -72,6 +72,7 @@ async function loadComponents() {
 
         // Re-initialize navigation after components are loaded
         setTimeout(() => {
+            setupNavigationLinks();
             initNavigation();
             updateFooterYear();
         }, 100);
@@ -79,6 +80,45 @@ async function loadComponents() {
     } catch (error) {
         console.error('Error loading components:', error);
     }
+}
+
+// ===================================
+// Setup Navigation Links with Correct Paths
+// ===================================
+function setupNavigationLinks() {
+    const path = window.location.pathname;
+    const inSubfolder = path.includes('/pages/');
+
+    // Determine the base path for navigation
+    let basePath = inSubfolder ? '../../' : '';
+
+    // Set logo link
+    const logoLink = document.querySelector('.nav-home-link');
+    if (logoLink) {
+        logoLink.href = basePath + 'index.html';
+    }
+
+    // Set logo image source
+    const logoImg = document.querySelector('.nav-logo-top .logo-img');
+    if (logoImg) {
+        logoImg.src = basePath + 'assets/rawLogo.PNG';
+    }
+
+    // Set navigation links
+    document.querySelectorAll('.nav-link[data-page]').forEach(link => {
+        const page = link.getAttribute('data-page');
+        if (page === 'home') {
+            link.href = basePath + 'index.html';
+        } else {
+            link.href = basePath + 'pages/' + page + '/';
+        }
+    });
+
+    // Fix footer links
+    document.querySelectorAll('a[data-footer-link]').forEach(link => {
+        const href = link.getAttribute('data-footer-link');
+        link.href = basePath + href;
+    });
 }
 
 // ===================================

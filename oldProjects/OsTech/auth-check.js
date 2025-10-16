@@ -5,7 +5,11 @@
 
     // If not authenticated and not on the gate page, redirect to gate
     if (!isAuthenticated && !window.location.pathname.endsWith('gate.html')) {
-        window.location.href = '/gate.html';
+        // Calculate relative path to gate.html
+        const currentPath = window.location.pathname;
+        const depth = (currentPath.match(/\//g) || []).length - 1;
+        const relativePath = '../'.repeat(depth) + 'gate.html';
+        window.location.href = relativePath;
     }
 })();
 

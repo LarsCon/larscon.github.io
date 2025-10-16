@@ -144,8 +144,10 @@
             if (enteredPassword === correctPassword) {
                 // Store authentication in sessionStorage
                 sessionStorage.setItem('ostech_authenticated', 'true');
-                // Redirect to homepage
-                window.location.href = 'index.html';
+                // Redirect to homepage (relative path)
+                const currentPath = window.location.pathname;
+                const basePath = currentPath.substring(0, currentPath.lastIndexOf('/') + 1);
+                window.location.href = basePath + 'index.html';
             } else {
                 // Show error message
                 errorMsg.classList.add('show');
