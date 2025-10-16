@@ -103,10 +103,24 @@
     .form-row {
         grid-template-columns: 1fr;
     }
+
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 @media (max-width: 640px) {
     .info-card {
-        padding: 2rem;
+        padding: 1.5rem;
+    }
+
+    .info-card h3 {
+        font-size: 1.1rem;
+        word-break: break-word;
+    }
+
+    .info-card h3 a {
+        word-break: break-all;
+        font-size: 0.95rem;
     }
 }

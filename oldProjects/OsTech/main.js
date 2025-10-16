@@ -46,7 +46,12 @@ async function loadComponents() {
         // Load Navbar
         const navbarResponse = await fetch(componentsPath + 'navbar.html');
         const navbarHtml = await navbarResponse.text();
-        document.getElementById('navbar-container').innerHTML = navbarHtml;
+        const navbarContainer = document.getElementById('navbar-container');
+        navbarContainer.innerHTML = navbarHtml;
+
+        // Setup links immediately before display
+        setupNavigationLinks();
+        navbarContainer.classList.add('loaded');
 
         // Load Page Hero (if container exists)
         const pageHeroContainer = document.getElementById('page-hero-container');
@@ -68,14 +73,16 @@ async function loadComponents() {
         // Load Footer
         const footerResponse = await fetch(componentsPath + 'footer.html');
         const footerHtml = await footerResponse.text();
-        document.getElementById('footer-container').innerHTML = footerHtml;
+        const footerContainer = document.getElementById('footer-container');
+        footerContainer.innerHTML = footerHtml;
 
-        // Re-initialize navigation after components are loaded
-        setTimeout(() => {
-            setupNavigationLinks();
-            initNavigation();
-            updateFooterYear();
-        }, 100);
+        // Setup footer links immediately
+        setupNavigationLinks();
+        footerContainer.classList.add('loaded');
+
+        // Initialize other features
+        initNavigation();
+        updateFooterYear();
 
     } catch (error) {
         console.error('Error loading components:', error);

@@ -81,6 +81,17 @@ h6 {
 /* ===================================
    Navigation
    =================================== */
+#navbar-container,
+#footer-container {
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+#navbar-container.loaded,
+#footer-container.loaded {
+    opacity: 1;
+}
+
 .navbar {
     background-color: var(--white);
     box-shadow: 0 2px 10px var(--shadow);
