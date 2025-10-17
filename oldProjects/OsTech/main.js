@@ -409,8 +409,8 @@ function initHeroSlideshow() {
         slides[currentSlide].classList.add('active');
     }
 
-    // Change slide every 8 seconds (doubled from 4)
-    setInterval(showNextSlide, 8000);
+    // Change slide every 6 seconds
+    setInterval(showNextSlide, 6000);
 }
 
 // ===================================
