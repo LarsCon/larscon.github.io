@@ -134,6 +134,13 @@
     }
 }
 
+@media (max-width: 740px) {
+    .hero {
+        background-position: center;
+        /* Remove vertical shift on smaller screens */
+    }
+}
+
 @media (max-width: 768px) {
 
     /* Extra top padding on mobile for sticky navbar */
