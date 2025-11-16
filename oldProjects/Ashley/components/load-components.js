@@ -1,6 +1,7 @@
 // Determine base path based on current directory
 const isInTabsFolder = window.location.pathname.includes('/tabs/');
-const basePath = isInTabsFolder ? '../components/' : 'components/';
+const isInTabsSubfolder = window.location.pathname.match(/\/tabs\/[^\/]+\//);
+const basePath = isInTabsSubfolder ? '../../components/' : (isInTabsFolder ? '../components/' : 'components/');
 
 // Load navbar component
 fetch(basePath + 'navbar.html')
@@ -12,31 +13,65 @@ fetch(basePath + 'navbar.html')
         const navHome = document.getElementById('nav-home');
         const navAbout = document.getElementById('nav-about');
         const navPublications = document.getElementById('nav-publications');
+        const navExperience = document.getElementById('nav-experience');
+        const navPresentations = document.getElementById('nav-presentations');
+        const navLeadership = document.getElementById('nav-leadership');
         const navConnect = document.getElementById('nav-connect');
 
-        if (isInTabsFolder) {
-            // We're in tabs folder
-            navHome.href = '../index.html';
-            navAbout.href = '../index.html';
-            navPublications.href = 'publications.html';
-            navConnect.href = 'connect.html';
+        if (isInTabsSubfolder) {
+            // We're in a tabs subfolder (e.g., tabs/publications/)
+            if (navHome) navHome.href = '../../index.html';
+            if (navAbout) navAbout.href = '../../index.html';
+            if (navPublications) navPublications.href = '../publications/publications.html';
+            if (navExperience) navExperience.href = '../experience/experience.html';
+            if (navPresentations) navPresentations.href = '../presentations/presentations.html';
+            if (navLeadership) navLeadership.href = '../leadership/leadership.html';
+            if (navConnect) navConnect.href = '../connect/connect.html';
+        } else if (isInTabsFolder) {
+            // We're in tabs folder (legacy - shouldn't happen now)
+            if (navHome) navHome.href = '../index.html';
+            if (navAbout) navAbout.href = '../index.html';
+            if (navPublications) navPublications.href = 'publications/publications.html';
+            if (navExperience) navExperience.href = 'experience/experience.html';
+            if (navPresentations) navPresentations.href = 'presentations/presentations.html';
+            if (navLeadership) navLeadership.href = 'leadership/leadership.html';
+            if (navConnect) navConnect.href = 'connect/connect.html';
         } else {
             // We're in root
-            navHome.href = 'index.html';
-            navAbout.href = 'index.html';
-            navPublications.href = 'tabs/publications.html';
-            navConnect.href = 'tabs/connect.html';
+            if (navHome) navHome.href = 'index.html';
+            if (navAbout) navAbout.href = 'index.html';
+            if (navPublications) navPublications.href = 'tabs/publications/publications.html';
+            if (navExperience) navExperience.href = 'tabs/experience/experience.html';
+            if (navPresentations) navPresentations.href = 'tabs/presentations/presentations.html';
+            if (navLeadership) navLeadership.href = 'tabs/leadership/leadership.html';
+            if (navConnect) navConnect.href = 'tabs/connect/connect.html';
         }
 
         // Set active nav item based on current page
         const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-        if (currentPage === 'index.html' || currentPage === '') {
+        const pathParts = window.location.pathname.split('/').filter(p => p);
+        const isPublications = pathParts.includes('publications') || currentPage === 'publications.html';
+        const isExperience = pathParts.includes('experience') || currentPage === 'experience.html';
+        const isPresentations = pathParts.includes('presentations') || currentPage === 'presentations.html';
+        const isLeadership = pathParts.includes('leadership') || currentPage === 'leadership.html';
+        const isConnect = pathParts.includes('connect') || currentPage === 'connect.html';
+
+        if (currentPage === 'index.html' || currentPage === '' || pathParts.length === 0) {
             const aboutLink = document.getElementById('nav-about');
             if (aboutLink) aboutLink.classList.add('active');
-        } else if (currentPage === 'publications.html') {
+        } else if (isPublications) {
             const pubLink = document.getElementById('nav-publications');
             if (pubLink) pubLink.classList.add('active');
-        } else if (currentPage === 'connect.html') {
+        } else if (isExperience) {
+            const experienceLink = document.getElementById('nav-experience');
+            if (experienceLink) experienceLink.classList.add('active');
+        } else if (isPresentations) {
+            const presentationsLink = document.getElementById('nav-presentations');
+            if (presentationsLink) presentationsLink.classList.add('active');
+        } else if (isLeadership) {
+            const leadershipLink = document.getElementById('nav-leadership');
+            if (leadershipLink) leadershipLink.classList.add('active');
+        } else if (isConnect) {
             const connectLink = document.getElementById('nav-connect');
             if (connectLink) connectLink.classList.add('active');
         }
@@ -111,7 +146,7 @@ fetch(basePath + 'hero.html')
         document.getElementById('hero-placeholder').innerHTML = data;
 
         // Fix image paths based on current directory
-        const photoBasePath = isInTabsFolder ? '../photos/' : 'photos/';
+        const photoBasePath = isInTabsSubfolder ? '../../photos/' : (isInTabsFolder ? '../photos/' : 'photos/');
 
         const heroPhoto = document.getElementById('hero-photo');
         const githubIcon = document.getElementById('github-icon');
@@ -138,10 +173,12 @@ fetch(basePath + 'footer.html')
         // Fix footer link path based on current directory
         const footerConnect = document.getElementById('footer-connect');
         if (footerConnect) {
-            if (isInTabsFolder) {
-                footerConnect.href = 'connect.html';
+            if (isInTabsSubfolder) {
+                footerConnect.href = '../connect/connect.html';
+            } else if (isInTabsFolder) {
+                footerConnect.href = 'connect/connect.html';
             } else {
-                footerConnect.href = 'tabs/connect.html';
+                footerConnect.href = 'tabs/connect/connect.html';
             }
         }
     })

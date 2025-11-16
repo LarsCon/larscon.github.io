@@ -353,7 +353,7 @@ body {
     }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1105px) {
 
     /* Show hamburger menu */
     .hamburger {

@@ -1,0 +1,461 @@
+Dr. Ashley Mae Conard
+Health Futures
+Microsoft Research
+Cambridge, MA 02142, USA
+Senior Researcher, Biomedical Computing Group
+LinkedIn: linkedin.com/in/ashleymaeconard
+Research theme
+My general research theme is to build expert-centered interpretable methods and platforms to enable more effective decisionmaking in biomedical and clinical settings. After all, I believe for methods to be useful, they must be used.
+Research interests
+Temporal and multi-omics integration, rare disease research, interpretable statistical & Bayesian models, large language models,
+time-series models, human-in-the-loop computation, gene regulatory networks, visualization and perturbation, reproducibility,
+high-performance computing, game theory, protein binding prediction
+Education
+2022 Biostatistics Department, Brown University, RI, USA.
+Post-doctoral researcher
+Advisor: Dr. Lorin Crawford
+2022 Center for Computational and Molecular Biology, Brown University, RI, USA.
+Ph.D. Computer Science, Computational Biology
+Thesis: It’s about time: developing interpretable models to uncover regulatory mechanisms from temporal and multi-omics data
+Advisors: Dr. Lorin Crawford, Dr. Erica Larschan, Dr. Charles Lawrence
+2019 Computer Science, Brown University RI, USA.
+M.S. in Computer Science
+Thesis: Identification of subclonal drivers and copy-number variants from bulk and single-cell DNA
+sequencing of tumors [link]
+Advisor: Dr. Benjamin Raphael
+2014 DePauw University, IN, USA.
+B.A. in Computer Science, Biochemistry specialization, minor French, magna cum laude
+Professional Research and Computing Experience
+2023–current Health Futures, Microsoft Research,
+Cambridge, MA, USA.
+Senior researcher Build novel methods and pipelines to improve rare disease solve and diagnostic rates
+in partnership with the Broad Institute of MIT and Harvard, and the Center for Population Genomics,
+Australia [link].
+1
+2022 Biostatistics Department, Brown University,
+Providence, RI, USA.
+Post-doctoral researcher Develop interpretable Bayesian machine learning and statistical models from
+multi-omics data.
+2019–2022 Center for Computational and Molecular Biology (CCMB), Brown University,
+Providence, RI, USA.
+Ph.D. Computer Science, Computational Biology Developed interpretable Bayesian machine learning
+models for longitudinal multi-omic studies and platforms to understand gene regulation. I formulated novel research directions, perform experiment design, method development, result and wet-lab
+validation.
+Spring 2022 Phenome Health, Deloitte,
+San Francisco, CA, USA.
+Computational Biologist, Data Infrastructure, Machine Learning. Developing scientific and business
+strategy for healthcare and life science start-up under Dr. Leroy Hood.
+Fall 2021 Google Cloud,
+Palo Alto, CA, USA.
+Researcher and Creator. Developing new computational biology frameworks in collaboration with
+several biotech companies and Google Cloud.
+Summer 2021 Biomedical Computing, Health Futures, Microsoft Research,
+Redmond, WA, USA.
+Research Intern. Developed three interpretable Bayesian inference models leveraging temporal and
+multi-omic data to uncover dysregulation in breast cancer, ALS, and Parkinson’s disease.
+Fall 2018 Department of Health, RI, USA.
+Machine Learning Scholar. Designed predictive model to address a need in Rhode Island’s hospital
+systems. The hope is to form state legislation based on findings.
+2015–2017 Department of Computer Science, Princeton University, Brown University, MA, RI, USA.
+Graduate Student. Designed deep learning model to improve DNA single-cell sequencing data for
+large region mutation (copy-number) inference. Developed pipeline to identify subclonal driver mutations in bulk sequencing cancer tumor samples across nine cancer types.
+2014–2015 Department of Computer Science, Universite´ Libre de Bruxelles, Belgium.
+Game Theory Researcher. Created a method to uncover binding specificities in SH3 protein domain
+using machine learning, cooperative game theory, and structural bioinformatics.
+Summer 2013, Massachusetts Institute of Technology Lincoln Laboratory, MA, USA.
+2014 Bioinformatics Researcher. Developed a fast protein analysis algorithm using Dynamic Distributed
+Dimensional Data Model (by Dr. Jeremy Kepner), merging sparse algebra, associative and distributed
+arrays, and triplestore/NoSQL databases (Accumulo).
+Summer 2013 Department of Chemistry, DePauw University, IN, USA.
+Chemical Inventory Database Creator – Senior Project. Designed, built, and deployed database (Parse
+Platform) and front end (HTML, CSS). ∼2000 users for many departments [link].
+January 2013 Center for Structural Biology, Vanderbilt University, TN, USA.
+Visiting Scholar. Assisted in development of new structure prediction algorithms in RosettaLigand
+program (simulations and design of macromolecules) and proposed new machine learning techniques
+in Biochemical Library (BCL) drug discovery project.
+2011–2012 Technology Associate of Alumni Office, DePauw University, IN, USA.
+Student Worker. Provided information technology solutions for faculty and staff. Built video presentations for award lectures and conducted interviews for alumni networking.
+2
+Summer 2012 Eli Lilly and Company (Elanco), IN, USA.
+Quality Control Researcher. Designed, tested and implemented two software programs. One for deviation documentation and the other instrument control. The former went GLOBAL for Elanco plants
+in Nov. 2012, the latter runs automatically daily. Learned how to use Gas Chromatography, Atomic
+Absorption Spectroscopy, and High Performance Liquid Chromatography.
+Spring 2012 Department of Computer Science, Universite´ Libre de Bruxelles, Belgium.
+Visiting Scholar. Analyzed the role of core amino acids in a FYN SH3 protein domain using structural
+bioinformatics and game theory techniques.
+2010–2011 Information Technology Help Desk, Information Technology Associates
+Program, DePauw University, IN, USA.
+Technology Associate. Project manager for team of ten that implemented technology solutions for
+students and faculty, including revamping websites and software troubleshooting.
+Summer 2011 JDS Uniphase, TX, NY, USA.
+Technology Sales and Marketing Associate. Researched, tested, taught, and marketed communication
+software, services, and solutions for Verizon, AT&T.
+Summer 2011 Department of Biology, Science Research Fellowship Program, DePauw University, IN, USA.
+Behavioral Ecology Researcher. Developed procedures to test and analyze different advertisement and
+aggressive calling patterns of Acris blanchardi. Tested parachuting behavior of Hyla chrysosclis, Acris
+blanchardi, and Anaxyrus fowleri.
+Fall 2010 Department of Chemistry, Science Research Fellowship Program, DePauw University, IN, USA.
+Inorganic Chemistry Researcher. Synthesized ionogel and determined chemical and physical properties to use as a catalyst for biosensing, optics, and electrolytes.
+Summer 2008 Eli Lilly and Company, IN, USA.
+Inorganic Chemistry Researcher. Assessed hydrolytic stability of cyclopropanecarboxylic acid esters
+as potential prodrugs. Synthesized an acyclovir prodrug and worked with a ghrelin O-acyltransferase
+inhibitor to evaluate use as a potential therapeutic target to treat obesity and diabetes.
+Honors and Awards
+International and National
+2014–2019 ◦ National Science Foundation Graduate Research Fellowship Program (NSF GRFP)
+2014–2015 ◦ Fulbright Research Scholar, Machine Learning and Game Theory, Belgium
+2015 ◦ Belgian American Education Foundation Fellow, Machine Learning and Game Theory, Belgium
+2014 ◦ Science Mathematics and Research for Transformation (SMART). Declined due to NSF GRFP.
+2010–2014 ◦ Grace Hopper International Celebration of Women in Computing: Poster Award 2013, (scholarships:
+NSF 2010, Xerox 2012, Intel 2013)
+2011 ◦ Ohio Celebration of Women in Computing (OCWiC), scholarship to attend
+◦ National Society of Collegiate Scholars (NSCS)
+2010 ◦ Science National Honor Society
+2009 ◦ Indiana High School Athletic Association Role Model: gave speeches to promote drug-free living
+3
+DePauw University
+2014 ◦ Old Gold Award: academic excellence and high achievement
+2012 ◦ Internships in Francophone Europe: fellowship to study in Belgium and conduct research
+2010–2014 ◦ Dean’s List (every semester)
+◦ Information Technology Associates Program (ITAP) - selective honors program
+◦ Science Research Fellows (SRF) - selective honors program
+◦ Honors Societies: Mortar Board, Chi Alpha Sigma, Phi Eta Sigma, Order of Omega, National
+Society for Collegiate Scholars, Alpha Lambda Delta
+Publications
+Co-first author: !, corresponding author: ‡.
+2023 H. Xi, L. Crawford‡, A. Conard‡. Multioviz: an interactive platform for in silico perturbation and
+interrogation of gene regulatory networks. BMC Bioinformatics. (Under review).
+V. Sriram, L. A. Conard, I Rosenberg, D. Kim, A. Hall
+‡. Accelerating precision medicine: a proposed framework for large-scale multiomic data integrity, interoperability, analysis, and collaboration
+in biomedical discovery. PLOS Digital Health. (In submission).
+A. Mastrianni, H. Twede, A. Sarcevic, J. Wander, C. Austin-Tse, S. Saponas, H. Rehm, A. Conard‡,
+A. Hall
+‡. AI-Enhanced Sensemaking: Exploring the Design of a Generative AI-Based Assistant to
+Support Whole Genome Sequencing Analysis. CHI. (In submission).
+A. Conard‡, I. Nathoo, M. Tsarli, C. Lawrence, E. Larschan. XvsY: pipeline to identify shared and
+distinct genomic signatures from multiple expression and protein-DNA interaction information over
+time. Cell Press STAR Protocols. (In submission).
+N. D’Silva!, K. McCullar
+!, A. Conard, T. Blackwater, R. Azanchi, U. Heberlein, E. Larschan,
+K. Kaun‡. Neuromolecular and behavioral adaptation associated with alcohol deprivation.
+Genetics. (Under review).
+2022 A. Conard!, A. DenAdel
+!, L. Crawford‡. A spectrum of explainable and interpretable machine learning approaches for genomic studies. WIREs Computational Statistics.
+A. Conard‡. It’s About Time: Interpretable Methods and Associated Interactive Platforms to Uncover Regulatory Mechanisms from Temporal and Multi-Omics Data. Brown University Ph.D. Thesis,
+Computer Science and Computational Biology.
+A. M. Bronikowski, R. P. Meisel, P. R. Biga, J. R. Walters, J. E. Mank, E. Larschan, G. S. Wilkinson,
+N. Valenzuela, A. Conard, J. P. de Magalhaes, J. Duan, A. E. Elias, T. Gamble, R. M. Graze, K.
+E. Gribble, J. A. Kreiling, and N. C. Riddle‡. Sex-specific aging in animals: Perspective and future
+directions. Aging Cell.
+2021 A. Conard‡, N. Goodman, Y. Hu, N. Perrimon, R. Singh, C. Lawrence‡, E. Larschan‡. TIMEOR: a
+web-based tool to uncover regulatory mechanisms from temporal and multi-omics data.
+NAR Web Server Issue.
+M. Ray!, A. Conard!, E. Larschan‡. The CLAMP transcription factor regulates sex-specific splicing
+in the Drosophila early embryo. eLife.
+2020 M. Tsarli, A. Conard, E. Larschan‡. The Drosophila CLAMP protein regulates neurogenesis in the
+optic lobe. Genetics. (Under review).
+4
+2019 A. Conard‡, B. Raphael
+‡. Identification of subclonal drivers and copy-number variants from bulk and
+single-cell DNA sequencing of tumors. Brown University Department of Computer Science.
+2016 B. Cuypers, A. Jacobsen, B. Siranosian, K. Schwahn, A. Conard, N. Aben, M. Hassan, N. Fatima,
+S. Hermans, M. Woghiren, P. Meysman, F. Rahman, A. Jigisha. Highlights from the ISCB Student
+Council Symposia in 2016. F1000Research. 2016, 5(ISCB Comm J):2852
+2015 A. Conard, S. Dodson, J. Kepner
+‡, D. Ricke‡. Using a Big Data Database to Identify Pathogens in
+Protein Data Space, arXiv:1501.05546.
+Skills and Experience
+Programming Bash, C++, C, CSS, HTML, Julia, Java, MATLAB, pMatlab, Markdown, Python, R, RShiny, SQL
+Languages
+Dev. Tools/
+Environments
+Azure Dev Ops, Arduino IDE, BlueJ, Conda, Docker, Eclipse, Jupyter, Putty, RStudio, Terminal,
+Visual Studio Code, Xcode
+Big Data Tools Apache Acculumo, Apache Hadoop, Azure, MPI, OpenMP, Slurm
+Programs/
+Platforms
+ArcGIS, Arduino, Audacity, Business Objects, Cytoscape, Chimera, Discoverant, Dreamweaver, Final Cut Pro, GIMP, Google Cloud Platform, Illustrator, Infopath, MakerBot, Raspberry Pie, Raven,
+RosettaLigand
+Foreign
+Languages
+French (fluent), Spanish (fluent), Dutch (beginner), Portuguese (beginner)
+Selected Presentations
+Invited Talks
+September 2023 A spectrum of explainable and interpretable machine learning approaches for genomic studies
+ACM Conference on Bioinformatics, Comp. Biology, & Health Informatics (ACM BCB), TX, USA.
+November 2020 BIOGRINN: Bayesian model to interpret and predict genomics features from multi-omics data
+International Society for Bayesian Analysis (ISBA), Virtual.
+November 2020 TIMEOR: a web-based tool to uncover temporal regulatory mechanisms from multi-omics data
+Biological Data Science Conference, Cold Spring Harbor Laboratory, Virtual.
+March 2020 TIMEOR: web-based tool to uncover regulatory mechanisms from temporal & multi-omics data
+Adelman-Bender-Cole-Kuroda-Larschan Joint Lab Meeting, Harvard University, MA, USA.
+January 2020 Trajectory Inference and Mechanism Exploration with Omics Data in R. A computational
+method to uncover regulatory mechanisms of transcription factors during development
+Perrimon Lab Group Meeting (collaborator), Harvard University, MA, USA.
+October 2019 Trajectory Inference and Mechanism Exploration with Omics Data in R. Its about time!
+Epigenomics Club, Brown University, RI, USA.
+August 2019 Trajectory Inference and Mechanism Exploration with Omics Data in R - A method to uncover
+regulatory mechanisms over time
+Dana-Farber Cancer Institute, MA, USA.
+August 2019 Time course model of alcoholism in neural development of Drosophila melanogaster
+Kaun Lab Group Meeting, Brown University, RI, USA.
+June 2019 Trajectory Inference and Mechanism Exploration with Omics Data in R - A method to analyze
+how transcription factors influence development
+Boston Area Drosophila Meeting, Brown University, RI, USA. Flash talk.
+5
+June 2019 Trajectory Inference and Mechanism Exploration with Omics Data in R - A method to analyze
+how transcription factors influence development
+Adelman-Bender-Cole-Kuroda-Larschan Joint Lab Meeting, Harvard University, MA, USA.
+March 2019 KO or OK? A pipeline to analyze how the CLAMP transcription factors influences development
+Epigenomics Club, Brown University, RI, USA.
+October 2019 Student of Vision Abie Award
+Grace Hopper Celebration, FL, USA. Moderator and panelist.
+October 2018 Student of Vision Abie Award
+Grace Hopper Celebration, TX, USA. Moderator and panelist.
+October 2016 Subclonal Driver Events Across 9 Cancer Types
+IB2 Student Day, Universite´ Libre de Bruxelles, Belgium.
+August 2015 Applying for National and International Awards
+DePauw University, IN, USA.
+December 2014 Determining winning SH3 coalition using Game Theory
+Benelux Bioinformatics Conference, Belgium.
+June 2015 Determining the winning SH3 Coalition with Game Theory
+Regional Student Group, Belgium.
+December 2014 Determining winning SH3 coalition using Game Theory
+Benelux Bioinformatics Conference, Belgium.
+May 2014 Chemical Inventory Database System and School-Wide Integration
+DePauw University, IN, USA. Presentation and poster [link].
+January 2014 Essential Residues within Fyn SH3 Protein Domain using Game Theory
+Indiana Women in Computing Conference (InWIC), IN, USA. Won 1st prize [link].
+January 2014 No Fomo - User Experience Challenge
+Microsoft International Imagine Cup, DePauw University, IN. Honorable mention [link].
+May 2012 Coalitional Game Theory and Feature Selection to Describe the Dependencies Between Amino
+Acids Within the SH3 FYN Protein Domain
+Chicago Women in Computing (ChiWIC), IL, USA.
+May 2012 Synergistic & Antagonistic Dependencies Analyzed via Game Theory in FYN Protein Domain
+(Presented in French and English). Thesis in French. Universite´ Libre de Bruxelles, Belgium.
+June 2011 Censorship between China and Google
+Ohio Celebration of Women in Computing (OCWiC), OH, USA.
+Posters
+March 2021 XvsY: tool to identify shared and distinct genomic signatures from multiple expression and
+protein-DNA interaction information over time
+Annual Drosophila Meeting, Virtual.
+April 2020 TIMEOR: web-based tool to uncover regulatory mechanisms from temporal & multi-omics data
+The Allied Genetics Conference (TAGC), Virtual.
+November 2019 TIMEOR: method to uncover regulatory mechanisms from temporal and multi-omics data
+Fulbright Association Conference, DC, USA.
+May 2019 Method characterize how transcription factors influence development with RNA & ChIP-seq
+RECOMB, DC, USA.
+6
+March 2019 Method characterize how transcription factors influence development with RNA & ChIP-seq
+Annual Drosophila Meeting, TX, USA.
+November 2017 Determining the winning SH3 coalition: how cooperative game theory reveals the importance of
+domain residues in peptide binding
+Fulbright Association Conference, DC, USA.
+October 2016 Coalitional Game Theory and Feature Selection to Describe the Dependencies Between Amino
+Acids Within the SH3 FYN Protein Domain
+Grace Hopper Celebration, TX, USA.
+July 2015 Determining the winning SH3 Coalition with Game Theory
+International Society for Molecular Biology (ISMB), Ireland. Won RSCB PDB Prize [link].
+January 2015 Using a Big Data Database to Identify Pathogens in Protein Data Space
+New England Database Day, MA, USA.
+January 2014 Creation and Implementation of D4M Algorithm for Protein Analysis
+Indiana Women in Computing Conference (InWIC), IN, USA. Won 1st prize [link].
+October 2013 Creation and Implementation of D4M Algorithm for Protein Analysis
+OurCS Conference, Carnegie Mellon, PA, USA. Won 1st prize [link].
+September 2011 Male-Male Cricket Frog Aggressive Behavior
+DePauw University Summer Research, Science Research Fellow, IN, USA. [link].
+September 2011 Parachuting Arboreal Frogs
+DePauw University Summer Research, Science Research Fellow, IN, USA. [link].
+Student Mentorship
+2023 Angela Mastrianni, graduate student, ‘AI-Enhanced Sensemaking: Exploring the Design of a Generative AI-Based Assistant to Support Whole Genome Sequencing Analysis’
+Shadi Zabad, graduate student, ‘Leveraging Genome-wide Complex Trait Association Signals to Inform Variant Prioritization in Rare Disease’
+2021 Helen Xi, undergraduate student, ‘Multi-omic Visualization of Interpretable Biological Neural
+Neworks’
+Lee Ding, undergraduate student, ‘Efficient Multi-Trait Learning with Biologically Annotated Neural
+Networks’
+2020 Dominique Pablito, graduate student, ‘Uncovering temporal sex-specific differences across multiple
+species’
+Isaac Nathoo, undergraduate student, ‘Regulation of alternate sex specific splicing by DNA binding protein CLAMP during early embryonic development determines transcriptome heterogeneity between sexes’
+2019 Nathaniel Goodman, undergraduate student, ‘TIMEOR: a web-based tool to uncover regulatory mechanisms from temporal and multi-omics data’
+7
+Academic Service and Memberships
+Journal and ◦ IEEE HPEC, 2023
+conference
+reviewer
+◦ Intelligent Systems for Molecular Biology/European Conference on Computational Biology
+(ISMB/ECCB), 2021 (assisted advisor)
+◦ AISTATS, 2020 (assisted advisor)
+◦ Nature Communications, 2019 (assisted advisor)
+◦ Genes and Development, 2019 (assisted advisor)
+Conference ◦ Grace Hopper Celebration, 2015–present
+service ◦ Fulbright Conference, 2019, 2020, 2021
+◦ International Society of Computational Biology (ISCB) Student Council Symposium, 2016–2018
+◦ Indiana Women in Computing Conference (InWIC), 2014
+Memberships ◦ Institute of Electrical and Electronics Engineers (IEEE), 2020–present
+◦ International Society for Computational Biology (ISCB), 2015–2016, 2020–present
+◦ Association for Computing Machinery (ACM), 2010, 2020–present
+◦ American Association for the Advancement of Science (AAAS), 2017–present
+◦ Fulbright Association, 2016–present
+◦ AnitaB.org, 2012–present
+◦ International Society for Bayesian Analysis (ISBA), 2021–2023
+◦ Institute for Mathematical and Statistical Innovation (IMSI), 2021–2023
+◦ Genetics Society for America (GSA), 2019–2023
+◦ Society for Industrial and Applied Mathematics (SIAM), 2020–2023
+◦ American Society for Biochemistry and Molecular Biology (ASBMB), 2018–2023
+◦ National Science Policy Network (NSPN), 2020–2023
+Ph.D. program ◦ CCMB Presenter Series founder, CCMB, Brown University, 2019–2022
+service ◦ Graduate student recruiting, CCMB, Brown University, 2018–2022
+Teaching Experience
+Spring 2021 Applied Math 2080, Inference in Genomics and Molecular Biology: graduate and undergraduate
+course Brown University.
+Assisted in course content creation for Fall 2021.
+Spring 2019 Applied Math 0650, Statistical Inference II: undergraduate course at Brown University.
+Lecture on causation and estimation calculations.
+Summer 2013,
+2014
+Arduino Programming: student workshop for Google’s Computer Science Summer Institute. Created, recruited, implemented, and led Arduino workshop for more than 40 students at Google’s Computer Science Summer Institute [link].
+2012–2014 Biology 325, Bioinformatics Teacher’s Assistant: undergraduate course at DePauw University.
+Devised laboratory sessions, homework, helped grade, and tutored students.
+2011–2014 Tutor: Created personalized lesson plans to tutor students (10 overall) in classes in the departments of
+Chemistry, Computer Science, Biology, French and Spanish, at DePauw University.
+8
+Software
+Fall 2023 Multioviz [link]
+Multioviz is a platform for the interactive assessment of gene regulatory networks.
+Implementation details: Bash, R, R Shiny
+Spring 2021 time2splice [link]
+time2splice is a method to find temporal and sex-specific alternative splicing from multi-omics data.
+Implementation details: Bash, Python, R
+Fall 2020 TIMEOR (Trajectory Inference and Mechanism Exploration using Omics data in R) [link]
+TIMEOR is a web server and Dockerized command line tool to identify gene regulatory networks and
+assign mechanism from temporal and multi-omics data.
+Implementation details: Bash, Python, R, R Shiny
+Summer 2014 PRIPS (Pathogen Rapid ID from Protein Sequences) (property of MIT Lincoln Laboratory)
+A fast protein analysis algorithm, using Dynamic Distributed Dimensional Data Model (D4M-by Dr.
+Jeremy Kepner), merging triplestore/NoSQL databases (Accumulo) with associative and distributed
+array representations of proteomic sequences for fast genomic big data analysis using sparse linear
+algebra. Our approach efficiently extracts statistical patterns to relate protein sequences, with the end
+goal of rapidly identifing novel pathogens.
+Implementation details: Matlab
+Spring 2014 Chemical Inventory Database [description link], (property of DePauw [login link])
+Web-based inventory management system used in many academic departments, mainly chemistry.
+Users log in and use a phone to scan barcodes for automatic item entry. The application uses the Parse
+Platform as a relational database to house inventory for DePauw University. This system has been
+updated by the maintainer Dr. Dave Roberts.
+Implementation details: HTML, CSS, Parse Platform
+2013, 2014 Arduino-CSSI (Computer Science Summer Institute at Google) [link]
+Set of Arduino workshop modules and Fritzing diagrams to teach students how to program as part of
+the Google Computer Science Summer Institute (CSSI).
+Implementation details: C
+Summer 2012 Instrument Control (property of Eli Lilly and Elanco)
+Online internal system to monitor product batch data. Batch data is extracted from Eli Lilly’s Data
+Mart and Data Warehouse databases and then visualized for the researcher (such as potency, and
+solubility fluctuations). This system continues to be run automatically daily, enabling employees to
+easily inspect and verify internal processes, saving significant money and time.
+Implementation details: SQL, Discoverant, and Business objects
+Summer 2012 Deviation Identification and Reporting (property of Eli Lilly and Elanco)
+Online internal system for deviation reporting with automatic alerts, excel exports, and editing options
+to identify malfunctioning manufacturing products and machines across the plant. These reports were
+previously on paper. This system was adopted globally for all Elanco plants in November, 2012.
+Implementation details: SharePoint, Discoverant, and Business objects
+January 2011 INcitizenconnect [link]
+Website to keep updated with local legislation in the 2011 Indiana General Assembly.
+Implementation details: Wordpress
+9
+Leadership and Activities
+Professional Organizations and Positions
+2022–present Models, Inference, and Algorithms (MIA) Steering Committee. Broad Institute of MIT and Harvard’s MIA is a prestigious talk and workshop series that supports learning and collaboration across
+the interface of biology and medicine with mathematics, statistics, machine learning, and computer
+science [link].
+2015–present Student of Vision Abie Award Judge and Co-creator. International award honors students committed to creating a future where the people who envision and build technology mirror the people and
+societies for which they build. Winners receive a $7000 prize and the chance to go to Grace Hopper [link].
+2004–present D-Day Ambassador to France. Selected to represent U.S. for D-Day Commemoration, and to return
+every 4 years until the 100th anniversary of World War II. International School of Indiana.
+2018–2020 Fulbright Board of Directors. Young professional board member [link], [profile]. Fulbright Assoc.
+2018 Science Writer. Wrote two articles on scientific advances targeted at advanced high school students. Infobase Learning, Science News Today.
+2017–2018 Princeton Citizen Scientists member. Helped grow a group of scientists interested in policy, mobilizing at Princeton and beyond to advocate for science. Princeton University.
+2016–2018 International Society of Computational Biology (ISCB) Student Symposium Finance Chair. Led
+a team to build new strategies bringing four new and important sponsors. We gave >20 scholarships
+to support international and domestic travel to the conference. ISCB
+2015–2017 AnitaB.org Board of Trustees. Student board member in program and strategies committees. Focused efforts to build the Student of Vision Awards (an Abie Award), BRAID, Top Companies, and
+ABI.local. AnitaB.org [link, see Board Emeritus]
+February 2015 US-EU-NATO Affairs Delegate. Fulbright grantee to engage in EU Seminar in international diplomacy. Fulbright and EU Commission.
+2008–2011 Venture Crew President (2010). Vice President in 2009. Venture Crew 1121. Boy Scouts of America.
+DePauw University Organizations and Positions
+2014 Mortar Board Vice President. Helped establish structure for new society focused on achievement in
+scholarship, leadership, and service. DePauw University.
+2011–2014 DePauw Organic Farm Co-founder. Founded and built business plan for ∼2-acre farm, where 25%
+of produce is given to local Greencastle Indiana food pantries. DePauw University [link].
+2011–2013 Robotics Club Co-founder & Vice President. Students are provided with free tools to make whatever
+they wish. We visit local schools for outreach days. DePauw University.
+January 2011 DePauw Environmental Policy Program. Testified scientific bills, Indiana Statehouse, created website [link]. DePauw University.
+2010–2014 University Athletics. Soccer (2010-2012) and Track (2013-2014). DePauw University.
+Service and Outreach
+November 2019 Lifetime Achievement Award to President of Croatia Kolinda Grabar-Kitarovic´, NPR’s Melissa
+Block, and Architect James S. Polshek. Presented award with Fulbright Board of Directors.
+Fulbright Association [link].
+10
+November 2019 Fulbright Talks host (similar to TEDx). Fulbright Association [link].
+January 2019 Fulbright Prize to German Chancellor Angela Merkel. Presented award with Fulbright Board of
+Directors. Fulbright Association [link] [photo].
+October 2019 Advocating the “Value and Impact of the Fulbright Program” with U.S. Senator Chris Van
+Hollen (D-MD). Fulbright Association [link].
+June 2018 Raspberry Pi robotics outreach. Taught ∼20 students in Roanoke VA. They got to keep their Raspberry Pi. Virginia Tech Philosophy and Physical Computing Workshop [link].
+October 2016 Presented Top Companies award (audience of ∼15,000). AnitaB.org [link].
+October 2013 IEEE High Performance Computing Conference (HPEC). Served as usher and attended. IEEE.
+2012–2014 STARS Computing Corps. Student-led regional outreach group to broaden participation in computing. DePauw University.
+November 2012 National Chemistry Week High School Competition. Organized, and executed a video and essay
+competition for high school students to come to the Children’s Museum of Indianapolis for a day of
+chemistry, fun and to view undergraduate institutions. American Chemical Society.
+Summer 2010 Service Trip to Costa Rica. Created a septic tank for ‘Estacio´n de las tortugas’, worked on pineapple
+plantation, and helped record nesting behavior of Leather Back and Green Sea Turtles hatchlings. Servicio en Las Ame´ricas Program, DePauw University.
+Media
+November 2021 Women and People of Color Still Experience Difficulty Advancing in Technology - I assisted
+Grace Hopper Celebration co-Founder and former CEO of AnitaB.org, Telle Whitney in report [link].
+July 2019 Center for Computational and Molecular Biology Ph.D. Program - Brown University [link].
+July 2019 Remembering D-Day - Fulbright Association [link].
+January 2019 Alumni Profile: Ashley Mae Conard - Fulbright Association [link].
+May 2017 An Insider’s Look at Student Board Membership - AnitaB.org [link].
+October 2016 Grace Hopper Interview as AnitaB.org Board Member - The Cube [link].
+October 2016 Women Who Reign: Ashley Conard - ReigningIt [link].
+November 2015 Meet Ashley Conard, AnitaB.org’s New Student Board Member - AnitaB.org [link].
+October 2015 Putting women and computer science in every field - SiliconANGLE [link].
+October 2015 Grace Hopper Interview as AnitaB.org Board Member - The Cube [link].
+October 2015 Ashley Conard ’14 Will Conduct Computational Biology Research in Belgium with Fulbright
+Award - DePauw University [link].
+October 2015 All of the Above - DePauw University [link].
+11
+References
+Academic External
+Professor Lorin Crawford (Ph.D. advisor) Dr. Telle Whitney
+Senior Researcher Microsoft Research Co-founder and former CEO of AnitaB.org
+RGSS Assistant Professor of Biostatistics and the Grace Hopper Celebration
+Center for Computational Molecular Biology (CCMB) tel: 408-505-1083
+Brown University School of Public Health email: tellew@gmail.com
+121 S Main St, Box G-S121-7
+Providence, RI 02912
+tel: 401-863-9634
+email: lorin crawford@brown.edu
+Professor Erica Larschan (Ph.D. advisor) Dr. Scott Saponas
+Richard and Edna Salomon Associate Prof. of Biology Biomedical Computing Senior Researcher, Microsoft Research
+Department of Molecular Biology, Cellular Biology
+and Biochemistry
+Health Futures
+Microsoft Research
+Center for Computational Molecular Biology (CCMB) Microsoft Corporation
+Brown University email: ssaponas@microsoft.com
+185 Meeting Street, Room 368
+Providence, RI 02912
+tel: 401-863-1070
+email: erica larschan@brown.edu
+Professor Charles Lawrence (Ph.D. advisor) DeDe Long
+Professor of Applied Mathematics Board of Directors President Fulbright Association
+Department of Applied Math Former Director of Office of International Exchange
+Center for Computational Molecular Biology (CCMB) University of Arkansas
+Brown University email: dslong@uark.edu
+182 George Street, Room 204
+Providence, RI 02912
+tel: 401-863-1479
+Skype ID: chip lawrence
+email: chip lawrence@brown.edu
+Last updated on November 19, 2023.

@@ -1,0 +1,120 @@
+/* Connect Page Styles */
+
+.connect-section {
+    padding: 3rem 0;
+    min-height: 50vh;
+}
+
+.connect-content {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.intro-text {
+    font-size: 1.125rem;
+    color: var(--text-medium);
+    text-align: center;
+    margin-bottom: 3rem;
+    line-height: 1.7;
+}
+
+.intro-text a {
+    color: var(--link-color);
+    text-decoration: underline;
+}
+
+.intro-text a:hover {
+    color: var(--link-hover);
+}
+
+/* Download Cards */
+.download-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.download-card {
+    display: grid;
+    grid-template-columns: 60px 1fr;
+    gap: 1.25rem;
+    align-items: center;
+    background-color: var(--bg-white);
+    border: 2px solid var(--border);
+    border-radius: 0.75rem;
+    padding: 2rem;
+    text-decoration: none;
+    color: var(--text-dark);
+    transition: all 0.3s ease;
+}
+
+.download-card:hover {
+    border-color: var(--primary);
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-3px);
+}
+
+.card-icon {
+    font-size: 3rem;
+    text-align: center;
+}
+
+.card-content h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--text-dark);
+}
+
+.card-content p {
+    font-size: 0.9375rem;
+    color: var(--text-light);
+    line-height: 1.5;
+}
+
+/* Connect Message */
+.connect-message {
+    background-color: var(--bg-light);
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    padding: 2.5rem;
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.connect-message h2 {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 1rem;
+}
+
+.connect-message p {
+    font-size: 1.0625rem;
+    color: var(--text-medium);
+    line-height: 1.8;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+    .download-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .download-card {
+        grid-template-columns: 50px 1fr;
+        gap: 1rem;
+        padding: 1.5rem;
+    }
+
+    .card-icon {
+        font-size: 2.5rem;
+    }
+
+    .connect-message {
+        padding: 2rem 1.5rem;
+    }
+}

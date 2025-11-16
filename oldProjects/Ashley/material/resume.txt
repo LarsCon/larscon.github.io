@@ -1,0 +1,107 @@
+Ashley Mae Conard
+Areas: computational biology, interpretable machine learning, temporal and multi-omics data modeling, gene regulatory networks, visualization,
+reproducibility, platform dev., high-performance computing, game theory ashleymaeconard@gmail.com www.linkedin.com/in/ashleymaeconard
+Education
+ Post-doc in Biostatistics, Brown University 2019-Current
+ Develop statistical (mostly Bayesian) methods for multi-omics studies to uncover gene regulation. Advisor: Dr. Lorin Crawford.
+ Ph.D. in Computer Science, Computational Biology, Brown University 2019-2022
+ Developed statistical methods and platforms for longitudinal multi-omics studies to uncover gene regulation.
+ Formulate novel research directions, perform experimental design, develop interpretable methods, and aid in wet-lab validation.
+ Advisors: Drs. Lorin Crawford (biostatistics), Erica Larschan (molecular biology), and Charles Lawrence (applied math).
+ M.Sc. in Computer Science, Cancer Genomics concentration, Brown University and Princeton University 2015-2017
+ Built DNA single-cell copy-number inference method, and tool to find subclonal mutations in bulk tumors. Advisor: Dr. B. Raphael.
+ B.A. in Computer Science (Biochemistry concentration and French minor), GPA: 3.7, DePauw University 2010-2014
+Computing & Technology Internship Experience (selected)
+Computational Biologist, Data Infrastructure, Machine Learning, Phenome Health, Deloitte, San Francisco, CA Spring 2022
+ Developing scientific and business strategy for healthcare and life science start-up under Dr. Leroy Hood.
+Computational Biology Researcher and Creator, Google Cloud, Palo Alto, CA Fall 2021
+ Developing new computational biology frameworks in collaboration with several biotech companies and Google Cloud.
+Bayesian Inference Researcher, Biomedical Computing Team, Health Futures, Microsoft Research, WA Summer 2021
+ Built interpretable Bayesian models using temporal and multi-omics data to uncover dysregulation in cancer, ALS, Parkinson’s.
+Machine Learning Scholar, Department of Health, Stephen Morris, RI Fall 2018
+ Designed predictive model for a need in Rhode Island’s hospital systems. Hope is to form state legislation based on findings.
+Game Theory & Bioinformatics Researcher, Université Libre Bruxelles, Fulbright/BAEF Scholar, Dr. Tom Lenaerts, Belgium 2014-2015
+ Created a method utilizing cooperative game theory, machine learning and structural bioinformatics techniques to quantify
+the roles and regulatory dynamics of core amino acids in a FYN SH3 protein domain.
+High Performance Computing Researcher, MIT Lincoln Laboratory, Drs. Jeremy Kepner & Darrell Ricke, MA Summers 2013, 2014
+ Developed a fast protein analysis algorithm, using Dynamic Distributed Dimensional Data Model (D4M), merging sparse
+algebra, associative and distributed arrays, and triplestore/NoSQL databases (Accumulo) for fast Big Data analysis.
+Google Cambridge Arduino Workshop Creator, Google, Computer Science Summer Institute, Chelsea Pollen, MA Summers 2013, 2014
+ Created, recruited, implemented, and led Arduino workshop for 40 students at Summer Institute (link).
+Chemical Inventory Database Creator (Senior Project), DePauw University, Dr. David Roberts, IN Spring 2014
+ Designed, built, deployed database (Parse) & front end (HTML, CSS). >2K users to catalog & distribute chemicals (details, users link)
+Bioinformatics Research & Tutor, DePauw University, Dr. Chester Fornari, IN 2012-2014
+Devised labs & tutored Bioinformatics and Cells & Genes. Research: Integrated MEGA and Chimera to analyze TP53.
+Structural Biology & Drug Discovery Researcher, Vanderbilt University, Dr. Jens Meiler, TN January 2013
+Method development assistant for new structure prediction algorithms in RosettaLigand program (simulations and design of
+macromolecules) and new machine learning techniques in Biochemical Library (BCL) drug discovery project.
+DePauw Alumni Office Technology Associate, DePauw University, Mrs. Holly Enneking, IN 2011-2012
+ Provided IT solutions and built video presentations for award lectures and conducted interviews for alumni networking.
+Quality Control & Technology Researcher, Elanco (Eli Lilly and Company), Mr. Scott Burd, IN Summer 2012
+Identified problem, implemented and tested 2 deviation documentation and instrument control software programs. Former
+went GLOBAL for Elanco plants in 11/2012, the latter runs automatically daily. Wet-lab work: GC, AA, HPLC (see Relevant Skills).
+Computational Biology & Machine Learning Researcher, Université Libre Bruxelles (ULB), Dr. Tom Lenaerts, Belgium Spring 2012
+Utilized cooperative game theory, machine learning, and structural bioinformatics to define FYN protein binding specificities.
+Technology Associate, IT Associate Program, DePauw University, Mrs. Angie Smock, IN 2010-2011
+Project manager for team of 10 for IT solutions. Projects: virtual flashcard program, website, tech brochure, IT solutions.
+Technology Sales & Marketing Associate, JDS Uniphase, Mr. William DeWeese, TX, NY Summer 2011
+Researched, tested, taught, and marketed communication software, services, and solutions for Verizon, AT&T.
+Inorganic Chemistry Researcher, Ionogel Analysis and Application, DePauw University, Dr. Hillary Eppley, IN Fall 2010
+Synthesized ionogels and determined chemical and physical properties to use as a catalysts for biosensing, optics, electrolytes.
+Organic Chemistry Researcher, Eli Lilly and Company, Dr. David Bender, IN Summer 2008
+Assessed hydrolytic stability of cyclopropanecarboxylic acid esters as potential prodrugs. Synthesized an acyclovir prodrug and
+worked with a ghrelin O-acyltransferase inhibitor. This is viewed as a potential therapeutic target to treat obesity and diabetes.
+Technology Skills
+Languages: Bash, C++, CSS, HTML, Java, Julia, MATLAB, pMatlab, Markdown, Python, R, RShiny, SQL
+Development Tools / Environments: Arduino IDE, BlueJ, Conda, Docker, Eclipse, Jupyter, Putty, RStudio, Visual Studio Code, Xcode
+Big Data Tools: Apache Acculumo, Apache Hadoop, Azure, Cuda, MPI, OpenMP, Slurm
+Application Programs / Platforms: ArcGIS, Arduino, Audacity, Azure Dev. Ops, Business Objects, Cytoscape, Chimera, Discoverant,
+Dreamweaver, Final Cut Pro, GIMP, Google Cloud Platform, Illustrator, Infopath, MakerBot, Raspberry Pie, Raven, RosettaLigand
+Relevant Coursework & Skills
+Chemistry and Biochemistry Skills: Nuclear Magnetic Resonance Spectroscopy (11C and 1H), Mass Spectroscopy, Infrared Spectroscopy,
+Chromatography, Polymerase Chain Reaction methods, Gel Electrophoresis, familiar with Microwave Acid Digestion Bomb methods, Gas
+Chromatography (GC), High Performance Liquid Chromatography (HPLC), Atomic Absorption (AA) Spectrometry.
+Relevant Coursework: Computer Sci./ Mathematics: Bayesian Inference in Genomics & Molecular Biology, Advanced Probabilistic
+Methods, Systems, Computational Molecular Biology, Advanced Algorithms in Computational Biology, Topics in Computational Linguistics,
+Coalescent Theory, Statistical Inference, Bioinformatics, Object Oriented Software Dev., Data Structures, Algorithm Dev. & Graphics
+Biochemistry/Biology: Genetics, Function & Structure Biomolecules, Ecology & Evolution, Cells & Genes, Enzyme Mechanisms.
+Foreign Languages French (fluent), Spanish (fluent), Portuguese (beginner), Dutch (beginner)
+Awards & Honors Accepted
+NSF Graduate Research Fellowship: Machine Learning and Computational Biology (2014-Current)
+Fulbright Research Scholar & Belgian American Education Foundation Fellowship: Computational Biology, Belgium 2014-2015
+DePauw: Dean’s List (each semester), Alpha Lambda Delta Award (2010), and Old Gold Award for academic excellence (2014)
+Grace Hopper Int’l Celebration of Women in Computing: Poster Award 2013, (scholarships: NSF 2010, Xerox 2012, Intel 2013)
+Honors Societies: Mortar Board (VP ‘14), Chi Alpha Sigma, Phi Eta Sigma, Order of Omega, National Society for Collegiate Scholars
+Select Publications co-first: *, corresponding: ‡
+• A. Conard, I. Nathoo, M. Tsarli, C. Lawrence, E. Larschan‡. XvsY: A Computational Approach to Distinguish the Temporal Sex-Specific Roles
+of Vital Co-Factors on Brain Development in Drosophila. Cell Press STAR Protocols. (In submission). 2022
+• A. Conard‡, N. Goodman, Y. Hu, N. Perrimon, R. Singh, C. Lawrence‡, E. Larschan‡. TIMEOR: a web-based tool to uncover regulatory
+mechanisms from temporal and multi-omics data. NAR Web Server Issue. 2021 (link)
+• M. Ray*, A. Conard*, E. Larschan‡. The CLAMP transcription factor regulates sex-specific splicing in the Drosophila early embryo. Nature
+Communications. (Under review). 2021 (link)
+• N. D’Silva*, K. McCullar*, A. Conard, et al. Neuromol. & behav. adap. assoc. w/ alcohol deprivation. Genetics. (Under review). 2021. (link)
+• M. Tsarli, A. Conard, E. Larschan‡. Drosophila CLAMP regulates neurogenesis in the optic lobe. Genetics. (Under review). 2021 (link)
+• A. Conard, B. Raphael. Identification of Subclonal Drivers and Copy-Number Variants from Bulk and Single-Cell DNA Sequencing of
+Tumors. Thesis M.S. in C.S., Brown University. 2019 (link)
+• Cuypers, A. Jacobsen, B. Siranosian, K. Schwahn, A. Conard, et al. Highlights from the ISCB Student Council Symposia in 2016.
+F1000Research. 2016, 5(ISCB Comm J):2852 (link)
+• A. Conard, S. Dodson, J. Kepner‡, D. Ricke‡. Using a Big Data Database to Identify Pathogens in Protein Data Space, arXiv. 2015 (link)
+Leadership, Activities, Teaching (selected)
+Professional Organizations & Positions
+ISCB, ISBA, IEEE, AAAS, ACS, SIAM member, made Chemistry Day Workshop (‘10), ushered IEEE Computing Workshop (’13) Current
+ Student of Vision Abie Award Judge and Co-creator: intl. award to CS student for building tech. solution to local problem 2015 -Current
+Ambassador to France (to return every 5 years): selected to represent US for D-Day Embarkation Commemoration 2004-Current
+Fulbright Board of Trustees: young professional board member (Finance & Conference Committee, Strategic Task Force) 2018-2020
+Finance Chair for International Society of Computational Biology (ISCB) Student Symposium 2016-2018
+Princeton Citizen Scientists executive team: group of scientists interested in policy, mobilizing at Princeton and beyond. 2016-2017
+AnitaB.org Board of Trustees: Student Board Member working on program and strategies committees 2015-2017
+US-EU-NATO Affairs Delegate: Fulbright grantee to engage in EU Seminar in int’l diplomacy with EU Commission February 2015
+Venture Crew President (2010), Vice President (2009), Venture Crew 1121, Boy Scouts of America, IN 2008-2013
+Brown University
+ Reviewer: Assisted advisors to review: ISMB/ECCB (2021), AISTATS (2020), Nature Communications, and Genes and Development (2019)
+ Teaching: Statistical Inference II, Applied Math 0650, lecturer (2019)
+ Mentoring: Helen Xi, Lee Ding (ugrad., ‘21); Dominique Pablito (grad., ‘21); Isaac Nathoo (ugrad., ‘21); Nathaniel Goodman (ugrad. ‘20)
+DePauw University
+Co-founder Robotics Club: mostly Arduino and 3D printing, University Athletics: Soccer (2010-2012) and Women’s Track (2013-2014)
+Co-founder of DePauw Farm: 2-acre farm, 25% produce given to local Greencastle IN food pantry (history, website)
+Several Interviews PhD prgm, GHC ‘16, GHC ‘15 Articles Tech women report, AnitaB Board, D-day Ambassador, Fulbright, DePauw senior

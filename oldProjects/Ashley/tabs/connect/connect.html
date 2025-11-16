@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connect - Ashley Mae Conard, Ph.D.</title>
+    <link rel="stylesheet" href="../../styles.css">
+    <link rel="stylesheet" href="../../components/hero.css">
+    <link rel="stylesheet" href="connect.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        // Apply theme immediately to prevent flash
+        (function () {
+            const theme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
+</head>
+
+<body>
+    <!-- Navbar Component (loaded dynamically) -->
+    <div id="navbar-placeholder"></div>
+
+    <!-- Hero Component (loaded dynamically) -->
+    <div id="hero-placeholder"></div>
+
+    <!-- Connect Content -->
+    <section class="connect-section">
+        <div class="container">
+            <div class="connect-content">
+                <div class="connect-message">
+                    <h2>Let's Connect</h2>
+                    <p>
+                        I am always excited to talk science and collaborate on meaningful research.
+                        Feel free to reach out through any of the social platforms above, or download
+                        my CV and resume to learn more about my work.
+                    </p>
+                </div>
+
+                <div class="download-cards">
+                    <a href="https://github.com/ashleymaeconard/ashleymaeconard.github.io/raw/master/files/cv_conard.pdf"
+                        class="download-card" target="_blank">
+                        <div class="card-icon">📄</div>
+                        <div class="card-content">
+                            <h3>Curriculum Vitae</h3>
+                            <p>Complete academic CV with publications, research, and experience</p>
+                        </div>
+                    </a>
+
+                    <a href="https://github.com/ashleymaeconard/ashleymaeconard.github.io/raw/master/files/resume_conard.pdf"
+                        class="download-card" target="_blank">
+                        <div class="card-icon">📋</div>
+                        <div class="card-content">
+                            <h3>Resume</h3>
+                            <p>Professional resume highlighting key experience and skills</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Component (loaded dynamically) -->
+    <div id="footer-placeholder"></div>
+
+    <script src="../../components/load-components.js"></script>
+    <script src="../../script.js"></script>
+</body>
+
+</html>
