@@ -243,10 +243,12 @@
     background-color: var(--bg-white);
     z-index: 999;
     padding-top: 0.5rem;
+    justify-content: center;
     transition: all 0.3s ease;
 }
 
 /* Mobile spacing for sticky tabs */
+
 @media (max-width: 768px) {
     .tab-nav {
         top: 53px;

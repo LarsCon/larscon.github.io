@@ -82,16 +82,51 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    position: relative;
+    min-height: auto;
+    height: auto;
 }
 
 .nav-brand {
     font-weight: 700;
     font-size: 1.125rem;
     color: var(--text-dark);
+    margin-left: 1rem;
+    position: relative;
+    z-index: 30;
 }
 
 [data-theme="dark"] .nav-brand {
     color: var(--primary);
+}
+
+/* Logo Container */
+.nav-logo-top {
+    position: absolute;
+    left: 20px;
+    top: -5px;
+    z-index: 35;
+    pointer-events: auto;
+}
+
+.nav-home-link {
+    display: block;
+    text-decoration: none;
+}
+
+.logo-img {
+    width: 130px;
+    height: 130px;
+    display: block;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--primary);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.nav-home-link:hover .logo-img {
+    transform: scale(1.05);
 }
 
 .nav-links {
@@ -99,6 +134,9 @@ body {
     list-style: none;
     gap: 2rem;
     align-items: center;
+    position: relative;
+    z-index: 30;
+    margin-left: auto;
 }
 
 .nav-links a {
@@ -109,9 +147,13 @@ body {
     transition: color 0.2s;
 }
 
-.nav-links a:hover,
-.nav-links a.active {
+.nav-links a:hover {
     color: var(--primary-dark);
+}
+
+.nav-links a.active {
+    color: var(--text-dark);
+    font-weight: 700;
 }
 
 [data-theme="dark"] .nav-links a:hover,
@@ -355,15 +397,28 @@ body {
 
 @media (max-width: 1105px) {
 
+    /* Adjust logo size for smaller screens */
+    .nav-logo-top {
+        left: 15px;
+    }
+
+    .logo-img {
+        width: 110px;
+        height: 110px;
+    }
+
     /* Show hamburger menu */
     .hamburger {
         display: flex;
+        position: relative;
+        z-index: 30;
+        margin-left: auto;
     }
 
     /* Hide and transform nav-links for mobile menu */
     .nav-links {
         position: fixed;
-        top: 58px;
+        top: 55px;
         right: 0;
         width: 100%;
         max-width: 300px;
@@ -385,6 +440,7 @@ body {
 
     .nav-links.active {
         transform: translateX(0);
+        padding-top: 2.5rem;
     }
 
     .nav-links li {
@@ -404,6 +460,22 @@ body {
 }
 
 @media (max-width: 640px) {
+
+    /* Further reduce logo size on mobile */
+    .nav-logo-top {
+        left: 10px;
+    }
+
+    .logo-img {
+        width: 90px;
+        height: 90px;
+    }
+
+    .nav-brand {
+        font-size: 1rem;
+        margin-left: 0.75rem;
+    }
+
     .main-content {
         padding: 2rem 0 1.5rem;
     }

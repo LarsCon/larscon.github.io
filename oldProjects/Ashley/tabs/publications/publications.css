@@ -93,6 +93,20 @@
     margin: 0;
 }
 
+.pub-header-content .pub-authors {
+    font-size: 0.8125rem;
+    color: var(--text-medium);
+    line-height: 1.4;
+    margin: 0;
+}
+
+.pub-header-content .pub-venue {
+    font-size: 0.8125rem;
+    color: var(--text-light);
+    font-style: italic;
+    margin: 0;
+}
+
 .expand-btn {
     background: none;
     border: 2px solid var(--border);
@@ -114,6 +128,11 @@
 .expand-btn .arrow {
     transition: transform 0.3s ease;
     font-size: 0.875rem;
+    color: var(--text-dark);
+}
+
+[data-theme="dark"] .expand-btn .arrow {
+    color: var(--text-light);
 }
 
 /* Expanded state */
@@ -386,10 +405,12 @@
     background-color: var(--bg-white);
     z-index: 999;
     padding-top: 0.5rem;
+    justify-content: center;
     transition: all 0.3s ease;
 }
 
 /* Mobile spacing for sticky tabs */
+
 @media (max-width: 768px) {
     .tab-nav {
         top: 53px;

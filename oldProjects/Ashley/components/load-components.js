@@ -18,6 +18,13 @@ fetch(basePath + 'navbar.html')
         const navLeadership = document.getElementById('nav-leadership');
         const navConnect = document.getElementById('nav-connect');
 
+        // Set headshot image path
+        const photoBasePath = isInTabsSubfolder ? '../../photos/' : (isInTabsFolder ? '../photos/' : 'photos/');
+        const navHeadshot = document.getElementById('nav-headshot');
+        if (navHeadshot) {
+            navHeadshot.src = photoBasePath + 'ashleymaeconard_square_2-scaled.jpeg';
+        }
+
         if (isInTabsSubfolder) {
             // We're in a tabs subfolder (e.g., tabs/publications/)
             if (navHome) navHome.href = '../../index.html';
