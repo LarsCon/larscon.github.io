@@ -1172,6 +1172,23 @@ section {
     color: var(--white);
 }
 
+.accordion-arrow {
+    margin-left: auto;
+    font-size: 0.875rem;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    flex-shrink: 0;
+    opacity: 0.7;
+}
+
+.accordion-header:hover .accordion-arrow,
+.accordion-header.active .accordion-arrow {
+    opacity: 1;
+}
+
+.accordion-item.open .accordion-arrow {
+    transform: rotate(180deg);
+}
+
 .accordion-body {
     max-height: 0;
     overflow: hidden;

@@ -10,11 +10,51 @@ const portfolioItems = [
         id: 1,
         title: "Trade Spot",
         categories: ["Programming", "Recreational"],
-        image: "assets/design/tradeSpot.PNG",
-        description: "This is a passion project of mine, a website for trading physical trading cards! It's currently being worked on, so no public demo yet. Inquire to learn more!",
+        image: "assets/programming/tradespot.png",
+        description: "This is a passion project of mine, a website for trading physical trading cards! It's now live and half functional in Alpha testing. Currently password protected, inquire to learn more!",
         tags: ["HTML", "CSS", "JavaScript", "Python", "SQL", "2025"],
+        link: "https://tradespotreact-production.up.railway.app/",
+        details: "This is a passion project of mine, a website for trading physical trading cards! It's now live and half functional in Alpha testing. Currently password protected, inquire to learn more!"
+    },
+    {
+        id: 74,
+        title: "Reblade",
+        categories: ["Programming", "Professional"],
+        image: "assets/programming/ReBlade.gif",
+        description: "Beyblade battle recording software designed for easy replayability. Currently in testing for Android and in development for Apple iOS. Allows users to record, review, and analyze Beyblade battles.",
+        tags: ["Android", "iOS", "2026"],
         link: "#",
-        details: "This is a passion project of mine, a website for trading physical trading cards! It's currently being worked on, so no public demo yet. Inquire to learn more!"
+        details: "Beyblade battle recording software designed for easy replayability. Currently in testing for Android and in development for Apple iOS. Allows users to record, review, and analyze Beyblade battles."
+    },
+    {
+        id: 73,
+        title: "Sister's Portfolio",
+        categories: ["Programming", "Professional"],
+        image: "assets/programming/ashey.png",
+        description: "Personal portfolio website for my sister, showcasing her research work, publications, and professional accomplishments in computer science and computational biology.",
+        tags: ["HTML", "CSS", "JavaScript", "2026"],
+        link: "https://ashleymaeconard.com/",
+        details: "Personal portfolio website for my sister, showcasing her research work, publications, and professional accomplishments in computer science and computational biology."
+    },
+    {
+        id: 72,
+        title: "OsTech Website",
+        categories: ["Programming", "Professional"],
+        image: "assets/programming/osTech.png",
+        description: "Professional website for OsTech, a low voltage data infrastructure and audio/video solutions company. Features service pages, contact forms, and responsive design.",
+        tags: ["HTML", "CSS", "JavaScript", "2025"],
+        link: "https://larscon.github.io/oldProjects/OsTech/index.html",
+        details: "Professional website for OsTech, a low voltage data infrastructure and audio/video solutions company. Features service pages, contact forms, and responsive design."
+    },
+    {
+        id: 71,
+        title: "Legends Flames Website",
+        categories: ["Programming", "Professional"],
+        image: "assets/programming/legendsflames.png",
+        description: "Website for Legends Flames, a gaming and software development company. Created a modern, engaging web presence for the company.",
+        tags: ["HTML", "CSS", "JavaScript", "2025"],
+        link: "https://legendsflames.com/",
+        details: "Website for Legends Flames, a gaming and software development company. Created a modern, engaging web presence for the company."
     },
     {
         id: 2,
@@ -472,7 +512,7 @@ const portfolioItems = [
         categories: ["Programming", "Educational"],
         image: "assets/programming/port.jpg",
         description: "Previous version of my portfolio website.",
-        tags: ["Web Design", "Portfolio", "2018"],
+        tags: ["HTML", "CSS", "JavaScript", "2018"],
         link: "#",
         details: "Previous version of my portfolio website."
     },
@@ -562,7 +602,7 @@ const portfolioItems = [
         categories: ["Programming", "Educational"],
         image: "assets/programming/toms.jpg",
         description: "Concept page design for Tom's of Maine brand.",
-        tags: ["Web Design", "Concept", "2022"],
+        tags: ["HTML", "CSS", "JavaScript", "2022"],
         link: "#",
         details: "Concept page design for Tom's of Maine brand."
     },
