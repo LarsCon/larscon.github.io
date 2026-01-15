@@ -2,55 +2,56 @@
    Services Page Specific Styles
    =================================== */
 
-/* Versatility Section */
-.versatility-section {
-    padding: var(--section-padding);
-    background-color: var(--white);
-    text-align: center;
-}
-
+/* Section Intro */
 .section-intro {
     font-size: 1.2rem;
     color: var(--text-light);
     max-width: 700px;
     margin: 0 auto 3rem;
+    text-align: center;
 }
 
-.location-grid {
+/* Industries Section */
+.industries-section {
+    padding: var(--section-padding);
+    background-color: var(--light-bg);
+    text-align: center;
+}
+
+.industries-section .section-subtitle {
+    margin-bottom: 2rem;
+}
+
+.industries-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(6, 1fr);
     gap: 1.5rem;
     margin-top: 2rem;
 }
 
-.location-card {
-    padding: 1.5rem;
-    background-color: rgba(241, 4, 3, 0.05);
+.industry-card {
+    padding: 1.5rem 1rem;
+    background-color: var(--white);
     border-radius: 15px;
     text-align: center;
 }
 
-.location-card i {
-    font-size: 2.5rem;
+.industry-card i {
+    font-size: 2rem;
     color: var(--primary-color);
     margin-bottom: 0.75rem;
 }
 
-.location-card h3 {
-    font-size: 1.2rem;
+.industry-card h3 {
+    font-size: 1rem;
     margin: 0;
     color: var(--text-dark);
-}
-
-.location-card p {
-    color: var(--text-light);
-    line-height: 1.6;
-    margin: 0;
 }
 
 /* Services Grid */
 .services-grid-section {
     padding: var(--section-padding);
+    padding-top: 0;
     background-color: var(--white);
 }
 
@@ -61,27 +62,72 @@
 
 .services-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 3rem;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
 }
 
 .service-card {
-    padding: 2.5rem;
     background-color: rgba(241, 4, 3, 0.05);
     border-radius: 15px;
+    overflow: hidden;
 }
 
-.service-card h2 {
+/* Service Header - Clickable */
+.service-header {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.5rem 2rem;
+    cursor: pointer;
+}
+
+.service-header .service-detail-icon {
+    width: 60px;
+    height: 60px;
+    min-width: 60px;
+    border-radius: 15px;
     font-size: 1.8rem;
-    margin-bottom: 1rem;
+    margin-bottom: 0;
+}
+
+.service-header-text {
+    flex: 1;
+}
+
+.service-header h2 {
+    font-size: 1.4rem;
+    margin: 0 0 0.25rem 0;
     color: var(--text-dark);
 }
 
-.service-card .service-intro {
-    font-size: 1rem;
+.service-header .service-subtitle {
+    font-size: 0.95rem;
     color: var(--text-light);
-    margin-bottom: 1.5rem;
-    line-height: 1.6;
+    margin: 0;
+    line-height: 1.4;
+}
+
+.service-toggle {
+    color: var(--primary-color);
+    font-size: 1.2rem;
+    transition: transform 0.3s ease;
+}
+
+.service-card.open .service-toggle {
+    transform: rotate(180deg);
+}
+
+/* Service Content - Collapsible */
+.service-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease, padding 0.3s ease;
+    padding: 0 2rem;
+}
+
+.service-card.open .service-content {
+    max-height: 500px;
+    padding: 0 2rem 2rem;
 }
 
 .service-card .capabilities-list {
@@ -330,17 +376,42 @@
 /* Responsive Design */
 @media (max-width: 968px) {
 
-    .location-grid {
-        grid-template-columns: repeat(2, 1fr);
+    .industries-grid {
+        grid-template-columns: repeat(3, 1fr);
     }
 
     .services-grid {
         grid-template-columns: 1fr;
-        gap: 2rem;
+        gap: 1rem;
     }
-
-    .service-card {
-        padding: 2rem;
+    
+    .service-header {
+        padding: 1.25rem 1.5rem;
+        gap: 1rem;
+    }
+    
+    .service-header .service-detail-icon {
+        width: 50px;
+        height: 50px;
+        min-width: 50px;
+        font-size: 1.5rem;
+    }
+    
+    .service-header h2 {
+        font-size: 1.2rem;
+        margin: 0;
+    }
+    
+    .service-header .service-subtitle {
+        display: none;
+    }
+    
+    .service-content {
+        padding: 0 1.5rem;
+    }
+    
+    .service-card.open .service-content {
+        padding: 0 1.5rem 1.5rem;
     }
 
     .service-detail-content,
@@ -360,8 +431,8 @@
 
 @media (max-width: 640px) {
 
-    .location-grid {
-        grid-template-columns: 1fr;
+    .industries-grid {
+        grid-template-columns: repeat(2, 1fr);
     }
 
     .service-detail-text h2 {
