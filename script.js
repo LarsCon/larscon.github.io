@@ -13,7 +13,7 @@ const portfolioItems = [
         image: "assets/programming/tradespot.png",
         description: "This is a passion project of mine, a website for trading physical trading cards! It's now live and half functional in Alpha testing. Currently password protected, inquire to learn more!",
         tags: ["HTML", "CSS", "JavaScript", "Python", "SQL", "2025"],
-        link: "https://tradespotreact-production.up.railway.app/",
+        link: "https://thetraderspot.com/",
         details: "This is a passion project of mine, a website for trading physical trading cards! It's now live and half functional in Alpha testing. Currently password protected, inquire to learn more!"
     },
     {
