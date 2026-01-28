@@ -12,7 +12,7 @@ const portfolioItems = [
         categories: ["Programming", "Recreational"],
         image: "assets/programming/tradespot.png",
         description: "This is a passion project of mine, a website for trading physical trading cards! It's now live and half functional in Alpha testing. Currently password protected, inquire to learn more!",
-        tags: ["HTML", "CSS", "JavaScript", "Python", "SQL", "2025"],
+        tags: ["HTML", "CSS", "JavaScript", "Python", "SQL", "Linux", "2025"],
         link: "https://thetraderspot.com/",
         details: "This is a passion project of mine, a website for trading physical trading cards! It's now live and half functional in Alpha testing. Currently password protected, inquire to learn more!"
     },
@@ -31,11 +31,11 @@ const portfolioItems = [
         title: "Minecraft Server",
         categories: ["Programming", "Recreational"],
         image: "assets/programming/Minecraft.png",
-        description: "My personal Minecraft server! Connect and play with friends in a custom survival world.",
-        tags: ["Java", "2025"],
+        description: "A Minecraft server for me and my friends when we get that Minecraft itch. Entirely locally hosted on my own hardware via Linux.",
+        tags: ["Java", "Linux", "2025"],
         link: "https://larscon.github.io/oldProjects/whitelist/",
         linkText: "Get Whitelisted",
-        details: "My personal Minecraft server! Connect and play with friends in a custom survival world."
+        details: "A Minecraft server for me and my friends when we get that Minecraft itch. Entirely locally hosted on my own hardware via Linux."
     },
     {
         id: 73,
