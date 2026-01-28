@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Whitelist</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #1a1a1a;
+            color: #e0e0e0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .box {
+            background: #252525;
+            padding: 32px;
+            border-radius: 8px;
+            width: 280px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 12px;
+            border: 1px solid #444;
+            border-radius: 4px;
+            background: #1a1a1a;
+            color: #e0e0e0;
+            font-size: 14px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #666;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            background: #333;
+            color: #e0e0e0;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #444;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .msg {
+            margin-top: 12px;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 13px;
+            text-align: center;
+            display: none;
+        }
+
+        .msg.ok {
+            display: block;
+            background: #1e3a1e;
+            color: #7fbf7f;
+        }
+
+        .msg.err {
+            display: block;
+            background: #3a1e1e;
+            color: #bf7f7f;
+        }
+
+        .info {
+            margin-top: 16px;
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .done {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .done h2 {
+            color: #7fbf7f;
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        .done p {
+            color: #888;
+            font-size: 13px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="box">
+        <div id="step1">
+            <input type="password" id="password" placeholder="Access code" maxlength="7" autocomplete="off">
+            <button id="passBtn">Continue</button>
+            <div id="passMsg" class="msg"></div>
+        </div>
+
+        <div id="step2" class="hidden">
+            <input type="text" id="username" placeholder="Minecraft username" pattern="[a-zA-Z0-9_]{1,16}">
+            <button id="userBtn">Add</button>
+            <div id="userMsg" class="msg"></div>
+        </div>
+
+        <div id="step3" class="hidden">
+            <div class="done">
+                <h2>You've been added!</h2>
+                <p id="addedName"></p>
+            </div>
+        </div>
+
+        <div class="info">Server IP: 206.225.72.167</div>
+    </div>
+
+    <script>
+        const step1 = document.getElementById('step1');
+        const step2 = document.getElementById('step2');
+        const step3 = document.getElementById('step3');
+        const passBtn = document.getElementById('passBtn');
+        const userBtn = document.getElementById('userBtn');
+        const passMsg = document.getElementById('passMsg');
+        const userMsg = document.getElementById('userMsg');
+        const passwordInput = document.getElementById('password');
+        const usernameInput = document.getElementById('username');
+        const addedName = document.getElementById('addedName');
+
+        // Check if already added
+        const savedUser = localStorage.getItem('mc_whitelist_user');
+        if (savedUser) {
+            step1.classList.add('hidden');
+            step3.classList.remove('hidden');
+            addedName.textContent = savedUser;
+        }
+
+        passwordInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') passBtn.click();
+        });
+
+        usernameInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') userBtn.click();
+        });
+
+        passBtn.addEventListener('click', async () => {
+            const password = passwordInput.value;
+            passMsg.className = 'msg';
+            passBtn.disabled = true;
+
+            try {
+                const res = await fetch('https://thetraderspot.com/api/validate-password', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password })
+                });
+                const data = await res.json();
+
+                if (data.valid) {
+                    step1.classList.add('hidden');
+                    step2.classList.remove('hidden');
+                    usernameInput.focus();
+                } else {
+                    passMsg.className = 'msg err';
+                    passMsg.textContent = 'Invalid code';
+                }
+            } catch (e) {
+                passMsg.className = 'msg err';
+                passMsg.textContent = 'Error';
+            }
+            passBtn.disabled = false;
+        });
+
+        userBtn.addEventListener('click', async () => {
+            const username = usernameInput.value.trim();
+            if (!username) return;
+
+            userMsg.className = 'msg';
+            userBtn.disabled = true;
+
+            try {
+                const res = await fetch('https://thetraderspot.com/api/whitelist', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username })
+                });
+                const data = await res.json();
+
+                if (res.ok) {
+                    localStorage.setItem('mc_whitelist_user', username);
+                    step2.classList.add('hidden');
+                    step3.classList.remove('hidden');
+                    addedName.textContent = username;
+                } else {
+                    userMsg.className = 'msg err';
+                    userMsg.textContent = data.error || 'Failed';
+                }
+            } catch (e) {
+                userMsg.className = 'msg err';
+                userMsg.textContent = 'Error';
+            }
+            userBtn.disabled = false;
+        });
+    </script>
+</body>
+
+</html>

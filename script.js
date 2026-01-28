@@ -27,6 +27,17 @@ const portfolioItems = [
         details: "Beyblade battle recording software designed for easy replayability. Currently in testing for Android and in development for Apple iOS. Allows users to record, review, and analyze Beyblade battles."
     },
     {
+        id: 75,
+        title: "Minecraft Server",
+        categories: ["Programming", "Recreational"],
+        image: "assets/programming/Minecraft.png",
+        description: "My personal Minecraft server! Connect and play with friends in a custom survival world.",
+        tags: ["Java", "2025"],
+        link: "https://larscon.github.io/oldProjects/whitelist/",
+        linkText: "Get Whitelisted",
+        details: "My personal Minecraft server! Connect and play with friends in a custom survival world."
+    },
+    {
         id: 73,
         title: "Sister's Portfolio",
         categories: ["Programming", "Professional"],
@@ -1205,7 +1216,7 @@ function openModal(portfolioItem) {
             <div class="modal-tags">
                 ${portfolioItem.tags.map(tag => `<span class="portfolio-tag">${tag}</span>`).join('')}
             </div>
-            ${portfolioItem.link && portfolioItem.link !== '#' ? `<a href="${portfolioItem.link}" class="btn btn-primary" target="_blank">See Work</a>` : ''}
+            ${portfolioItem.link && portfolioItem.link !== '#' ? `<a href="${portfolioItem.link}" class="btn btn-primary" target="_blank">${portfolioItem.linkText || 'See Work'}</a>` : ''}
         </div>
     `;
 
