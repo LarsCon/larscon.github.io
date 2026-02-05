@@ -392,50 +392,50 @@ const portfolioItems = [
         title: "Concept Infographics Page",
         categories: ["Design", "Educational"],
         image: "assets/design/ConardLars_NatalieAustin_Infographic-1-1.png",
-        description: "Concept infographics page created for classwork.",
+        description: "Concept infographics page I made for a class assignment.",
         tags: ["Illustrator", "InDesign", "2023"],
         link: "https://drive.google.com/file/d/1sTc1awlQi0gjh3kNJsItV0MoPdNdOtwo/view?usp=sharing",
-        details: "Concept infographics page created for classwork."
+        details: "Concept infographics page I made for a class assignment."
     },
     {
         id: 35,
         title: "Arduino Rover",
         categories: ["Engineering", "Recreational"],
         image: "assets/engineering/IMG_4279.jpg",
-        description: "Arduino-based rover project demonstrating robotics and electronics skills.",
+        description: "Arduino based rover project I did to learn arduino.",
         tags: ["Arduino", "2020"],
         link: "#",
-        details: "Arduino-based rover project demonstrating robotics and electronics skills."
+        details: "Arduino based rover project I did to learn arduino."
     },
     {
         id: 36,
         title: "Newspaper Front Page",
         categories: ["Design", "Educational"],
         image: "assets/design/Newspaper.png",
-        description: "Newspaper front page design project.",
+        description: "Newspaper front page design project I did for a class assignment.",
         tags: ["InDesign", "2023"],
         link: "#",
-        details: "Newspaper front page design project."
+        details: "Newspaper front page design project I did for a class assignment."
     },
     {
         id: 37,
         title: "Skeleton with Cloth",
         categories: ["Art", "Educational"],
         image: "assets/art/65532310101__829FA6AF-2165-4913-9981-8B337B2C2C09.jpg",
-        description: "Skeleton drawing with cloth study.",
+        description: "Skeleton drawing with cloth study I did in class.",
         tags: ["2020"],
         link: "#",
-        details: "Skeleton drawing with cloth study."
+        details: "Skeleton drawing with cloth study I did in class."
     },
     {
         id: 38,
         title: "Tree Service Logo",
         categories: ["Design", "Professional"],
         image: "assets/design/1.png",
-        description: "Tree service logo design project.",
+        description: "These were mock ups for a logo I designed for a friend's tree service business.",
         tags: ["Illustrator", "2017"],
         link: "#",
-        details: "Tree service logo design project."
+        details: "These were mock ups for a logo I designed for a friend's tree service business."
     },
     {
         id: 39,
@@ -445,7 +445,7 @@ const portfolioItems = [
         description: "Photograph of Ukrainian student.",
         tags: ["2022"],
         link: "#",
-        details: "Photograph of Ukrainian student."
+        details: "Photograph of Ukrainian student I took for class."
     },
     {
         id: 40,
@@ -455,17 +455,7 @@ const portfolioItems = [
         description: "3D rendered donut created in Blender.",
         tags: ["Blender", "2023"],
         link: "#",
-        details: "3D rendered donut created in Blender."
-    },
-    {
-        id: 41,
-        title: "NFT Project",
-        categories: ["Art", "Recreational"],
-        image: "assets/art/IMG_4135.jpg",
-        description: "NFT art project exploring digital ownership.",
-        tags: ["2021"],
-        link: "#",
-        details: "NFT art project exploring digital ownership."
+        details: "3D rendered donut created in Blender I did in class."
     },
     {
         id: 42,
@@ -475,7 +465,7 @@ const portfolioItems = [
         description: "3D printed lithophanes created using custom 3D printer.",
         tags: ["2020"],
         link: "#",
-        details: "3D printed lithophanes created using custom 3D printer."
+        details: "3D printed lithophanes! Put them in front of light to reveal the image!"
     },
     {
         id: 43,
@@ -485,37 +475,37 @@ const portfolioItems = [
         description: "Custom CNC machine built from scratch demonstrating mechanical engineering skills.",
         tags: ["CNC"],
         link: "#",
-        details: "Custom CNC machine built from scratch demonstrating mechanical engineering skills."
+        details: "My custom CNC machine built from scratch."
     },
     {
         id: 44,
         title: "Appetite Ad Agency Logo Submission",
         categories: ["Design", "Educational"],
         image: "assets/design/Appetite.png",
-        description: "Logo submission for Appetite Ad Agency competition.",
+        description: "Logo submission for Appetite Ad Agency competition I did for a club class.",
         tags: ["Illustrator", "2023"],
         link: "#",
-        details: "Logo submission for Appetite Ad Agency competition."
+        details: "Logo submission for Appetite Ad Agency competition I did for a club."
     },
     {
         id: 45,
         title: "My Personal Computer",
         categories: ["Engineering", "Recreational"],
         image: "assets/engineering/unnamed (1).jpg",
-        description: "Custom built personal computer showcasing hardware knowledge.",
+        description: "Custom built personal computer I made for myself. I have also made far more builds for friends and family.",
         tags: [],
         link: "#",
-        details: "Custom built personal computer showcasing hardware knowledge."
+        details: "Custom built personal computer I made for myself. I have also made far more builds for friends and family."
     },
     {
         id: 46,
         title: "Interstellar Corvette",
         categories: ["Design", "Educational"],
         image: "assets/design/interstellar_corvette.jpg",
-        description: "Interstellar Corvette digital artwork.",
+        description: "Interstellar Corvette digital artwork I did in class.",
         tags: ["2017"],
         link: "#",
-        details: "Interstellar Corvette digital artwork."
+        details: "Interstellar Corvette digital artwork I did in class."
     },
     {
         id: 47,
@@ -532,50 +522,50 @@ const portfolioItems = [
         title: "Forge Ball Digital Painting",
         categories: ["Design", "Educational"],
         image: "assets/design/copy.png",
-        description: "Digital painting of a forge ball created in Photoshop.",
+        description: "Digital painting of a forge ball created in Photoshop I did in class.",
         tags: ["Photoshop", "2017"],
         link: "#",
-        details: "Digital painting of a forge ball created in Photoshop."
+        details: "Digital painting of a forge ball created in Photoshop I did in class."
     },
     {
         id: 49,
         title: "Insect Photography",
         categories: ["Photography", "Recreational"],
         image: "assets/photography/IMG_0340.jpg",
-        description: "Macro photography of insects showcasing nature photography skills.",
+        description: "Macro photography of insects I took for class.",
         tags: ["Canon EOS M200", "2022"],
         link: "#",
-        details: "Macro photography of insects showcasing nature photography skills."
+        details: "Macro photography of insects I took for class."
     },
     {
         id: 50,
         title: "NCAA NIL Changes Concept Article",
         categories: ["Programming", "Educational"],
         image: "assets/programming/story.png",
-        description: "Concept article about NCAA NIL changes designed in InDesign.",
-        tags: ["InDesign", "2022"],
+        description: "Concept article about NCAA NIL changes designed in WordPress for a class assignment.",
+        tags: ["WordPress", "2022"],
         link: "#",
-        details: "Concept article about NCAA NIL changes designed in InDesign."
+        details: "Concept article about NCAA NIL changes designed in WordPress for a class assignment."
     },
     {
         id: 51,
         title: "Colored Skull",
         categories: ["Art", "Educational"],
         image: "assets/art/IMG_4044.jpg",
-        description: "Colored skull artwork demonstrating anatomy and color theory.",
+        description: "Colored skull artwork I made for a class assignment.",
         tags: ["2021"],
         link: "#",
-        details: "Colored skull artwork demonstrating anatomy and color theory."
+        details: "Colored skull artwork I made for a class assignment."
     },
     {
         id: 52,
         title: "Squirrel in Tree",
         categories: ["Photography", "Educational"],
         image: "assets/photography/IMG_0186.jpg",
-        description: "Photograph of a squirrel in a tree showcasing wildlife photography.",
+        description: "Photograph of a squirrel in a tree I took for class.",
         tags: ["Canon EOS M200", "2022"],
         link: "#",
-        details: "Photograph of a squirrel in a tree showcasing wildlife photography."
+        details: "Photograph of a squirrel in a tree I took for class."
     },
     {
         id: 53,
@@ -585,7 +575,7 @@ const portfolioItems = [
         description: "Multi PC testing setup for software development and quality assurance.",
         tags: ["2022"],
         link: "#",
-        details: "Multi PC testing setup for software development and quality assurance."
+        details: "Multi PC testing setup for creating a testing art museum pieces for live interactive use (and remote troubleshooting)."
     },
     {
         id: 54,
@@ -595,7 +585,7 @@ const portfolioItems = [
         description: "LCD logo design created in Illustrator.",
         tags: ["Illustrator", "2015"],
         link: "#",
-        details: "LCD logo design created in Illustrator."
+        details: "LCD logo design created in Illustrator in the early days of my freelance career."
     },
     {
         id: 55,
@@ -605,7 +595,7 @@ const portfolioItems = [
         description: "Personal gaming logo design for streaming and gaming content.",
         tags: ["Illustrator", "2017"],
         link: "#",
-        details: "Personal gaming logo design for streaming and gaming content."
+        details: "Personal gaming logo design for streaming and gaming content I made for myself."
     },
     {
         id: 56,
@@ -615,7 +605,7 @@ const portfolioItems = [
         description: "Concept page design for Tom's of Maine brand.",
         tags: ["HTML", "CSS", "JavaScript", "2022"],
         link: "#",
-        details: "Concept page design for Tom's of Maine brand."
+        details: "Concept page design for Tom's of Maine brand I made for a class assignment."
     },
     {
         id: 57,
@@ -625,7 +615,7 @@ const portfolioItems = [
         description: "Twitch offline screen design for streaming channel.",
         tags: ["Illustrator", "2017"],
         link: "#",
-        details: "Twitch offline screen design for streaming channel."
+        details: "Twitch offline screen and logo design for an attempt I had at streaming."
     },
     {
         id: 58,
@@ -635,7 +625,7 @@ const portfolioItems = [
         description: "Photograph of a gloomy road capturing atmospheric mood.",
         tags: ["Canon EOS M200", "2022"],
         link: "#",
-        details: "Photograph of a gloomy road capturing atmospheric mood."
+        details: "Photograph of a gloomy road on a rainy day"
     },
     {
         id: 59,
@@ -645,7 +635,7 @@ const portfolioItems = [
         description: "Logo design for Sharesoft software company.",
         tags: ["Illustrator", "2017"],
         link: "#",
-        details: "Logo design for Sharesoft software company."
+        details: "Logo design for a airsoft blog website concept I made early in my freelance career."
     },
     {
         id: 60,
@@ -655,7 +645,7 @@ const portfolioItems = [
         description: "Self-portrait created in mechanical art style.",
         tags: ["2020"],
         link: "#",
-        details: "Self-portrait created in mechanical art style."
+        details: "Self-portrait created in a mechanical art style."
     },
     {
         id: 61,
@@ -665,7 +655,7 @@ const portfolioItems = [
         description: "Photograph of a local coffee shop showcasing street photography.",
         tags: ["Canon EOS M200", "2022"],
         link: "#",
-        details: "Photograph of a local coffee shop showcasing street photography."
+        details: "Photo taken for class, the local coffee shop on IU Bloomington's campus!"
     },
     {
         id: 62,
@@ -675,7 +665,7 @@ const portfolioItems = [
         description: "Twitch starting screen design for streaming channel.",
         tags: ["Illustrator", "2016"],
         link: "#",
-        details: "Twitch starting screen design for streaming channel."
+        details: "This was the logo and transition screen I made for my own twitch channel."
     },
     {
         id: 63,
@@ -685,7 +675,7 @@ const portfolioItems = [
         description: "Personal family crest design for the Conard family.",
         tags: ["Illustrator", "2016"],
         link: "#",
-        details: "Personal family crest design for the Conard family."
+        details: "A concept crest I made in class."
     },
     {
         id: 64,
@@ -695,7 +685,7 @@ const portfolioItems = [
         description: "LC Designs business logo for design services.",
         tags: ["Illustrator", "2017"],
         link: "#",
-        details: "LC Designs business logo for design services."
+        details: "A logo I designed for myself in the early days of my freelance career."
     },
     {
         id: 65,
@@ -705,7 +695,7 @@ const portfolioItems = [
         description: "Logo design for Gentle Family Dentistry practice.",
         tags: ["Illustrator", "2018"],
         link: "#",
-        details: "Logo design for Gentle Family Dentistry practice."
+        details: "The logo I designed for my mother's dental practice."
     },
     {
         id: 66,
@@ -715,7 +705,7 @@ const portfolioItems = [
         description: "Tree service logo mock up design.",
         tags: ["Illustrator", "2017"],
         link: "#",
-        details: "Tree service logo mock up design."
+        details: "This was a mock up for a logo I designed for a friend's business."
     },
     {
         id: 67,
@@ -728,16 +718,6 @@ const portfolioItems = [
         details: "Photograph of Atlas (apartment complex) on a rainy day."
     },
     {
-        id: 68,
-        title: "Charcuterie Board",
-        categories: ["Art", "Educational"],
-        image: "assets/art/IMG_3919.jpg",
-        description: "Photograph of a beautifully arranged charcuterie board.",
-        tags: ["Canon EOS M200", "2022"],
-        link: "#",
-        details: "Photograph of a beautifully arranged charcuterie board."
-    },
-    {
         id: 69,
         title: "Twitch.TV Graphics",
         categories: ["Design", "Recreational"],
@@ -745,17 +725,17 @@ const portfolioItems = [
         description: "Complete Twitch.TV streaming graphics package including overlays and alerts.",
         tags: ["Illustrator", "2016"],
         link: "#",
-        details: "Complete Twitch.TV streaming graphics package including overlays and alerts."
+        details: "Twitch.TV streaming graphics package including overlays and alerts for a friend's channel."
     },
     {
         id: 70,
         title: "Concept Logo",
         categories: ["Design", "Recreational"],
         image: "assets/design/logo redone.png",
-        description: "Concept logo design exploring different branding approaches.",
+        description: "A logo made for a friend's business",
         tags: ["Illustrator", "2020"],
         link: "#",
-        details: "Concept logo design exploring different branding approaches."
+        details: "A logo made for a friend's business."
     }
 ];
 // Initialize
@@ -1028,6 +1008,20 @@ function initializeNavigation() {
                 if (navLink) navLink.classList.add('active');
             }
         });
+
+        // Sticky portfolio filters shadow
+        const portfolioFilters = document.querySelector('.portfolio-filters');
+        const portfolioSection = document.querySelector('#portfolio');
+        if (portfolioFilters && portfolioSection) {
+            const filterRect = portfolioFilters.getBoundingClientRect();
+            const sectionRect = portfolioSection.getBoundingClientRect();
+            // Add shadow when filters are stuck (at top: 70px)
+            if (filterRect.top <= 71 && sectionRect.bottom > filterRect.bottom) {
+                portfolioFilters.classList.add('is-sticky');
+            } else {
+                portfolioFilters.classList.remove('is-sticky');
+            }
+        }
     });
 }
 
