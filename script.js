@@ -314,7 +314,7 @@ const portfolioItems = [
         image: "assets/programming/cover1.png",
         description: "This was a project done during my time at Indiana University as an introduction to 3D games.",
         tags: ["Godot", "2023"],
-        link: "#",
+        link: "https://tekatek.itch.io/3d-maze-game",
         details: "This was a project done during my time at Indiana University as an introduction to 3D games."
     },
     {
@@ -334,7 +334,7 @@ const portfolioItems = [
         image: "assets/design/Magazine.png",
         description: "I created a short concept magazine for classwork, text was provided.",
         tags: ["InDesign", "2023"],
-        link: "#",
+        link: "https://drive.google.com/file/d/1tp0wUCNUQhp24pC0D9F3AHa_kb1i8AcV/view?usp=sharing",
         details: "I created a short concept magazine for classwork, text was provided."
     },
     {
@@ -354,7 +354,7 @@ const portfolioItems = [
         image: "assets/design/ezgif-3-3441fb70f3.gif",
         description: "For our National Student Advertising Competition presentation, I created a waveform animation to help illustrate an audio ad our team created.",
         tags: ["After Effects", "2023"],
-        link: "#",
+        link: "https://drive.google.com/file/d/1oGdlkcbjq8bemJMEgiEvIvmO1DHSvzv4/view?usp=sharing",
         details: "For our National Student Advertising Competition presentation, I created a waveform animation to help illustrate an audio ad our team created."
     },
     {
@@ -524,7 +524,7 @@ const portfolioItems = [
         image: "assets/programming/port.jpg",
         description: "Previous version of my portfolio website.",
         tags: ["HTML", "CSS", "JavaScript", "2018"],
-        link: "#",
+        link: "https://larsconard.com/Portfolio/",
         details: "Previous version of my portfolio website."
     },
     {
@@ -1141,10 +1141,13 @@ function renderPortfolioItems() {
     }
     // Limit items if not showing all
     const items = showingAll ? filteredItems : filteredItems.slice(0, itemsToShow);
-    portfolioGrid.innerHTML = items.map(item => `
+    portfolioGrid.innerHTML = items.map(item => {
+        const hasLiveLink = item.link && item.link !== '#';
+        return `
         <div class="portfolio-item" data-id="${item.id}">
             <div class="portfolio-image">
                 <img src="${item.image}" alt="${item.title}">
+                ${hasLiveLink ? `<a href="${item.link}" target="_blank" class="portfolio-live-badge" onclick="event.stopPropagation();"><i class="fas fa-external-link-alt"></i></a>` : ''}
                 <div class="portfolio-overlay">
                     <div class="portfolio-overlay-content">
                         <h3>${item.title}</h3>
@@ -1162,7 +1165,7 @@ function renderPortfolioItems() {
                 </div>
             </div>
         </div>
-    `).join('');
+    `}).join('');
     // Add View More button if needed
     if (!showingAll && filteredItems.length > itemsToShow) {
         portfolioGrid.innerHTML += `<div class="portfolio-view-more"><button class="btn btn-primary" id="view-more-btn">View More</button></div>`;
@@ -1220,7 +1223,7 @@ function openModal(portfolioItem) {
             <div class="modal-tags">
                 ${portfolioItem.tags.map(tag => `<span class="portfolio-tag">${tag}</span>`).join('')}
             </div>
-            ${portfolioItem.link && portfolioItem.link !== '#' ? `<a href="${portfolioItem.link}" class="btn btn-primary" target="_blank">${portfolioItem.linkText || 'See Work'}</a>` : ''}
+            ${portfolioItem.link && portfolioItem.link !== '#' ? `<a href="${portfolioItem.link}" class="btn btn-live" target="_blank"><i class="fas fa-external-link-alt"></i> ${portfolioItem.linkText || 'See Work'}</a>` : ''}
         </div>
     `;
 
