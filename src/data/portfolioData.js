@@ -26,7 +26,7 @@ const portfolioItems = [
     image: "assets/programming/Minecraft.png",
     description: "A Minecraft server for me and my friends when we get that Minecraft itch. Entirely locally hosted on my own hardware via Linux.",
     tags: ["Java", "Linux", "2025"],
-    link: "https://larscon.github.io/oldProjects/whitelist/",
+    link: "https://larsconard.com/oldProjects/whitelist/",
     linkText: "Get Whitelisted",
   },
   {
@@ -54,7 +54,7 @@ const portfolioItems = [
     image: "assets/programming/osTech.png",
     description: "Professional website for OsTech, a low voltage data infrastructure and audio/video solutions company. Features service pages, contact forms, and responsive design.",
     tags: ["HTML", "CSS", "JavaScript", "2025"],
-    link: "https://larscon.github.io/oldProjects/OsTech/index.html",
+    link: "https://larsconard.com/oldProjects/OsTech/index.html",
   },
   {
     id: 71,
@@ -162,7 +162,7 @@ const portfolioItems = [
     image: "assets/IGT/IGT/accountingPhoto.png",
     description: "This is an application, currently still under construction, to help retailers under IGT to manage their ticket sales.",
     tags: ["HTML", "CSS", "Javascript", "2024"],
-    link: "https://larscon.github.io/oldProjects/AccountingSheetsWebApp/index.html",
+    link: "https://larsconard.com/oldProjects/AccountingSheetsWebApp/index.html",
   },
   {
     id: 13,
