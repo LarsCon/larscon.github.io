@@ -24,6 +24,7 @@ export default function EducationDetail({ entry }) {
         <div className={styles.heroInfo}>
           <h1 className={styles.heroSchool}>{entry.company}</h1>
           <div className={styles.heroDegree}>{entry.role}</div>
+          {entry.status && <div className={styles.heroStatus}>{entry.status}</div>}
           <div className={styles.heroPeriod}>{entry.period}</div>
         </div>
       </div>

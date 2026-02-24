@@ -9,7 +9,8 @@ const educationData = [
     id: 'iu',
     company: 'Indiana University',
     role: 'Bachelor of Arts in Interactive Media',
-    period: 'Graduated December 2024',
+    status: 'Graduated 3.5GPA',
+    period: 'August 2022 – December 2024',
     shortPeriod: '2022–2024',
     logo: 'IU.png',
     description:
@@ -26,6 +27,7 @@ const educationData = [
     id: 'herron',
     company: 'Herron School of Art & Design',
     role: 'Bachelor of Arts in Visual Communication',
+    status: 'Incomplete 3.8GPA (Transfered Schools)',
     period: 'August 2021 – May 2022',
     shortPeriod: '2021–2022',
     logo: 'herron.png',
@@ -43,6 +45,7 @@ const educationData = [
     id: 'eleven-fifty',
     company: 'Eleven Fifty Programming Academy',
     role: 'Programming Certification',
+    status: 'Completed',
     period: 'December 2018 – February 2019',
     shortPeriod: '2018–2019',
     logo: 'elevenFifty.png',
@@ -60,6 +63,7 @@ const educationData = [
     id: 'iupui',
     company: 'Indiana University Purdue University of Indianapolis',
     role: 'Bachelor of Science in Information Technology',
+    status: 'Incomplete 2.0GPA (Withdrew due to family tragedy)',
     period: 'August 2015 – May 2018',
     shortPeriod: '2015–2018',
     logo: 'iupui.png',
@@ -68,6 +72,7 @@ const educationData = [
     highlights: [
       'Developed strong technical foundation in IT systems and infrastructure',
       'Gained practical experience with networking and system administration',
+      'Honor Roll, Spring 2017'
     ],
     photos: [],
     relatedWorkIds: [21, 35, 42, 43, 45, 46, 47, 48],

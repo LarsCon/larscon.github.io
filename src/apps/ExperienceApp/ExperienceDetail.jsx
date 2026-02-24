@@ -24,6 +24,7 @@ export default function ExperienceDetail({ job }) {
         <div className={styles.heroInfo}>
           <h1 className={styles.heroRole}>{job.role}</h1>
           <div className={styles.heroCompany}>{job.company}</div>
+          {job.reasonForLeaving && <div className={styles.heroReason}>{job.reasonForLeaving}</div>}
           <div className={styles.heroPeriod}>{job.period}</div>
         </div>
       </div>

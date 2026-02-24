@@ -90,7 +90,7 @@ const appRegistry = [
     icon: 'settings.svg',
     description: 'Customize your experience: themes, accessibility, and preferences.',
     component: SettingsApp,
-    defaultSize: { width: 680, height: 480 },
+    defaultSize: { width: 502, height: 614 },
   },
 ]
 

@@ -31,6 +31,7 @@ export default function ExperienceApp() {
               <div className={styles.info}>
                 <div className={styles.role}>{job.role}</div>
                 <div className={styles.company}>{job.company}</div>
+                {job.reasonForLeaving && <div className={styles.reason}>{job.reasonForLeaving}</div>}
                 <div className={styles.period}>{job.shortPeriod}</div>
               </div>
               <div className={styles.arrow}>

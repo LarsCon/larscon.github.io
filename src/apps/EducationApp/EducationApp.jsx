@@ -31,6 +31,7 @@ export default function EducationApp() {
               <div className={styles.info}>
                 <div className={styles.school}>{entry.company}</div>
                 <div className={styles.degree}>{entry.role}</div>
+                {entry.status && <div className={styles.status}>{entry.status}</div>}
                 <div className={styles.period}>{entry.shortPeriod}</div>
               </div>
               <div className={styles.arrow}>
