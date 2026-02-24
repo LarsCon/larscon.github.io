@@ -97,6 +97,11 @@ const MOBILE_STEPS = [
 
 const SPOTLIGHT_PAD = 8
 
+function queryVisible(selector) {
+  const els = document.querySelectorAll(selector)
+  return Array.from(els).find(el => el.offsetParent !== null) || els[0] || null
+}
+
 function getClipPath(rect) {
   if (!rect) return 'none'
   const l = rect.left - SPOTLIGHT_PAD
@@ -184,7 +189,7 @@ export default function TourOverlay({ mode, openApp }) {
 
     const find = () => {
       if (cancelled) return
-      const el = document.querySelector(currentStep.target)
+      const el = queryVisible(currentStep.target)
       if (el) {
         setTargetRect(el.getBoundingClientRect())
       } else if (attempts < 30) {
@@ -201,7 +206,7 @@ export default function TourOverlay({ mode, openApp }) {
     if (!active || !currentStep?.target || !targetRect) return
 
     const update = () => {
-      const el = document.querySelector(currentStep.target)
+      const el = queryVisible(currentStep.target)
       if (el) setTargetRect(el.getBoundingClientRect())
     }
 
@@ -315,7 +320,7 @@ export default function TourOverlay({ mode, openApp }) {
 
     const poll = () => {
       if (cancelled) return
-      const el = document.querySelector('[data-tour-id="app-icon-about-me"]')
+      const el = queryVisible('[data-tour-id="app-icon-about-me"]')
       if (el) {
         iconSeen = true
       } else if (iconSeen) {
