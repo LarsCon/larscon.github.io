@@ -1,0 +1,207 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  pointer-events: none;
+}
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  pointer-events: auto;
+  transition: clip-path 0.3s ease;
+}
+
+.spotlight {
+  position: fixed;
+  border-radius: 6px;
+  box-shadow: 0 0 0 3px var(--accent), 0 0 16px 2px rgba(0, 120, 212, 0.25);
+  pointer-events: none;
+  transition: top 0.3s, left 0.3s, width 0.3s, height 0.3s;
+}
+
+/* ── Centered Modal ────────────────── */
+
+.modal {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+  z-index: 2;
+}
+
+.modalCard {
+  background: #1e1e1e;
+  border: 1px solid #3a3a3a;
+  border-radius: 10px;
+  padding: 32px 36px 28px;
+  max-width: 420px;
+  width: 90vw;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
+  animation: fadeScaleIn 0.25s ease;
+}
+
+@keyframes fadeScaleIn {
+  from { opacity: 0; transform: scale(0.92); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.modalTitle {
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 12px;
+}
+
+.modalBody {
+  color: #c8c8c8;
+  font-size: 14px;
+  line-height: 1.7;
+  margin: 0 0 22px;
+}
+
+.bodyLine {
+  margin: 0 0 4px;
+  color: #c8c8c8;
+}
+
+.modalButtons {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+/* ── Tooltip ───────────────────────── */
+
+.tooltip {
+  position: fixed;
+  background: #1e1e1e;
+  border: 1px solid #3a3a3a;
+  border-radius: 8px;
+  padding: 18px 20px 14px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  pointer-events: auto;
+  z-index: 2;
+  animation: fadeScaleIn 0.2s ease;
+}
+
+.tooltip::before {
+  content: '';
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: #1e1e1e;
+  border: 1px solid #3a3a3a;
+  transform: rotate(45deg);
+}
+
+.tooltip[data-arrow="top"]::before {
+  top: -7px;
+  left: 32px;
+  border-right: none;
+  border-bottom: none;
+}
+
+.tooltip[data-arrow="bottom"]::before {
+  bottom: -7px;
+  left: 32px;
+  border-left: none;
+  border-top: none;
+}
+
+.tooltip[data-arrow="left"]::before {
+  left: -7px;
+  top: 24px;
+  border-right: none;
+  border-top: none;
+}
+
+.tooltip[data-arrow="right"]::before {
+  right: -7px;
+  top: 24px;
+  border-left: none;
+  border-bottom: none;
+}
+
+.tooltipTitle {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--accent, #0078d4);
+  margin: 0 0 6px;
+}
+
+.tooltipBody {
+  font-size: 13px;
+  line-height: 1.65;
+  color: #c8c8c8;
+  margin: 0 0 14px;
+}
+
+.tooltipFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.stepCount {
+  font-size: 11px;
+  color: #888;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+/* ── Buttons ───────────────────────── */
+
+.primaryBtn {
+  padding: 8px 22px;
+  border: none;
+  border-radius: 4px;
+  background: var(--accent, #0078d4);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.primaryBtn:hover {
+  background: var(--accent-dark, #005a9e);
+}
+
+.secondaryBtn {
+  padding: 8px 18px;
+  border: 1px solid #555;
+  border-radius: 4px;
+  background: transparent;
+  color: #bbb;
+  font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.secondaryBtn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: #888;
+}
+
+/* ── Mobile adjustments ────────────── */
+
+@media (max-width: 768px) {
+  .modalCard {
+    padding: 24px 22px 20px;
+  }
+
+  .modalTitle {
+    font-size: 18px;
+  }
+
+  .tooltip {
+    max-width: calc(100vw - 24px) !important;
+  }
+}

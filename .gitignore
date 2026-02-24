@@ -1,5 +1,26 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 
-TradeSpot/AllPrintings.json
-TradeSpot/AllIdentifiers.json
-assets/IGT/Caribbean/HTP_Pick3_V3.mp4
-assets/IGT/Caribbean/HTP_Pick4_V3.mp4
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+public/assets/IGT/Caribbean/HTP_Pick3_V3.mp4
+public/assets/IGT/Caribbean/HTP_Pick4_V3.mp4

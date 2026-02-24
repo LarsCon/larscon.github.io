@@ -1,0 +1,58 @@
+:root {
+  --accent: #0078d4;
+  --accent-light: #429ce3;
+  --accent-dark: #005a9e;
+
+  --win-bg: #202020;
+  --win-surface: #2d2d2d;
+  --win-surface-light: #383838;
+  --win-border: #474747;
+  --win-text: #fff;
+  --win-text-secondary: #999;
+  --win-text-muted: #666;
+
+  --titlebar-bg: var(--accent);
+  --titlebar-inactive: #2b2b2b;
+  --titlebar-text: #fff;
+  --titlebar-text-inactive: #999;
+  --titlebar-btn-hover: rgba(255, 255, 255, 0.1);
+  --titlebar-close-hover: #e81123;
+
+  --window-bg: #1e1e1e;
+  --window-border: #1a1a1a;
+  --window-content-bg: #fff;
+
+  --taskbar-bg: #1c1c1c;
+  --taskbar-hover: rgba(255, 255, 255, 0.06);
+  --taskbar-active: rgba(255, 255, 255, 0.1);
+  --taskbar-indicator: var(--accent);
+  --taskbar-height: 48px;
+
+  --start-bg: #2b2b2b;
+  --start-header: #1f1f1f;
+  --start-hover: rgba(255, 255, 255, 0.06);
+  --start-separator: #404040;
+
+  --desktop-bg: #1a1a1a;
+
+  --card-bg: #fff;
+  --card-border: #e0e0e0;
+  --card-hover-border: var(--accent);
+  --card-text: #1a1a1a;
+  --card-text-secondary: #666;
+
+  --toolbar-bg: #f3f3f3;
+  --toolbar-border: #e0e0e0;
+  --toolbar-btn-hover: #e5e5e5;
+  --toolbar-btn-active-bg: #fff;
+  --toolbar-btn-active-border: var(--accent);
+
+  --btn-bg: #f0f0f0;
+  --btn-border: #ccc;
+  --btn-hover: #e5e5e5;
+  --btn-text: #1a1a1a;
+
+  --scrollbar-track: #f1f1f1;
+  --scrollbar-thumb: #c1c1c1;
+  --scrollbar-thumb-hover: #a1a1a1;
+}

@@ -1,0 +1,12 @@
+.tray {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  padding: 0 14px;
+}
+
+.clock {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 12px;
+  white-space: nowrap;
+}

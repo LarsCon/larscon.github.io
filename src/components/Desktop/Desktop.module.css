@@ -1,0 +1,58 @@
+.desktop {
+  position: relative;
+  width: 100vw;
+  height: calc(100vh - var(--taskbar-height));
+  background: linear-gradient(135deg, #1a1a1a, #2a2a2a, #1e1e1e, #303030, #1a1a1a);
+  background-size: 400% 400%;
+  animation: bgShift 20s ease infinite;
+  overflow: hidden;
+}
+
+@keyframes bgShift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.bgBrand {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  pointer-events: none;
+  user-select: none;
+  opacity: 0.5;
+}
+
+.bgLogo {
+  width: 200px;
+  height: auto;
+  color: var(--accent);
+  flex-shrink: 0;
+  overflow: visible;
+}
+
+.bgSubtitle {
+  color: var(--accent);
+  font-size: 22px;
+  font-weight: 300;
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.iconGrid {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: 4px;
+  padding: 12px;
+  height: 100%;
+  z-index: 1;
+}

@@ -1,0 +1,185 @@
+.container {
+  display: flex;
+  flex-direction: column;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 12px 16px;
+  background: linear-gradient(180deg, #fafafa, #f0f0f0);
+  border-bottom: 1px solid var(--toolbar-border);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.filterBtn {
+  padding: 7px 16px;
+  font-size: 12.5px;
+  font-family: inherit;
+  color: #555;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 18px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.filterBtn:hover {
+  background: #e8e8e8;
+  border-color: #ccc;
+  color: #222;
+}
+
+.filterBtnActive {
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+  border-color: var(--accent);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.separator {
+  width: 1px;
+  height: 22px;
+  background: #ccc;
+  margin: 0 4px;
+}
+
+.grid {
+  padding: 14px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(225px, 1fr));
+  gap: 14px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 4px;
+  cursor: pointer;
+  overflow: hidden;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  content-visibility: auto;
+  contain-intrinsic-size: auto 225px auto 200px;
+}
+
+.card:hover {
+  border-color: var(--card-hover-border);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.cardImageWrap {
+  position: relative;
+  overflow: hidden;
+}
+
+.card:hover .cardImage {
+  transform: scale(1.04);
+}
+
+.cardImage {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  display: block;
+  background: #f0f0f0;
+  transition: transform 0.25s ease;
+}
+
+.liveBadge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.4);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  text-decoration: none;
+  z-index: 1;
+}
+
+.liveBadge svg {
+  width: 14px;
+  height: 14px;
+}
+
+.liveBadge:hover {
+  transform: scale(1.15);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.6);
+}
+
+.cardBody {
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cardTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--card-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cardCategories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.categoryBadge {
+  font-size: 10px;
+  padding: 2px 6px;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 2px;
+}
+
+.empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--card-text-secondary);
+  font-size: 14px;
+}
+
+.loadMore {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: center;
+  padding: 12px;
+}
+
+.loadMoreBtn {
+  padding: 6px 24px;
+  font-size: 12px;
+  font-family: inherit;
+  color: #fff;
+  background: var(--accent);
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.loadMoreBtn:hover {
+  filter: brightness(1.1);
+}

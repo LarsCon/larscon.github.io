@@ -1,0 +1,223 @@
+.window {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--window-border);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.28);
+  min-width: 200px;
+  min-height: 120px;
+  will-change: transform, opacity;
+}
+
+@keyframes windowMinimize {
+  from { transform: scale(1); opacity: 1; }
+  to   { transform: scale(0.4); opacity: 0; }
+}
+
+@keyframes windowRestore {
+  from { transform: scale(0.4); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+.minimizing {
+  animation: windowMinimize 180ms ease-in forwards;
+  pointer-events: none;
+}
+
+.restoring {
+  animation: windowRestore 180ms ease-out forwards;
+  pointer-events: none;
+}
+
+.window.maximized {
+  border: none;
+  box-shadow: none;
+}
+
+.titleBar {
+  display: flex;
+  align-items: center;
+  height: 32px;
+  padding: 0 0 0 12px;
+  background: var(--titlebar-bg);
+  cursor: default;
+  flex-shrink: 0;
+}
+
+.inactive .titleBar {
+  background: var(--titlebar-inactive);
+}
+
+.navBar {
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  height: 30px;
+  background: var(--toolbar-bg);
+  border-bottom: 1px solid var(--toolbar-border);
+  flex-shrink: 0;
+}
+
+.backBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 12px 3px 8px;
+  font-size: 12px;
+  font-family: inherit;
+  color: var(--accent);
+  background: transparent;
+  border: 1px solid var(--toolbar-border);
+  border-radius: 3px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.1s;
+}
+
+.backBtn:hover {
+  background: var(--toolbar-btn-hover);
+}
+
+.titleIcon {
+  width: 16px;
+  height: 16px;
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+
+.titleText {
+  flex: 1;
+  color: var(--titlebar-text);
+  font-size: 12px;
+  font-weight: 400;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.inactive .titleText {
+  color: var(--titlebar-text-inactive);
+}
+
+.titleButtons {
+  display: flex;
+  margin-left: auto;
+  height: 100%;
+}
+
+.titleBtn {
+  width: 46px;
+  height: 100%;
+  border: none;
+  border-radius: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  color: var(--titlebar-text);
+  font-size: 10px;
+  font-weight: 400;
+  background: transparent;
+}
+
+.inactive .titleBtn {
+  color: var(--titlebar-text-inactive);
+}
+
+.minimizeBtn:hover,
+.maximizeBtn:hover {
+  background: var(--titlebar-btn-hover);
+}
+
+.closeBtn:hover {
+  background: var(--titlebar-close-hover);
+  color: #fff;
+}
+
+.content {
+  flex: 1;
+  background: var(--window-content-bg);
+  overflow: auto;
+  position: relative;
+}
+
+/* Resize handles — invisible hit areas along edges and corners */
+
+.resizeN,
+.resizeS,
+.resizeE,
+.resizeW,
+.resizeNE,
+.resizeNW,
+.resizeSE,
+.resizeSW {
+  position: absolute;
+}
+
+.resizeN {
+  top: -4px;
+  left: 10px;
+  right: 10px;
+  height: 8px;
+  cursor: n-resize;
+}
+
+.resizeS {
+  bottom: -4px;
+  left: 10px;
+  right: 10px;
+  height: 8px;
+  cursor: s-resize;
+}
+
+.resizeE {
+  right: -4px;
+  top: 10px;
+  bottom: 10px;
+  width: 8px;
+  cursor: e-resize;
+}
+
+.resizeW {
+  left: -4px;
+  top: 10px;
+  bottom: 10px;
+  width: 8px;
+  cursor: w-resize;
+}
+
+.resizeNE {
+  top: -4px;
+  right: -4px;
+  width: 14px;
+  height: 14px;
+  cursor: ne-resize;
+  z-index: 1;
+}
+
+.resizeNW {
+  top: -4px;
+  left: -4px;
+  width: 14px;
+  height: 14px;
+  cursor: nw-resize;
+  z-index: 1;
+}
+
+.resizeSE {
+  bottom: -4px;
+  right: -4px;
+  width: 14px;
+  height: 14px;
+  cursor: se-resize;
+  z-index: 1;
+}
+
+.resizeSW {
+  bottom: -4px;
+  left: -4px;
+  width: 14px;
+  height: 14px;
+  cursor: sw-resize;
+  z-index: 1;
+}

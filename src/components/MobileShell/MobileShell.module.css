@@ -1,0 +1,102 @@
+.shell {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(135deg, #1a1a1a, #2a2a2a, #1e1e1e, #303030, #1a1a1a);
+  background-size: 400% 400%;
+  animation: bgShift 20s ease infinite;
+  overflow: hidden;
+}
+
+@keyframes bgShift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.bgBrand {
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  pointer-events: none;
+  user-select: none;
+  opacity: 0.35;
+}
+
+.bgLogo {
+  width: 140px;
+  height: auto;
+  color: var(--accent);
+}
+
+.bgSubtitle {
+  color: var(--accent);
+  font-size: 14px;
+  font-weight: 300;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.statusBar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  height: 28px;
+  padding: 0 14px;
+  background: rgba(0, 0, 0, 0.25);
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.homeScreen {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  padding: 24px 12px 12px;
+  align-content: start;
+  overflow-y: auto;
+}
+
+.appIcon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 4px;
+  border: none;
+  background: none;
+  border-radius: 12px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  font-family: inherit;
+}
+
+.appIcon:active {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.appIconImage {
+  width: 48px;
+  height: 48px;
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.3));
+}
+
+.appIconLabel {
+  color: #fff;
+  font-size: 11px;
+  text-align: center;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  line-height: 1.2;
+  word-wrap: break-word;
+  max-width: 100%;
+}
