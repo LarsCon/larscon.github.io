@@ -7,8 +7,11 @@ import MobileNavBar from '../MobileNavBar/MobileNavBar'
 import TourOverlay from '../TourOverlay/TourOverlay'
 import styles from './MobileShell.module.css'
 
+const musicApp = appRegistry.find(a => a.id === 'music')
+
 export default function MobileShell() {
   const [activeApp, setActiveApp] = useState(null)
+  const [musicMounted, setMusicMounted] = useState(false)
   const [time, setTime] = useState(new Date())
   const { startTour } = useTour()
 
@@ -33,6 +36,9 @@ export default function MobileShell() {
       window.open(app.externalUrl, '_blank', 'noopener,noreferrer')
       return
     }
+    if (app.id === 'music') {
+      setMusicMounted(true)
+    }
     setActiveApp(app)
   }
 
@@ -40,9 +46,12 @@ export default function MobileShell() {
     setActiveApp(null)
   }
 
+  const isMusic = activeApp?.id === 'music'
+  const showRegularApp = activeApp && !isMusic
+
   return (
     <>
-      {activeApp ? (
+      {showRegularApp && (
         <NavigationProvider
           key={activeApp.id}
           rootComponent={activeApp.component}
@@ -50,7 +59,21 @@ export default function MobileShell() {
         >
           <MobileAppView app={activeApp} onHome={handleGoHome} />
         </NavigationProvider>
-      ) : (
+      )}
+
+      {musicMounted && (
+        <div style={{ display: isMusic ? 'contents' : 'none' }}>
+          <NavigationProvider
+            key="music-persistent"
+            rootComponent={musicApp.component}
+            rootProps={{ appId: musicApp.id, title: musicApp.title }}
+          >
+            <MobileAppView app={musicApp} onHome={handleGoHome} />
+          </NavigationProvider>
+        </div>
+      )}
+
+      {!activeApp && (
         <div className={styles.shell}>
           <div className={styles.bgBrand}>
             <svg className={styles.bgLogo} viewBox="0 0 285.46 314" fill="currentColor">
