@@ -17,7 +17,7 @@ const appRegistry = [
     icon: 'about-me.svg',
     description: 'Learn about who I am, my interests, and what drives me as a developer.',
     component: AboutMeApp,
-    defaultSize: { width: 600, height: 500 },
+    defaultSize: { width: 900, height: 750 },
   },
   {
     id: 'resume',
@@ -66,7 +66,7 @@ const appRegistry = [
     icon: 'music.svg',
     description: 'Listen to some tunes while you explore the portfolio.',
     component: MusicApp,
-    defaultSize: { width: 420, height: 500 },
+    defaultSize: { width: 700, height: 800 },
   },
   {
     id: 'contact',
