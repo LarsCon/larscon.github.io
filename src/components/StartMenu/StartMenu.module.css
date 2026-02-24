@@ -21,12 +21,48 @@
 .header {
   display: flex;
   align-items: center;
-  gap: 12px;
+  justify-content: space-between;
   padding: 16px 18px;
   background: var(--start-header);
   color: #fff;
   font-weight: 600;
   font-size: 14px;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.headerSocials {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.socialLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  color: #fff;
+  border-radius: 4px;
+  transition: background-color 0.1s;
+}
+
+.socialLink:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.socialLink svg {
+  display: block;
+  opacity: 0.9;
+}
+
+.socialLink:hover svg {
+  opacity: 1;
 }
 
 .avatar {
