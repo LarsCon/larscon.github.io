@@ -47,7 +47,7 @@ export default function AboutMeApp() {
             <h1 className={styles.name}>Lars Conard</h1>
             <p className={styles.title}>Product Designer</p>
             <p className={styles.tagline}>
-              Building with technology since childhood, from code to design to interactive experiences.
+              Building with technology since childhood, from hardware to code to full-on interactive experiences!
             </p>
           </div>
         </div>
@@ -57,22 +57,16 @@ export default function AboutMeApp() {
         <section className={styles.section}>
           <h2 className={styles.sectionTitle}>About</h2>
           <p className={styles.bio}>
-            I've been building with technology since childhood, growing from code to design to interactive
-            experiences. With a background spanning low-voltage systems, museum installations, university
-            instruction, multimedia design for major brands, and full-stack product development, I bring a
-            rare combination of technical depth and creative instinct to everything I build.
+            Welcome to my website, thanks for stopping by! I've been building with technology since childhood, progressing from hardware to code to full-on interactive experiences! With a background spanning configuring & installation, mentorship, multimedia design for major brands, and full stack product development, I bring a rare combination of skills to the table.
           </p>
           <p className={styles.bio}>
-            My career has taken me from wiring audio and network systems at schools and businesses, to
-            developing touchscreen Unity exhibits for museums, to producing graphics and campaigns for
-            names like Powerball, Hoosier Lottery, and IGT. Today, I work as a full-stack product designer
-            and developer, turning ideas into real, marketable products from concept through design,
-            development, and deployment on both web and mobile.
+            My career has spanned large-scale IT projects, mentorship & team management, to personal 1:1 product development/marketing/design. Today, I work as a full-stack product designer and developer at OsTech, turning vague ideas into real, marketable digital products! In my freetime at home, I'm truly (and happily) glued to my craft, working full time on recreational and freelancing projects.
           </p>
           <p className={styles.bio}>
-            I'm driven by the challenge of creating things that matter at scale. Whether it's a
-            polished UI, a complex interactive system, or a creative campaign, I care deeply about craft,
-            usability, and getting the details right.
+            My education after high school began at IUPUI, where I entered an IT degree path, a path I was obsessed with since my first Dell PC. Midway into my Junior year, my life came to a screeching halt. My sister had passed, I couldn't maintain my grades, and I withdrew from my second semester. With my friends and family, I fought through it, and started my journey again at Eleven Fifty certification school and Herron School of Art & Design, where I explored coding and design respectively. I eventually chose Indiana University in Bloomington as my university, and graduated in 2024 with a Bachelors of Arts in Interactive Media.
+          </p>
+          <p className={styles.bio}>
+            My personality is hands-on and driven, steeped in southern hospitality, and above all, understanding. I've been acknowledged for my skills, leadership, and especially drive more times than I can count. I make a difference in anything and everything I do; my best is the only gear I have. If you like what you see, you know where to find me :)
           </p>
         </section>
 
