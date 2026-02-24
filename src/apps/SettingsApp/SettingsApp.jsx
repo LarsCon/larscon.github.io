@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useTheme } from '../../context/ThemeContext'
 import styles from './SettingsApp.module.css'
 
@@ -36,8 +37,37 @@ const ACCENT_COLORS = [
   { color: '#4c4a48', name: 'Charcoal' },
 ]
 
+const OS_MODE_KEY = 'portfolio-os-mode'
+
+function getCurrentOsMode() {
+  try { return localStorage.getItem(OS_MODE_KEY) || 'auto' } catch { return 'auto' }
+}
+
 export default function SettingsApp() {
   const { accent, setAccent } = useTheme()
+  const [osMode, setOsMode] = useState(getCurrentOsMode)
+  const [confirmMode, setConfirmMode] = useState(null)
+
+  const handleOsModeChange = (mode) => {
+    if (mode === osMode) return
+    setConfirmMode(mode)
+  }
+
+  const confirmSwitch = () => {
+    try {
+      if (confirmMode === 'auto') {
+        localStorage.removeItem(OS_MODE_KEY)
+      } else {
+        localStorage.setItem(OS_MODE_KEY, confirmMode)
+      }
+    } catch {}
+    setConfirmMode(null)
+    window.location.reload()
+  }
+
+  const cancelSwitch = () => {
+    setConfirmMode(null)
+  }
 
   return (
     <div className={styles.container}>
@@ -85,7 +115,40 @@ export default function SettingsApp() {
             </div>
           </div>
         </section>
+
+        <section className={styles.section}>
+          <h2 className={styles.sectionTitle}>OS Mode</h2>
+          <p className={styles.sectionDesc}>
+            Switch between the Windows desktop and Android mobile interfaces.
+          </p>
+
+          <div className={styles.osToggle}>
+            {['auto', 'desktop', 'mobile'].map(mode => (
+              <button
+                key={mode}
+                className={`${styles.osBtn} ${osMode === mode ? styles.osBtnActive : ''}`}
+                onClick={() => handleOsModeChange(mode)}
+              >
+                {mode === 'auto' ? 'Auto' : mode === 'desktop' ? 'Desktop' : 'Mobile'}
+              </button>
+            ))}
+          </div>
+        </section>
       </div>
+
+      {confirmMode && (
+        <div className={styles.confirmOverlay}>
+          <div className={styles.confirmBox}>
+            <p className={styles.confirmText}>
+              Switching OS mode will refresh the page. Any unsaved state will be lost.
+            </p>
+            <div className={styles.confirmButtons}>
+              <button className={styles.confirmCancel} onClick={cancelSwitch}>Cancel</button>
+              <button className={styles.confirmOk} style={{ background: accent }} onClick={confirmSwitch}>OK</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

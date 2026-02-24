@@ -1,0 +1,104 @@
+.curtain {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: #0a0a0a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.curtainOut {
+  animation: curtainSlideUp 0.7s cubic-bezier(0.4, 0, 0.2, 1) 0.3s forwards;
+}
+
+@keyframes curtainSlideUp {
+  0%   { transform: translateY(0); opacity: 1; }
+  100% { transform: translateY(-100%); opacity: 0; }
+}
+
+.inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+  animation: fadeIn 0.8s ease both;
+}
+
+.innerOut {
+  animation: fadeOut 0.3s ease forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+.logo {
+  width: 120px;
+  height: auto;
+  color: #fff;
+  opacity: 0;
+  animation: fadeIn 0.6s ease 0.2s forwards;
+}
+
+.message {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 15px;
+  font-weight: 300;
+  letter-spacing: 0.3px;
+  text-align: center;
+  margin: 0;
+  opacity: 0;
+  animation: fadeIn 0.6s ease 0.5s forwards;
+}
+
+.kbd {
+  display: inline-block;
+  padding: 2px 8px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  font-family: inherit;
+  font-size: 13px;
+  color: #fff;
+  margin: 0 2px;
+}
+
+.btn {
+  padding: 10px 32px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 24px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 14px;
+  font-family: inherit;
+  font-weight: 400;
+  cursor: default;
+  letter-spacing: 0.5px;
+  transition: all 0.4s ease;
+  opacity: 0;
+  animation: fadeIn 0.6s ease 0.8s forwards;
+  min-width: 140px;
+}
+
+.btnReady {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+}
+
+.btnReady:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+.btnText {
+  display: inline-block;
+  animation: fadeIn 0.3s ease both;
+}

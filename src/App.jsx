@@ -8,6 +8,7 @@ import Desktop from './components/Desktop/Desktop'
 import Taskbar from './components/Taskbar/Taskbar'
 import TourOverlay from './components/TourOverlay/TourOverlay'
 import MobileShell from './components/MobileShell/MobileShell'
+import SplashCurtain from './components/SplashCurtain/SplashCurtain'
 
 function DesktopTourBridge() {
   const { openWindow } = useWindowManager()
@@ -33,6 +34,7 @@ export default function App() {
   return (
     <ThemeProvider>
       <TourProvider>
+        {mode === 'desktop' && <SplashCurtain />}
         {mode === 'mobile' ? (
           <MobileShell />
         ) : (
