@@ -6,9 +6,22 @@ import styles from './MobileAppView.module.css'
 export default function MobileAppView({ app, onHome }) {
   const { canGoBack, depth, pop } = useNavigation()
   const contentRef = useRef(null)
+  const prevDepthRef = useRef(depth)
+  const scrollStackRef = useRef([])
 
   useEffect(() => {
-    if (contentRef.current) contentRef.current.scrollTop = 0
+    const prev = prevDepthRef.current
+    prevDepthRef.current = depth
+
+    if (!contentRef.current) return
+
+    if (depth > prev) {
+      scrollStackRef.current.push(contentRef.current.scrollTop)
+      contentRef.current.scrollTop = 0
+    } else if (depth < prev) {
+      const saved = scrollStackRef.current.pop()
+      if (saved != null) contentRef.current.scrollTop = saved
+    }
   }, [depth])
 
   const iconUrl = `${import.meta.env.BASE_URL}icons/${app.icon}`

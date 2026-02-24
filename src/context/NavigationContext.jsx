@@ -92,9 +92,25 @@ export function NavigationProvider({ rootComponent: RootComponent, rootProps, ch
 }
 
 export function NavigationView() {
-  const { currentEntry } = useNavigation()
-  const Component = currentEntry.component
-  return <Component {...currentEntry.props} />
+  const { stack } = useNavigation()
+  return (
+    <>
+      {stack.map((entry, i) => {
+        const Component = entry.component
+        const isCurrent = i === stack.length - 1
+        return (
+          <div
+            key={i}
+            style={{
+              display: isCurrent ? 'contents' : 'none',
+            }}
+          >
+            <Component {...entry.props} />
+          </div>
+        )
+      })}
+    </>
+  )
 }
 
 export function useNavigation() {

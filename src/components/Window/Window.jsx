@@ -157,8 +157,22 @@ export default function Window({ windowData, isActive, children }) {
     return () => { dragRef.current = null }
   }, [])
 
+  const prevDepthRef = useRef(depth)
+  const scrollStackRef = useRef([])
+
   useEffect(() => {
-    if (contentRef.current) contentRef.current.scrollTop = 0
+    const prev = prevDepthRef.current
+    prevDepthRef.current = depth
+
+    if (!contentRef.current) return
+
+    if (depth > prev) {
+      scrollStackRef.current.push(contentRef.current.scrollTop)
+      contentRef.current.scrollTop = 0
+    } else if (depth < prev) {
+      const saved = scrollStackRef.current.pop()
+      if (saved != null) contentRef.current.scrollTop = saved
+    }
   }, [depth])
 
   const handleMaximizeToggle = () => {
