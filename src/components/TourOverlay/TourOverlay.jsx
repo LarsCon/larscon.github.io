@@ -220,12 +220,15 @@ export default function TourOverlay({ mode, openApp }) {
     }
   })
 
-  // Auto-advance: "open-about" — watch for the About Me window to appear (only if it wasn't already open)
+  // Auto-advance: "open-about" — watch for the About Me window to appear, or advance if already open
   useEffect(() => {
     if (!active || currentStep?.id !== 'open-about') return
 
     const alreadyOpen = !!document.querySelector('[data-tour-id="window-about-me"]')
-    if (alreadyOpen) return
+    if (alreadyOpen) {
+      setTimeout(() => safeAdvance(), 400)
+      return
+    }
 
     let cancelled = false
     const poll = () => {
