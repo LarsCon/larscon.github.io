@@ -14,7 +14,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 48px;
+  width: 60px;
   height: 100%;
   background: transparent;
   border: none;
@@ -28,8 +28,8 @@
 }
 
 .startLogo {
-  width: 18px;
-  height: 18px;
+  width: 28px;
+  height: 28px;
 }
 
 .windowList {
@@ -86,8 +86,8 @@
 }
 
 .windowBtnIcon {
-  width: 16px;
-  height: 16px;
+  width: 20px;
+  height: 20px;
   flex-shrink: 0;
 }
 

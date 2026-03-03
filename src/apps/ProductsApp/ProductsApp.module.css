@@ -1,0 +1,337 @@
+.container {
+  background: var(--window-content-bg);
+  min-height: 100%;
+  padding: 20px;
+  position: relative;
+}
+
+/* Shop Grid */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--card-bg);
+  cursor: pointer;
+  transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s;
+}
+
+.card:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.thumbWrap {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: #111;
+}
+
+.thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.2s;
+}
+
+.card:hover .thumb {
+  transform: scale(1.05);
+}
+
+.cardInfo {
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cardTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--card-text);
+  line-height: 1.3;
+}
+
+.cardPrice {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* Popup (contained within parent, matches Games style) */
+
+.popupOverlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  padding: 20px;
+}
+
+.popup {
+  background: #1e1e1e;
+  border: 1px solid #3a3a3a;
+  border-radius: 10px;
+  padding: 0;
+  max-width: 850px;
+  width: 100%;
+  height: 500px;
+  max-height: calc(100% - 40px);
+  overflow: hidden;
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.6);
+  animation: popIn 0.2s ease;
+  display: flex;
+}
+
+.popupContent {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+@keyframes popIn {
+  from { opacity: 0; transform: scale(0.92); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* Banner / Image Carousel */
+
+.banner {
+  position: relative;
+  flex: 1.4;
+  background: #111;
+  overflow: hidden;
+  height: 100%;
+}
+
+.bannerTrack {
+  width: 100%;
+  height: 100%;
+  animation: slideIn 0.35s ease both;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(calc(var(--slide-dir, 1) * 40px));
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.bannerImg {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  background: #111;
+}
+
+.bannerArrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+  z-index: 2;
+}
+
+.bannerArrow:hover {
+  background: rgba(0, 0, 0, 0.75);
+}
+
+.bannerArrowLeft {
+  left: 8px;
+}
+
+.bannerArrowRight {
+  right: 8px;
+}
+
+.dots {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+  z-index: 2;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.35);
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.15s;
+}
+
+.dotActive {
+  background: #fff;
+}
+
+/* Popup Body */
+
+.popupBody {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  background: #1e1e1e;
+  border-left: 1px solid #3a3a3a;
+  min-width: 280px;
+  height: 100%;
+}
+
+.popupInfo {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.popupTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 6px;
+  line-height: 1.3;
+}
+
+.popupPrice {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--accent);
+  display: block;
+  margin-bottom: 16px;
+}
+
+.popupDesc {
+  font-size: 13px;
+  line-height: 1.6;
+  color: #bbb;
+  margin-bottom: 24px;
+}
+
+.popupDesc p {
+  margin: 0 0 8px;
+}
+
+.popupDesc p:last-child {
+  margin-bottom: 0;
+}
+
+.popupButtons {
+  display: flex;
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 20px;
+  border-top: 1px solid #3a3a3a;
+  justify-content: flex-end;
+}
+
+.cancelBtn {
+  padding: 8px 20px;
+  border: 1px solid #555;
+  border-radius: 4px;
+  background: transparent;
+  color: #bbb;
+  font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.cancelBtn:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.buyBtn {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 24px;
+  border: none;
+  border-radius: 4px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.buyBtn:hover {
+  filter: brightness(1.1);
+}
+
+@media (max-width: 768px) {
+  .popup {
+    flex-direction: column;
+    max-width: 420px;
+    height: auto;
+    max-height: 95%;
+  }
+
+  .popupContent {
+    flex-direction: column;
+    overflow-y: auto;
+  }
+
+  .banner {
+    flex: none;
+    height: auto;
+    aspect-ratio: 16 / 10;
+  }
+
+  .popupBody {
+    flex: none;
+    border-left: none;
+    border-top: 1px solid #3a3a3a;
+    padding: 20px;
+    max-height: none;
+  }
+
+  .popupInfo {
+    overflow-y: visible;
+  }
+}
+
+@media (max-width: 540px) {
+  .container {
+    padding: 14px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -7,6 +7,7 @@ import ContactApp from '../apps/ContactApp/ContactApp'
 import GamesApp from '../apps/GamesApp/GamesApp'
 import GameEmbedApp from '../apps/GamesApp/GameEmbedApp'
 import MusicApp from '../apps/MusicApp/MusicApp'
+import ProductsApp from '../apps/ProductsApp/ProductsApp'
 import SettingsApp from '../apps/SettingsApp/SettingsApp'
 import gamesData from '../data/gamesData'
 
@@ -51,6 +52,14 @@ const appRegistry = [
     description: 'Explore my projects, code samples, and technical portfolio.',
     component: WorkBrowser,
     defaultSize: { width: 1100, height: 750 },
+  },
+  {
+    id: 'products',
+    title: 'Products',
+    icon: 'products.svg',
+    description: 'Browse products I\'ve designed and built.',
+    component: ProductsApp,
+    defaultSize: { width: 900, height: 650 },
   },
   {
     id: 'games',

@@ -102,6 +102,15 @@ const portfolioItems = [
     link: "https://drive.google.com/file/d/16guObY2g05zUmRFP2NnRgWwcBTy_rRJX/view?usp=drive_link",
   },
   {
+    id: 77,
+    title: "Terraria Board Game Playmat",
+    categories: ["Recreational", "Engineering"],
+    image: "assets/products/Playmat/1.jpg",
+    description: "I CNC cut a pocketed playmat for the Terraria Board Game, as the official one if hard to get your hands on currently. I've also made them for sale!",
+    tags: ["CNC", "Illustrator", "2026"],
+    link: "https://lcbuildsstore.etsy.com/listing/4465523514/terraria-board-game-plastic-pocketed",
+  },
+  {
     id: 6,
     title: "Golf Game",
     categories: ["Programming", "Educational"],
@@ -183,6 +192,15 @@ const portfolioItems = [
     link: "https://drive.google.com/file/d/15rv25gy9gm0U8BgU-DgQijDROrghyuvF/view?usp=sharing",
   },
   {
+    id: 78,
+    title: "At the Park",
+    categories: ["Photography", "Recreational"],
+    image: "assets/photography/madeline.jpg",
+    description: "Madeline loves swings!",
+    tags: ["Canon EOS M200", "2025"],
+    link: "#",
+  },
+  {
     id: 15,
     title: "Poster Project",
     categories: ["Design", "Educational"],
@@ -237,6 +255,15 @@ const portfolioItems = [
     link: "#",
   },
   {
+    id: 79,
+    title: "Wedding Photography",
+    categories: ["Photography", "Recreational"],
+    image: "assets/photography/chels.jpg",
+    description: "My sister got married in Boston, and I was happy to be their photographer!",
+    tags: ["Canon EOS M200", "2025"],
+    link: "#",
+  },
+  {
     id: 21,
     title: "My 3D Printer",
     categories: ["Engineering", "Recreational"],
@@ -270,7 +297,7 @@ const portfolioItems = [
     image: "assets/design/PortfolioPic.png",
     description: "I created posters and ads to collect survey data for the 2024 National Student Advertising Competition",
     tags: ["Illustrator", "2023"],
-    link: "#",
+    link: "https://drive.google.com/file/d/1IbNfBCBck38s7W2C0mf2SxKRBa6GPcIT/edit",
   },
   {
     id: 25,
