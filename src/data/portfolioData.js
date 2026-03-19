@@ -678,15 +678,6 @@ const portfolioItems = [
     link: "#",
   },
   {
-    id: 68,
-    title: "Charcuterie Board",
-    categories: ["Art", "Educational"],
-    image: "assets/art/charcuterie.jpg",
-    description: "Charcuterie board art piece.",
-    tags: ["2021"],
-    link: "#",
-  },
-  {
     id: 69,
     title: "Twitch.TV Graphics",
     categories: ["Design", "Recreational"],

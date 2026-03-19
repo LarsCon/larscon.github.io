@@ -18,7 +18,7 @@ const productsData = [
   {
     id: 'playmat',
     title: 'Terraria Board Game - Plastic Pocketed Playmat',
-    price: '$99.99',
+    price: '$119.99',
     images: [
       'Playmat/1.jpg',
       'Playmat/2.jpg',
