@@ -11,7 +11,7 @@ const PASSWORD    = 'lizard';
 
 const ENEMIES  = ['Bears','Chorus','Deer','Elementals','Frost Skeleton','Goats','Horkers','Ice Wolves','Skeleton','Spiders','Trolls','Wolves'];
 const PLANTS   = ['Blue Flower','Deathcap','Glowing Mushroom','Nightshade','Red Flower','Thistle','Yellow Flower'];
-const ORES     = ['Coal','Iron'];
+const ORES     = ['Coal','Corundum','Dwarven','Ebony','Gold','Iron','Malachite','Moonstone','Orichalcum','Quicksilver','Silver','Steel'];
 
 const LANDMARKS = [
   { file:'Camp.svg',             label:'Camp' },
