@@ -404,3 +404,25 @@
   color: #ff8a8a; padding: 6px; border-radius: 6px; cursor: pointer; font-size: 12px;
 }
 .pi-deny:hover { background: rgba(238,68,68,0.25); }
+
+.pi-eye {
+  background: none; border: none; color: rgba(255,255,255,0.28); cursor: pointer;
+  padding: 2px 3px; margin-left: auto; border-radius: 4px;
+  display: flex; align-items: center; flex-shrink: 0;
+}
+.pi-eye:hover { color: rgba(255,255,255,0.65); }
+.pi-eye.on { color: #7ecdff; }
+.pi-card.pi-previewing {
+  border-color: rgba(68,153,255,0.45);
+  background: rgba(68,153,255,0.07);
+}
+
+.pi-field {
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.05em; color: rgba(255,255,255,0.4); margin-right: 4px; flex-shrink: 0;
+}
+.pi-diff { display: flex; flex-direction: column; gap: 5px; padding: 6px 0; border-top: 1px solid rgba(255,255,255,0.06); }
+.pi-diff-row { display: flex; align-items: baseline; gap: 5px; flex-wrap: wrap; }
+.pi-from { font-size: 11px; color: rgba(255,100,100,0.75); text-decoration: line-through; }
+.pi-arrow { font-size: 11px; color: rgba(255,255,255,0.25); }
+.pi-to   { font-size: 11px; color: rgba(100,220,130,0.9); }

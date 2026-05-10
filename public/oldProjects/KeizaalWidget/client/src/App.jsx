@@ -195,6 +195,7 @@ function Ico({ n, size = 16 }) {
     filter:   'M4 6h16v2.172L14 14.172V21l-4-2v-4.828L4 8.172V6z',
     settings: 'M12 15a3 3 0 100-6 3 3 0 000 6zm7.43-2.92a7.32 7.32 0 00.07-.94c0-.31-.03-.63-.07-.94l2.03-1.58a.49.49 0 00.12-.61l-1.93-3.32a.48.48 0 00-.59-.22l-2.39.96a7.08 7.08 0 00-1.62-.94l-.36-2.54A.47.47 0 0014.2 3H9.8a.47.47 0 00-.47.41l-.36 2.54a7.08 7.08 0 00-1.62.94l-2.39-.96a.48.48 0 00-.59.22L2.44 9.47a.47.47 0 00.12.61l2.03 1.58c-.04.31-.07.63-.07.94 0 .31.03.63.07.94l-2.03 1.58a.47.47 0 00-.12.61l1.93 3.32c.12.22.36.3.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.47.41h4.4c.23 0 .43-.17.47-.41l.36-2.54c.59-.24 1.12-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.93-3.32a.47.47 0 00-.12-.61l-2.03-1.58z',
     review:   'M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z',
+    eye:      'M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z',
   }[n] || '';
   return <svg viewBox="0 0 24 24" width={size} height={size} fill="currentColor"><path d={d}/></svg>;
 }
@@ -596,14 +597,19 @@ function PiDiff({ original, proposed }) {
   );
 }
 
-function PendingItem({ item, onApprove, onDeny }) {
+function PendingItem({ item, onApprove, onDeny, onPreview, isPreviewing }) {
   const marker = item.action === 'delete' ? item.original : item.data;
   return (
-    <div className="pi-card">
+    <div className={`pi-card${isPreviewing ? ' pi-previewing' : ''}`}>
       <div className="pi-head">
         <span className={`pi-badge pi-${item.action}`}>{item.action}</span>
         <span className="pi-type" style={{ color: TYPE_COLORS[marker?.type] }}>{marker?.type}</span>
         {marker?.name && <span className="pi-name">{marker.name}</span>}
+        <button className={`pi-eye${isPreviewing ? ' on' : ''}`}
+          onClick={() => onPreview(isPreviewing ? null : item)}
+          title={isPreviewing ? 'Clear preview' : 'Preview on map'}>
+          <Ico n="eye" size={14} />
+        </button>
       </div>
       {item.action === 'edit' && item.original
         ? <PiDiff original={item.original} proposed={item.data} />
@@ -616,7 +622,7 @@ function PendingItem({ item, onApprove, onDeny }) {
   );
 }
 
-function PendingSidebar({ items, onApprove, onDeny }) {
+function PendingSidebar({ items, onApprove, onDeny, onPreview, previewItemId }) {
   return (
     <div className="pending-sidebar">
       <div className="pending-sidebar-head">
@@ -627,6 +633,8 @@ function PendingSidebar({ items, onApprove, onDeny }) {
         ? <p className="pending-empty">No pending suggestions</p>
         : items.map(item => (
             <PendingItem key={item.id} item={item}
+              isPreviewing={previewItemId === item.id}
+              onPreview={onPreview}
               onApprove={() => onApprove(item.id)}
               onDeny={() => onDeny(item.id)} />
           ))
@@ -656,6 +664,7 @@ export default function App() {
   const [pendingOpen,  setPendingOpen]  = useState(false);
   const [pending,      setPending]      = useState([]);
   const [pendingTick,  setPendingTick]  = useState(0);
+  const [previewItem,  setPreviewItem]  = useState(null);
   const [panel,      setPanel]      = useState(null);     // right-click placement panel
   const [editTarget, setEditTarget] = useState(null);
   const [viewCard,   setViewCard]   = useState(null);     // { id, sx, sy }
@@ -819,7 +828,12 @@ export default function App() {
       ctx.globalAlpha = 1;
     }
 
+    // For edit/delete previews, skip the original marker — drawn specially below
+    const skipId = (previewItem?.action === 'edit' || previewItem?.action === 'delete')
+      ? previewItem.original?.id : null;
+
     markers.forEach(m => {
+      if (skipId && m.id === skipId) return;
       const r  = 14 * Math.sqrt(scale) * (settings.iconScale[m.type] ?? 1);
       const cx = m.x * scale + offset.x;
       const cy = m.y * scale + offset.y;
@@ -827,12 +841,70 @@ export default function App() {
       drawMarkerOnCanvas(ctx, m, cx, cy, r, getImg);
     });
     ctx.globalAlpha = 1;
-  }, [canvasSize, markers, offset, scale, drawTick, getImg, filteredIds, settings]);
+
+    // ── Preview overlay ───────────────────────────────────────────
+    if (previewItem) {
+      const { action, data: proposed, original } = previewItem;
+
+      if (action === 'add' && proposed) {
+        const r  = 14 * Math.sqrt(scale) * (settings.iconScale[proposed.type] ?? 1);
+        const cx = proposed.x * scale + offset.x;
+        const cy = proposed.y * scale + offset.y;
+        ctx.save();
+        ctx.shadowColor = '#55ffaa'; ctx.shadowBlur = 22;
+        drawMarkerOnCanvas(ctx, proposed, cx, cy, r, getImg);
+        ctx.restore();
+        ctx.save();
+        ctx.beginPath(); ctx.arc(cx, cy, r + 7, 0, 2 * Math.PI);
+        ctx.strokeStyle = '#55ffaa'; ctx.lineWidth = 2;
+        ctx.setLineDash([5, 3]); ctx.stroke();
+        ctx.restore();
+
+      } else if (action === 'edit' && original && proposed) {
+        const or = 14 * Math.sqrt(scale) * (settings.iconScale[original.type] ?? 1);
+        const ocx = original.x * scale + offset.x;
+        const ocy = original.y * scale + offset.y;
+        ctx.globalAlpha = 0.28;
+        drawMarkerOnCanvas(ctx, original, ocx, ocy, or, getImg);
+        ctx.globalAlpha = 1;
+
+        const pr = 14 * Math.sqrt(scale) * (settings.iconScale[proposed.type] ?? 1);
+        const pcx = proposed.x * scale + offset.x;
+        const pcy = proposed.y * scale + offset.y;
+        ctx.save();
+        ctx.shadowColor = '#7ecdff'; ctx.shadowBlur = 22;
+        drawMarkerOnCanvas(ctx, proposed, pcx, pcy, pr, getImg);
+        ctx.restore();
+        ctx.save();
+        ctx.beginPath(); ctx.arc(pcx, pcy, pr + 7, 0, 2 * Math.PI);
+        ctx.strokeStyle = '#7ecdff'; ctx.lineWidth = 2;
+        ctx.setLineDash([5, 3]); ctx.stroke();
+        ctx.restore();
+
+      } else if (action === 'delete' && original) {
+        const r  = 14 * Math.sqrt(scale) * (settings.iconScale[original.type] ?? 1);
+        const cx = original.x * scale + offset.x;
+        const cy = original.y * scale + offset.y;
+        ctx.globalAlpha = 0.28;
+        drawMarkerOnCanvas(ctx, original, cx, cy, r, getImg);
+        ctx.globalAlpha = 1;
+        ctx.save();
+        ctx.beginPath(); ctx.arc(cx, cy, r + 7, 0, 2 * Math.PI);
+        ctx.strokeStyle = '#ff4040'; ctx.lineWidth = 2;
+        ctx.setLineDash([5, 3]); ctx.stroke();
+        ctx.strokeStyle = '#ff4040'; ctx.lineWidth = Math.max(2.5, r * 0.25); ctx.lineCap = 'round';
+        ctx.setLineDash([]);
+        ctx.beginPath(); ctx.moveTo(cx - r*0.6, cy - r*0.6); ctx.lineTo(cx + r*0.6, cy + r*0.6); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(cx + r*0.6, cy - r*0.6); ctx.lineTo(cx - r*0.6, cy + r*0.6); ctx.stroke();
+        ctx.restore();
+      }
+    }
+  }, [canvasSize, markers, offset, scale, drawTick, getImg, filteredIds, settings, previewItem]);
 
   // ── Helpers ───────────────────────────────────────────────────
   const lockToggle = () => {
     if (appMode === 'edit' || appMode === 'suggest') {
-      setAppMode('view'); setTbPanel(null); setPanel(null); setEditTarget(null); setPendingOpen(false);
+      setAppMode('view'); setTbPanel(null); setPanel(null); setEditTarget(null); setPendingOpen(false); setPreviewItem(null);
     } else {
       setTbPanel(t => t === 'password' ? null : 'password');
     }
@@ -840,8 +912,20 @@ export default function App() {
 
   const refreshPending = () => apiGetPending().then(r => r.json()).then(d => { if (Array.isArray(d)) setPending(d); }).catch(() => {});
 
-  const handleApprove = async (id) => { await apiApprovePending(id); refreshPending(); };
-  const handleDeny    = async (id) => { await apiDenyPending(id);    refreshPending(); };
+  const handleApprove = async (id) => { if (previewItem?.id === id) setPreviewItem(null); await apiApprovePending(id); refreshPending(); };
+  const handleDeny    = async (id) => { if (previewItem?.id === id) setPreviewItem(null); await apiDenyPending(id);    refreshPending(); };
+
+  const handlePreview = useCallback((item) => {
+    setPreviewItem(item);
+    if (!item) return;
+    const m = item.action === 'delete' ? item.original : item.data;
+    if (!m) return;
+    setOffset(doClamp(
+      canvasSize.width  / 2 - m.x * scale,
+      canvasSize.height / 2 - m.y * scale,
+      scale
+    ));
+  }, [canvasSize, scale, doClamp]);
 
   const menuStyle = panel?.mode === 'menu' ? (() => {
     const pw=162, ph=230;
@@ -971,7 +1055,8 @@ export default function App() {
 
       {/* ── Pending sidebar ── */}
       {pendingOpen && appMode === 'edit' && (
-        <PendingSidebar items={pending} onApprove={handleApprove} onDeny={handleDeny} />
+        <PendingSidebar items={pending} onApprove={handleApprove} onDeny={handleDeny}
+          onPreview={handlePreview} previewItemId={previewItem?.id} />
       )}
 
       {/* ── View card ── */}
