@@ -10,6 +10,8 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
+!public/oldProjects/KeizaalWidget/client/dist/
+!public/oldProjects/KeizaalWidget/client/dist/**
 *.local
 
 # Editor directories and files
