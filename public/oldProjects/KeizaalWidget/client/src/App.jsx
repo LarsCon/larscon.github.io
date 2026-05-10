@@ -427,6 +427,7 @@ function SettingsPanel({ settings, onChange }) {
           <div className="guide-card">
             <ul className="guide-list">
               <li><span className="guide-key">Left click + drag</span> Pan map</li>
+              <li><span className="guide-key">Scroll</span> Zoom in / out</li>
               <li><span className="guide-key">Left click marker</span> View marker details</li>
             </ul>
             <div className="guide-divider" />
