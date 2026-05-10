@@ -161,6 +161,27 @@
 .scale-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
 .scale-type { width: 60px; font-size: 11px; font-weight: 600; flex-shrink: 0; }
 
+.rules-btn {
+  width: 100%; background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1); border-radius: 7px;
+  color: rgba(255,255,255,0.45); padding: 7px; font-size: 12px;
+  cursor: pointer; text-align: left; letter-spacing: 0.04em;
+}
+.rules-btn:hover { background: rgba(255,255,255,0.09); color: rgba(255,255,255,0.7); }
+
+.rules-card { margin-top: 10px; display: flex; flex-direction: column; gap: 8px; }
+
+.rule {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 9px; padding: 10px 12px;
+}
+.rule-head { display: flex; align-items: center; gap: 7px; margin-bottom: 5px; }
+.rule-icon { font-size: 15px; flex-shrink: 0; }
+.rule-title { font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.8); }
+.rule-body { margin: 0; font-size: 11px; color: rgba(255,255,255,0.45); line-height: 1.55; }
+.rule-body em { font-style: normal; color: rgba(255,255,255,0.65); }
+
 /* ── Canvas ──────────────────────────────────────────────────── */
 .canvas-container { position: absolute; top: 44px; left: 0; right: 0; bottom: 0; }
 
