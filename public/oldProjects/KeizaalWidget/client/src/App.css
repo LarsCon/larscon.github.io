@@ -161,26 +161,46 @@
 .scale-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
 .scale-type { width: 60px; font-size: 11px; font-weight: 600; flex-shrink: 0; }
 
-.rules-btn {
+.guide-btn {
   width: 100%; background: rgba(255,255,255,0.05);
   border: 1px solid rgba(255,255,255,0.1); border-radius: 7px;
-  color: rgba(255,255,255,0.45); padding: 7px; font-size: 12px;
+  color: rgba(255,255,255,0.45); padding: 7px 10px; font-size: 12px;
   cursor: pointer; text-align: left; letter-spacing: 0.04em;
 }
-.rules-btn:hover { background: rgba(255,255,255,0.09); color: rgba(255,255,255,0.7); }
+.guide-btn:hover { background: rgba(255,255,255,0.09); color: rgba(255,255,255,0.7); }
 
-.rules-card { margin-top: 10px; display: flex; flex-direction: column; gap: 8px; }
-
-.rule {
+.guide-card {
+  margin-top: 8px;
   background: rgba(255,255,255,0.03);
   border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 9px; padding: 10px 12px;
+  border-radius: 8px; padding: 10px 12px;
 }
-.rule-head { display: flex; align-items: center; gap: 7px; margin-bottom: 5px; }
-.rule-icon { font-size: 15px; flex-shrink: 0; }
-.rule-title { font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.8); }
-.rule-body { margin: 0; font-size: 11px; color: rgba(255,255,255,0.45); line-height: 1.55; }
-.rule-body em { font-style: normal; color: rgba(255,255,255,0.65); }
+
+.guide-list {
+  margin: 0; padding: 0; list-style: none;
+  display: flex; flex-direction: column; gap: 5px;
+}
+.guide-list li {
+  font-size: 11px; color: rgba(255,255,255,0.45);
+  line-height: 1.4; padding-left: 10px; position: relative;
+}
+.guide-list li::before { content: '–'; position: absolute; left: 0; color: rgba(255,255,255,0.2); }
+
+.guide-key {
+  font-weight: 700; color: rgba(255,255,255,0.75);
+  margin-right: 4px;
+}
+
+.guide-divider {
+  border: none; border-top: 1px solid rgba(255,255,255,0.07);
+  margin: 8px 0;
+}
+
+.guide-sub {
+  margin: 0 0 6px; font-size: 10px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  color: rgba(255,255,255,0.25);
+}
 
 /* ── Canvas ──────────────────────────────────────────────────── */
 .canvas-container { position: absolute; top: 44px; left: 0; right: 0; bottom: 0; }

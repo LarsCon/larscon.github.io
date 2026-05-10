@@ -345,7 +345,8 @@ function FilterPanel({ filter, onChange }) {
 
 // ── SettingsPanel ─────────────────────────────────────────────────────────────
 function SettingsPanel({ settings, onChange }) {
-  const [showRules, setShowRules] = useState(false);
+  const [showHelp,  setShowHelp]  = useState(false);
+  const [showGuide, setShowGuide] = useState(false);
   return (
     <div className="tb-panel settings-panel" onPointerDown={e => e.stopPropagation()}>
       <div className="panel-section">
@@ -376,39 +377,44 @@ function SettingsPanel({ settings, onChange }) {
           Lock pan to map boundary
         </label>
       </div>
-      <div className="panel-section" style={{marginBottom:0}}>
-        <button className="rules-btn" onClick={() => setShowRules(v => !v)}>
-          {showRules ? '▲' : '▼'} Placement Guide
+
+      <div className="panel-section">
+        <button className="guide-btn" onClick={() => setShowHelp(v => !v)}>
+          {showHelp ? '▲' : '▼'} Help
         </button>
-        {showRules && (
-          <div className="rules-card">
-            <div className="rule">
-              <div className="rule-head">
-                <span className="rule-icon">🏛</span>
-                <span className="rule-title">Group content into Monuments</span>
-              </div>
-              <p className="rule-body">
-                Enemies, Plants, and Ore nodes found <em>at</em> a location belong inside that Monument marker — not as separate markers on the same spot.
-              </p>
-            </div>
-            <div className="rule">
-              <div className="rule-head">
-                <span className="rule-icon">✏️</span>
-                <span className="rule-title">Keep naming consistent</span>
-              </div>
-              <p className="rule-body">
-                Use the same name for the same thing across all markers. If one Monument is called <em>Embershard Mine</em>, don't call another <em>embershard mine</em>.
-              </p>
-            </div>
-            <div className="rule">
-              <div className="rule-head">
-                <span className="rule-icon">⚠️</span>
-                <span className="rule-title">Don't overlap markers</span>
-              </div>
-              <p className="rule-body">
-                Stacked markers hide each other and the one underneath becomes unreachable. Space them out.
-              </p>
-            </div>
+        {showHelp && (
+          <div className="guide-card">
+            <ul className="guide-list">
+              <li><span className="guide-key">Left click + drag</span> Pan map</li>
+              <li><span className="guide-key">Left click marker</span> View marker details</li>
+            </ul>
+            <div className="guide-divider" />
+            <ul className="guide-list">
+              <li><span className="guide-key">Filter</span> Show or hide markers by type and content</li>
+              <li><span className="guide-key">Settings</span> Adjust tint, marker scale, and pan boundary</li>
+            </ul>
+            <div className="guide-divider" />
+            <p className="guide-sub">Unlock to edit</p>
+            <ul className="guide-list">
+              <li><span className="guide-key">Right click</span> Place a new marker</li>
+              <li><span className="guide-key">Left click marker</span> Edit or delete marker</li>
+              <li>First time editing? Read the Placement Guide below.</li>
+            </ul>
+          </div>
+        )}
+      </div>
+
+      <div className="panel-section" style={{marginBottom:0}}>
+        <button className="guide-btn" onClick={() => setShowGuide(v => !v)}>
+          {showGuide ? '▲' : '▼'} Placement Guide
+        </button>
+        {showGuide && (
+          <div className="guide-card">
+            <ul className="guide-list">
+              <li>Enemies, Plants, and Ore nodes found at a Monument belong inside that Monument marker</li>
+              <li>Use consistent names across all markers — capitalisation included</li>
+              <li>Don't overlap markers — the one underneath becomes unreachable</li>
+            </ul>
           </div>
         )}
       </div>
