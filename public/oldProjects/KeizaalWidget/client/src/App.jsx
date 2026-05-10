@@ -527,7 +527,7 @@ export default function App() {
 
   const [filter, setFilter] = useState({ types:[], enemies:[], plants:[], ores:[], chest:false, match:'any' });
   const [settings, setSettings] = useState(() => {
-    const def = { tint:'#1a0a00', tintOpacity:0.3, iconScale:{ Monument:1, 'Major City':1.3, Plant:0.7, Enemy:0.7, Ore:0.7, Chest:1 }, boundaryLock:true };
+    const def = { tint:'#1a0a00', tintOpacity:0.5, iconScale:{ Monument:1, 'Major City':1.3, Plant:0.7, Enemy:0.7, Ore:0.7, Chest:1 }, boundaryLock:true };
     try {
       const s = JSON.parse(localStorage.getItem(SETTINGS_KEY));
       if (!s) return def;
