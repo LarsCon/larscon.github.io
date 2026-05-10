@@ -117,6 +117,17 @@ function matchesFilter(marker, f) {
   return f.match === 'all' ? checks.every(Boolean) : checks.some(Boolean);
 }
 
+function matchesSearch(marker, q) {
+  const parts = [
+    marker.type, marker.name, marker.desc, marker.notes,
+    marker.chest ? 'chest' : '',
+    ...(marker.enemies || []).map(e => e.name),
+    ...(marker.plants  || []).map(p => p.name),
+    ...(marker.nodes   || []).map(o => o.name),
+  ];
+  return parts.join(' ').toLowerCase().includes(q);
+}
+
 // ── Canvas draw helpers ───────────────────────────────────────────────────────
 function drawStar(ctx, cx, cy, r, color) {
   ctx.beginPath();
@@ -196,6 +207,7 @@ function Ico({ n, size = 16 }) {
     settings: 'M12 15a3 3 0 100-6 3 3 0 000 6zm7.43-2.92a7.32 7.32 0 00.07-.94c0-.31-.03-.63-.07-.94l2.03-1.58a.49.49 0 00.12-.61l-1.93-3.32a.48.48 0 00-.59-.22l-2.39.96a7.08 7.08 0 00-1.62-.94l-.36-2.54A.47.47 0 0014.2 3H9.8a.47.47 0 00-.47.41l-.36 2.54a7.08 7.08 0 00-1.62.94l-2.39-.96a.48.48 0 00-.59.22L2.44 9.47a.47.47 0 00.12.61l2.03 1.58c-.04.31-.07.63-.07.94 0 .31.03.63.07.94l-2.03 1.58a.47.47 0 00-.12.61l1.93 3.32c.12.22.36.3.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.47.41h4.4c.23 0 .43-.17.47-.41l.36-2.54c.59-.24 1.12-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.93-3.32a.47.47 0 00-.12-.61l-2.03-1.58z',
     review:   'M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z',
     eye:      'M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z',
+    search:   'M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z',
   }[n] || '';
   return <svg viewBox="0 0 24 24" width={size} height={size} fill="currentColor"><path d={d}/></svg>;
 }
@@ -327,6 +339,29 @@ function MarkerForm({ type, initial, onSave, onDelete, onClose, suggest }) {
         </button>
         {onDelete && <button type="button" className="btn-del" onClick={onDelete}>{suggest ? 'Suggest Removal' : 'Delete'}</button>}
       </div>
+    </div>
+  );
+}
+
+// ── SearchBar ─────────────────────────────────────────────────
+function SearchBar({ value, onChange }) {
+  const [open, setOpen] = useState(false);
+  const inputRef = useRef(null);
+  const activate = () => { setOpen(true); setTimeout(() => inputRef.current?.focus(), 0); };
+  const clear = () => { onChange(''); setOpen(false); };
+  return (
+    <div className="tb-search">
+      <button className={`tb-btn${open || value ? ' tb-open' : ''}`} onClick={activate} title="Search markers">
+        <Ico n="search" />
+      </button>
+      {(open || value) && (
+        <input ref={inputRef} className="tb-search-input" value={value}
+          onChange={e => onChange(e.target.value)}
+          onKeyDown={e => e.key === 'Escape' && clear()}
+          onBlur={() => { if (!value) setOpen(false); }}
+          placeholder="Search…" autoFocus />
+      )}
+      {value && <button className="tb-search-clear" onClick={clear}>×</button>}
     </div>
   );
 }
@@ -669,6 +704,7 @@ export default function App() {
   const [editTarget, setEditTarget] = useState(null);
   const [viewCard,   setViewCard]   = useState(null);     // { id, sx, sy }
 
+  const [searchQuery, setSearchQuery] = useState('');
   const [filter, setFilter] = useState({ types:[], enemies:[], plants:[], ores:[], chest:false, match:'any' });
   const [settings, setSettings] = useState(() => {
     const def = { tint:'#1a0a00', tintOpacity:0.5, iconScale:{ Monument:1, 'Major City':1.3, Plant:0.7, Enemy:0.7, Ore:0.7, Chest:1, Dud:0.7 }, boundaryLock:true };
@@ -689,6 +725,9 @@ export default function App() {
 
   // Live server subscription
   useEffect(() => subscribeMarkers(setMarkers, setSync, () => setPendingTick(t => t + 1)), []);
+
+  // Clear search when leaving view mode
+  useEffect(() => { if (appMode !== 'view') setSearchQuery(''); }, [appMode]);
 
   // Fetch pending whenever admin mode is active or a pending-update SSE fires
   useEffect(() => {
@@ -747,6 +786,14 @@ export default function App() {
     markers.forEach(m => { if (matchesFilter(m, filter)) ids.add(m.id); });
     return ids;
   }, [markers, filter]);
+
+  const searchIds = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return null;
+    const ids = new Set();
+    markers.forEach(m => { if (matchesSearch(m, q)) ids.add(m.id); });
+    return ids;
+  }, [markers, searchQuery]);
 
   // ── Pointer ───────────────────────────────────────────────────
   const onPointerDown = e => {
@@ -837,7 +884,8 @@ export default function App() {
       const r  = 14 * Math.sqrt(scale) * (settings.iconScale[m.type] ?? 1);
       const cx = m.x * scale + offset.x;
       const cy = m.y * scale + offset.y;
-      ctx.globalAlpha = filteredIds && !filteredIds.has(m.id) ? 0.15 : 1;
+      const visible = (!filteredIds || filteredIds.has(m.id)) && (!searchIds || searchIds.has(m.id));
+      ctx.globalAlpha = visible ? 1 : 0.12;
       drawMarkerOnCanvas(ctx, m, cx, cy, r, getImg);
     });
     ctx.globalAlpha = 1;
@@ -899,7 +947,7 @@ export default function App() {
         ctx.restore();
       }
     }
-  }, [canvasSize, markers, offset, scale, drawTick, getImg, filteredIds, settings, previewItem]);
+  }, [canvasSize, markers, offset, scale, drawTick, getImg, filteredIds, searchIds, settings, previewItem]);
 
   // ── Helpers ───────────────────────────────────────────────────
   const lockToggle = () => {
@@ -947,6 +995,7 @@ export default function App() {
             title={appMode==='edit' ? 'Lock (return to view)' : appMode==='suggest' ? 'Exit suggest mode' : 'Unlock'}>
             <Ico n={appMode==='view' ? 'lock' : 'unlock'} />
           </button>
+          {appMode === 'view' && <SearchBar value={searchQuery} onChange={setSearchQuery} />}
         </div>
         <div className="tb-center">
           <span className="tb-title">Keizaal</span>
