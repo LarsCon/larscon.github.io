@@ -551,29 +551,63 @@ function ViewCard({ marker, sx, sy, onClose }) {
 }
 
 // ── PendingSidebar ────────────────────────────────────────────────────────────
+function PiMarkerDetail({ marker }) {
+  if (!marker) return null;
+  const enemies = marker.enemies || [];
+  const plants  = marker.plants  || [];
+  const nodes   = marker.nodes   || [];
+  const empty   = !marker.desc && !marker.notes && !marker.chest && !enemies.length && !plants.length && !nodes.length;
+  return (
+    <div className="pi-detail">
+      {marker.desc    && <p className="pi-text">{marker.desc}</p>}
+      {marker.chest   && <p className="pi-text"><span className="pi-field">Chest</span> Yes</p>}
+      {enemies.length > 0 && <p className="pi-text"><span className="pi-field">Enemies</span> {enemies.map(e=>`${e.name}×${e.count}`).join(', ')}</p>}
+      {plants.length  > 0 && <p className="pi-text"><span className="pi-field">Plants</span> {plants.map(p=>`${p.name}×${p.count}`).join(', ')}</p>}
+      {nodes.length   > 0 && <p className="pi-text"><span className="pi-field">Ore</span> {nodes.map(o=>`${o.name}×${o.count}`).join(', ')}</p>}
+      {marker.notes   && <p className="pi-text pi-muted">{marker.notes}</p>}
+      {empty          && <p className="pi-text pi-muted">No details recorded</p>}
+    </div>
+  );
+}
+
+function PiDiff({ original, proposed }) {
+  const fields = [];
+  const str  = v => v || '—';
+  const arrStr = (arr) => (arr||[]).map(i=>`${i.name}×${i.count}`).join(', ') || 'none';
+  if (original.name  !== proposed.name)  fields.push({ label:'Name',        from: str(original.name),  to: str(proposed.name) });
+  if (original.desc  !== proposed.desc)  fields.push({ label:'Description', from: str(original.desc),  to: str(proposed.desc) });
+  if (original.icon  !== proposed.icon)  fields.push({ label:'Icon',        from: str(original.icon),  to: str(proposed.icon) });
+  if (original.notes !== proposed.notes) fields.push({ label:'Notes',       from: str(original.notes), to: str(proposed.notes) });
+  if (original.chest !== proposed.chest) fields.push({ label:'Chest',       from: original.chest?'Yes':'No', to: proposed.chest?'Yes':'No' });
+  if (JSON.stringify(original.enemies||[]) !== JSON.stringify(proposed.enemies||[])) fields.push({ label:'Enemies',  to: arrStr(proposed.enemies) });
+  if (JSON.stringify(original.plants ||[]) !== JSON.stringify(proposed.plants ||[])) fields.push({ label:'Plants',   to: arrStr(proposed.plants) });
+  if (JSON.stringify(original.nodes  ||[]) !== JSON.stringify(proposed.nodes  ||[])) fields.push({ label:'Ore',      to: arrStr(proposed.nodes) });
+  if (fields.length === 0) return <p className="pi-text pi-muted">No content changes — position may have moved</p>;
+  return (
+    <div className="pi-diff">
+      {fields.map(f => (
+        <div key={f.label} className="pi-diff-row">
+          <span className="pi-field">{f.label}</span>
+          {f.from !== undefined && <><span className="pi-from">{f.from}</span><span className="pi-arrow">→</span></>}
+          <span className="pi-to">{f.to}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function PendingItem({ item, onApprove, onDeny }) {
   const marker = item.action === 'delete' ? item.original : item.data;
-  const [expanded, setExpanded] = useState(false);
   return (
     <div className="pi-card">
       <div className="pi-head">
         <span className={`pi-badge pi-${item.action}`}>{item.action}</span>
         <span className="pi-type" style={{ color: TYPE_COLORS[marker?.type] }}>{marker?.type}</span>
         {marker?.name && <span className="pi-name">{marker.name}</span>}
-        <button className="pi-toggle" onClick={() => setExpanded(v => !v)}>{expanded ? '▲' : '▼'}</button>
       </div>
-      {expanded && (
-        <div className="pi-detail">
-          {marker?.desc  && <p className="pi-text">{marker.desc}</p>}
-          {marker?.notes && <p className="pi-text pi-muted">{marker.notes}</p>}
-          {(marker?.enemies||[]).length > 0 && <p className="pi-text">Enemies: {marker.enemies.map(e=>`${e.name}×${e.count}`).join(', ')}</p>}
-          {(marker?.plants ||[]).length > 0 && <p className="pi-text">Plants: {marker.plants.map(p=>`${p.name}×${p.count}`).join(', ')}</p>}
-          {(marker?.nodes  ||[]).length > 0 && <p className="pi-text">Ore nodes: {marker.nodes.map(o=>`${o.name}×${o.count}`).join(', ')}</p>}
-          {item.action === 'edit' && item.original && (
-            <p className="pi-text pi-muted">Editing: {item.original.name || item.original.type}</p>
-          )}
-        </div>
-      )}
+      {item.action === 'edit' && item.original
+        ? <PiDiff original={item.original} proposed={item.data} />
+        : <PiMarkerDetail marker={marker} />}
       <div className="pi-actions">
         <button className="pi-approve" onClick={onApprove}>Approve</button>
         <button className="pi-deny"    onClick={onDeny}>Deny</button>
@@ -650,7 +684,7 @@ export default function App() {
   // Fetch pending whenever admin mode is active or a pending-update SSE fires
   useEffect(() => {
     if (appMode !== 'edit') { setPending([]); return; }
-    apiGetPending().then(r => r.json()).then(setPending).catch(() => {});
+    apiGetPending().then(r => r.json()).then(d => { if (Array.isArray(d)) setPending(d); }).catch(() => {});
   }, [appMode, pendingTick]);
 
   useEffect(() => {
@@ -804,7 +838,7 @@ export default function App() {
     }
   };
 
-  const refreshPending = () => apiGetPending().then(r => r.json()).then(setPending).catch(() => {});
+  const refreshPending = () => apiGetPending().then(r => r.json()).then(d => { if (Array.isArray(d)) setPending(d); }).catch(() => {});
 
   const handleApprove = async (id) => { await apiApprovePending(id); refreshPending(); };
   const handleDeny    = async (id) => { await apiDenyPending(id);    refreshPending(); };
