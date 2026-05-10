@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { subscribeMarkers, apiAdd, apiUpdate, apiDelete } from './api';
+import { subscribeMarkers, apiAdd, apiUpdate, apiDelete, apiSuggest, apiGetPending, apiApprovePending, apiDenyPending } from './api';
 import './App.css';
 
 // ── Constants ─────────────────────────────────────────────────────────────────
@@ -8,7 +8,8 @@ const SETTINGS_KEY = 'keizaal-settings';
 const IMG_BASE      = '/oldProjects/KeizaalWidget/images/landmarks/';
 const CITY_IMG_BASE = '/oldProjects/KeizaalWidget/images/majorcities/';
 const TOOLBAR_H   = 44;
-const PASSWORD    = 'lizard';
+const PASSWORD_ADMIN     = 'lizard';
+const PASSWORD_COMMENTER = 'bigwetnoodle';
 
 const ENEMIES  = ['Bears','Chorus','Deer','Elementals','Frost Skeleton','Goats','Horkers','Ice Wolves','Skeleton','Spiders','Trolls','Wolves'];
 const PLANTS   = [
@@ -22,7 +23,7 @@ const PLANTS   = [
   'Scathecraw','Snowberries','Swamp Fungal Pod','Thistle Branch','Trama Root',
   'Tundra Cotton','White Cap','Yellow Mountain Flower',
 ];
-const ORES     = ['Coal','Corundum','Dwarven','Ebony','Gold','Iron','Malachite','Moonstone','Orichalcum','Quicksilver','Silver','Steel'];
+const ORES     = ['Coal','Copper','Corundum','Dwarven','Ebony','Gold','Iron','Malachite','Moonstone','Orichalcum','Quicksilver','Silver','Steel'];
 
 const LANDMARKS = [
   { file:'Camp.svg',             label:'Camp' },
@@ -70,11 +71,11 @@ const MAJORCITIES = [
   { file:'Winterhold.svg',   label:'Winterhold' },
 ];
 
-const TYPES = ['Monument','Major City','Plant','Enemy','Ore','Chest'];
+const TYPES = ['Monument','Major City','Plant','Enemy','Ore','Chest','Dud'];
 
 const TYPE_COLORS = {
   Monument:'#FFD700', 'Major City':'#4499FF', Plant:'#55BB55',
-  Enemy:'#EE4444',    Ore:'#FF8C00',          Chest:'#FFD700',
+  Enemy:'#EE4444',    Ore:'#FF8C00',          Chest:'#FFD700',  Dud:'#FF4040',
 };
 
 // ── Pure helpers ──────────────────────────────────────────────────────────────
@@ -173,7 +174,15 @@ function drawMarkerOnCanvas(ctx, marker, cx, cy, r, getImg) {
     case 'Plant':  { const n = (marker.plants  || []).reduce((s,p) => s+p.count, 0); drawNumberCircle(ctx,cx,cy,r,'#55BB55',n); break; }
     case 'Enemy':  { const n = (marker.enemies || []).reduce((s,e) => s+e.count, 0); drawNumberCircle(ctx,cx,cy,r,'#EE4444',n); break; }
     case 'Ore':    { const n = (marker.nodes   || []).reduce((s,o) => s+o.count, 0); drawNumberCircle(ctx,cx,cy,r,'#FF8C00',n); break; }
-    case 'Chest':  { drawStar(ctx, cx, cy, r, '#FFD700'); break; }
+    case 'Chest': { drawStar(ctx, cx, cy, r, '#FFD700'); break; }
+    case 'Dud': {
+      ctx.beginPath(); ctx.arc(cx, cy, r, 0, 2 * Math.PI);
+      ctx.strokeStyle = 'rgba(255,64,64,0.35)'; ctx.lineWidth = 1.5; ctx.stroke();
+      ctx.strokeStyle = '#FF4040'; ctx.lineWidth = Math.max(2, r * 0.28); ctx.lineCap = 'round';
+      ctx.beginPath(); ctx.moveTo(cx - r*0.55, cy - r*0.55); ctx.lineTo(cx + r*0.55, cy + r*0.55); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(cx + r*0.55, cy - r*0.55); ctx.lineTo(cx - r*0.55, cy + r*0.55); ctx.stroke();
+      break;
+    }
   }
   ctx.restore();
 }
@@ -185,6 +194,7 @@ function Ico({ n, size = 16 }) {
     unlock:   'M18 10H10V7a2 2 0 114 0h2A4 4 0 008 7v3H4a2 2 0 00-2 2v9a2 2 0 002 2h16a2 2 0 002-2v-9a2 2 0 00-2-2zm-6 9a1.5 1.5 0 110-3 1.5 1.5 0 010 3z',
     filter:   'M4 6h16v2.172L14 14.172V21l-4-2v-4.828L4 8.172V6z',
     settings: 'M12 15a3 3 0 100-6 3 3 0 000 6zm7.43-2.92a7.32 7.32 0 00.07-.94c0-.31-.03-.63-.07-.94l2.03-1.58a.49.49 0 00.12-.61l-1.93-3.32a.48.48 0 00-.59-.22l-2.39.96a7.08 7.08 0 00-1.62-.94l-.36-2.54A.47.47 0 0014.2 3H9.8a.47.47 0 00-.47.41l-.36 2.54a7.08 7.08 0 00-1.62.94l-2.39-.96a.48.48 0 00-.59.22L2.44 9.47a.47.47 0 00.12.61l2.03 1.58c-.04.31-.07.63-.07.94 0 .31.03.63.07.94l-2.03 1.58a.47.47 0 00-.12.61l1.93 3.32c.12.22.36.3.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.47.41h4.4c.23 0 .43-.17.47-.41l.36-2.54c.59-.24 1.12-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.93-3.32a.47.47 0 00-.12-.61l-2.03-1.58z',
+    review:   'M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z',
   }[n] || '';
   return <svg viewBox="0 0 24 24" width={size} height={size} fill="currentColor"><path d={d}/></svg>;
 }
@@ -269,11 +279,12 @@ function getInitial(type) {
     case 'Enemy':    return { enemies:[], notes:'' };
     case 'Ore':      return { nodes:[], notes:'' };
     case 'Chest':    return { notes:'' };
+    case 'Dud':      return { notes:'' };
     default:         return {};
   }
 }
 
-function MarkerForm({ type, initial, onSave, onDelete, onClose }) {
+function MarkerForm({ type, initial, onSave, onDelete, onClose, suggest }) {
   const [d, setD] = useState(() => ({ ...getInitial(type), ...initial }));
   const set = (k, v) => setD(p => ({ ...p, [k]: v }));
   return (
@@ -308,22 +319,26 @@ function MarkerForm({ type, initial, onSave, onDelete, onClose }) {
       {type === 'Enemy'  && <><MultiPicker label="Enemies"   options={ENEMIES}  items={d.enemies}  onChange={v => set('enemies', v)} /><Field label="Notes" value={d.notes} onChange={v => set('notes', v)} area /></>}
       {type === 'Ore'    && <><MultiPicker label="Ore Nodes" options={ORES}     items={d.nodes}    onChange={v => set('nodes', v)} /><Field label="Notes" value={d.notes} onChange={v => set('notes', v)} area /></>}
       {type === 'Chest'  && <Field label="Notes" value={d.notes} onChange={v => set('notes', v)} area />}
+      {type === 'Dud'    && <Field label="Notes" value={d.notes} onChange={v => set('notes', v)} area />}
       <div className="form-actions">
-        <button type="button" className="btn-save" disabled={(type === 'Monument' || type === 'Major City') && !d.icon} onClick={() => onSave(d)}>Save</button>
-        {onDelete && <button type="button" className="btn-del" onClick={onDelete}>Delete</button>}
+        <button type="button" className="btn-save" disabled={(type === 'Monument' || type === 'Major City') && !d.icon} onClick={() => onSave(d)}>
+          {suggest ? 'Submit for Review' : 'Save'}
+        </button>
+        {onDelete && <button type="button" className="btn-del" onClick={onDelete}>{suggest ? 'Suggest Removal' : 'Delete'}</button>}
       </div>
     </div>
   );
 }
 
 // ── PasswordPanel ─────────────────────────────────────────────────────────────
-function PasswordPanel({ onSuccess }) {
+function PasswordPanel({ onAdmin, onCommenter }) {
   const [pw, setPw]       = useState('');
   const [error, setError] = useState(false);
   const ref = useRef(null);
   useEffect(() => { ref.current?.focus(); }, []);
   const submit = () => {
-    if (pw === PASSWORD) { onSuccess(); }
+    if (pw === PASSWORD_ADMIN)     { onAdmin(); }
+    else if (pw === PASSWORD_COMMENTER) { onCommenter(); }
     else { setError(true); setPw(''); setTimeout(() => setError(false), 700); }
   };
   return (
@@ -343,14 +358,36 @@ function PasswordPanel({ onSuccess }) {
 
 // ── FilterChips ───────────────────────────────────────────────────────────────
 function FilterChips({ label, options, selected, onToggle }) {
+  const [open, setOpen] = useState(false);
+  const [q,    setQ]    = useState('');
+  const visible = q ? options.filter(o => o.toLowerCase().includes(q.toLowerCase())) : options;
   return (
-    <div className="panel-section">
-      <span className="panel-label">{label}</span>
-      <div className="chip-wrap">
-        {options.map(o => (
-          <button key={o} className={`chip${selected.includes(o) ? ' on' : ''}`} onClick={() => onToggle(o)}>{o}</button>
-        ))}
-      </div>
+    <div className="fc-section">
+      <button className="fc-header" onClick={() => setOpen(v => !v)}>
+        <span className="fc-label">{label}</span>
+        {selected.length > 0 && <span className="fc-sel-count">{selected.length}</span>}
+        <span className="fc-arrow">{open ? '▲' : '▼'}</span>
+      </button>
+      {selected.length > 0 && (
+        <div className="fc-tags">
+          {selected.map(s => (
+            <button key={s} className="fc-tag" onClick={() => onToggle(s)}>{s} ×</button>
+          ))}
+        </div>
+      )}
+      {open && (
+        <div className="fc-drop">
+          <input className="fc-search" value={q} onChange={e => setQ(e.target.value)}
+            placeholder={`Search ${label.toLowerCase()}…`} />
+          <div className="fc-list">
+            {visible.map(o => (
+              <button key={o} className={`fc-item${selected.includes(o) ? ' on' : ''}`}
+                onClick={() => onToggle(o)}>{o}</button>
+            ))}
+            {visible.length === 0 && <span className="fc-none">No results</span>}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -513,6 +550,57 @@ function ViewCard({ marker, sx, sy, onClose }) {
   );
 }
 
+// ── PendingSidebar ────────────────────────────────────────────────────────────
+function PendingItem({ item, onApprove, onDeny }) {
+  const marker = item.action === 'delete' ? item.original : item.data;
+  const [expanded, setExpanded] = useState(false);
+  return (
+    <div className="pi-card">
+      <div className="pi-head">
+        <span className={`pi-badge pi-${item.action}`}>{item.action}</span>
+        <span className="pi-type" style={{ color: TYPE_COLORS[marker?.type] }}>{marker?.type}</span>
+        {marker?.name && <span className="pi-name">{marker.name}</span>}
+        <button className="pi-toggle" onClick={() => setExpanded(v => !v)}>{expanded ? '▲' : '▼'}</button>
+      </div>
+      {expanded && (
+        <div className="pi-detail">
+          {marker?.desc  && <p className="pi-text">{marker.desc}</p>}
+          {marker?.notes && <p className="pi-text pi-muted">{marker.notes}</p>}
+          {(marker?.enemies||[]).length > 0 && <p className="pi-text">Enemies: {marker.enemies.map(e=>`${e.name}×${e.count}`).join(', ')}</p>}
+          {(marker?.plants ||[]).length > 0 && <p className="pi-text">Plants: {marker.plants.map(p=>`${p.name}×${p.count}`).join(', ')}</p>}
+          {(marker?.nodes  ||[]).length > 0 && <p className="pi-text">Ore nodes: {marker.nodes.map(o=>`${o.name}×${o.count}`).join(', ')}</p>}
+          {item.action === 'edit' && item.original && (
+            <p className="pi-text pi-muted">Editing: {item.original.name || item.original.type}</p>
+          )}
+        </div>
+      )}
+      <div className="pi-actions">
+        <button className="pi-approve" onClick={onApprove}>Approve</button>
+        <button className="pi-deny"    onClick={onDeny}>Deny</button>
+      </div>
+    </div>
+  );
+}
+
+function PendingSidebar({ items, onApprove, onDeny }) {
+  return (
+    <div className="pending-sidebar">
+      <div className="pending-sidebar-head">
+        <span className="panel-label" style={{marginBottom:0}}>Pending Review</span>
+        {items.length > 0 && <span className="pending-count-badge">{items.length}</span>}
+      </div>
+      {items.length === 0
+        ? <p className="pending-empty">No pending suggestions</p>
+        : items.map(item => (
+            <PendingItem key={item.id} item={item}
+              onApprove={() => onApprove(item.id)}
+              onDeny={() => onDeny(item.id)} />
+          ))
+      }
+    </div>
+  );
+}
+
 // ── App ───────────────────────────────────────────────────────────────────────
 export default function App() {
   const canvasRef = useRef(null);
@@ -529,15 +617,18 @@ export default function App() {
   const [markers, setMarkers] = useState([]);
   const [sync, setSync] = useState('connecting'); // 'connecting'|'live'|'error'
 
-  const [appMode,    setAppMode]    = useState('view');   // 'view' | 'edit'
-  const [tbPanel,    setTbPanel]    = useState(null);     // 'password'|'filter'|'settings'|null
+  const [appMode,      setAppMode]      = useState('view');  // 'view' | 'edit' | 'suggest'
+  const [tbPanel,      setTbPanel]      = useState(null);    // 'password'|'filter'|'settings'|null
+  const [pendingOpen,  setPendingOpen]  = useState(false);
+  const [pending,      setPending]      = useState([]);
+  const [pendingTick,  setPendingTick]  = useState(0);
   const [panel,      setPanel]      = useState(null);     // right-click placement panel
   const [editTarget, setEditTarget] = useState(null);
   const [viewCard,   setViewCard]   = useState(null);     // { id, sx, sy }
 
   const [filter, setFilter] = useState({ types:[], enemies:[], plants:[], ores:[], chest:false, match:'any' });
   const [settings, setSettings] = useState(() => {
-    const def = { tint:'#1a0a00', tintOpacity:0.5, iconScale:{ Monument:1, 'Major City':1.3, Plant:0.7, Enemy:0.7, Ore:0.7, Chest:1 }, boundaryLock:true };
+    const def = { tint:'#1a0a00', tintOpacity:0.5, iconScale:{ Monument:1, 'Major City':1.3, Plant:0.7, Enemy:0.7, Ore:0.7, Chest:1, Dud:0.7 }, boundaryLock:true };
     try {
       const s = JSON.parse(localStorage.getItem(SETTINGS_KEY));
       if (!s) return def;
@@ -554,7 +645,13 @@ export default function App() {
   useEffect(() => { localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings)); }, [settings]);
 
   // Live server subscription
-  useEffect(() => subscribeMarkers(setMarkers, setSync), []);
+  useEffect(() => subscribeMarkers(setMarkers, setSync, () => setPendingTick(t => t + 1)), []);
+
+  // Fetch pending whenever admin mode is active or a pending-update SSE fires
+  useEffect(() => {
+    if (appMode !== 'edit') { setPending([]); return; }
+    apiGetPending().then(r => r.json()).then(setPending).catch(() => {});
+  }, [appMode, pendingTick]);
 
   useEffect(() => {
     const fn = e => { if (e.key === 'Escape') { setPanel(null); setEditTarget(null); setViewCard(null); setTbPanel(null); } };
@@ -635,7 +732,7 @@ export default function App() {
       const hit   = markers.find(m => Math.hypot(m.x - world.x, m.y - world.y) < 20 / scale);
       if (hit) {
         if (appMode === 'view') setViewCard({ id: hit.id, sx: e.clientX, sy: e.clientY });
-        else setEditTarget({ ...hit });
+        else if (appMode === 'edit' || appMode === 'suggest') setEditTarget({ ...hit });
       } else {
         setViewCard(null);
       }
@@ -645,7 +742,7 @@ export default function App() {
 
   const onContextMenu = e => {
     e.preventDefault();
-    if (appMode !== 'edit' || dragRef.current.moved) return;
+    if ((appMode !== 'edit' && appMode !== 'suggest') || dragRef.current.moved) return;
     const rect  = canvasRef.current.getBoundingClientRect();
     const world = canvasToWorld(e.clientX - rect.left, e.clientY - rect.top);
     setPanel({ mode:'menu', screenX:e.clientX, screenY:e.clientY, worldX:world.x, worldY:world.y });
@@ -700,12 +797,17 @@ export default function App() {
 
   // ── Helpers ───────────────────────────────────────────────────
   const lockToggle = () => {
-    if (appMode === 'edit') {
-      setAppMode('view'); setTbPanel(null); setPanel(null); setEditTarget(null);
+    if (appMode === 'edit' || appMode === 'suggest') {
+      setAppMode('view'); setTbPanel(null); setPanel(null); setEditTarget(null); setPendingOpen(false);
     } else {
       setTbPanel(t => t === 'password' ? null : 'password');
     }
   };
+
+  const refreshPending = () => apiGetPending().then(r => r.json()).then(setPending).catch(() => {});
+
+  const handleApprove = async (id) => { await apiApprovePending(id); refreshPending(); };
+  const handleDeny    = async (id) => { await apiDenyPending(id);    refreshPending(); };
 
   const menuStyle = panel?.mode === 'menu' ? (() => {
     const pw=162, ph=230;
@@ -723,9 +825,9 @@ export default function App() {
       {/* ── Toolbar ── */}
       <div className="toolbar">
         <div className="tb-left">
-          <button className={`tb-btn${appMode==='edit'?' tb-edit':''}`} onClick={lockToggle}
-            title={appMode==='edit' ? 'Lock (return to view)' : 'Unlock edit mode'}>
-            <Ico n={appMode==='edit' ? 'unlock' : 'lock'} />
+          <button className={`tb-btn${appMode==='edit'?' tb-edit':appMode==='suggest'?' tb-suggest':''}`} onClick={lockToggle}
+            title={appMode==='edit' ? 'Lock (return to view)' : appMode==='suggest' ? 'Exit suggest mode' : 'Unlock'}>
+            <Ico n={appMode==='view' ? 'lock' : 'unlock'} />
           </button>
         </div>
         <div className="tb-center">
@@ -739,6 +841,13 @@ export default function App() {
               <Ico n="filter" />
             </button>
           )}
+          {appMode === 'edit' && (
+            <button className={`tb-btn${pendingOpen?' tb-open':''}${pending.length>0?' tb-on':''}`}
+              onClick={() => setPendingOpen(v => !v)} title="Pending review">
+              <Ico n="review" />
+              {pending.length > 0 && <span className="pending-badge-dot">{pending.length}</span>}
+            </button>
+          )}
           <button className={`tb-btn${tbPanel==='settings'?' tb-open':''}`}
             onClick={() => setTbPanel(t => t==='settings' ? null : 'settings')} title="Settings">
             <Ico n="settings" />
@@ -749,7 +858,9 @@ export default function App() {
       {/* ── Toolbar panels ── */}
       {tbPanel === 'password' && (
         <div className="tb-drop tb-drop-left">
-          <PasswordPanel onSuccess={() => { setAppMode('edit'); setTbPanel(null); }} />
+          <PasswordPanel
+            onAdmin={()     => { setAppMode('edit');    setTbPanel(null); }}
+            onCommenter={()  => { setAppMode('suggest'); setTbPanel(null); }} />
         </div>
       )}
       {tbPanel === 'filter' && (
@@ -785,9 +896,13 @@ export default function App() {
       {panel?.mode === 'form' && (
         <div className="modal-overlay" onPointerDown={() => setPanel(null)}>
           <div className="modal-box" onPointerDown={e => e.stopPropagation()}>
-            <MarkerForm type={panel.type} initial={{}}
+            <MarkerForm type={panel.type} initial={{}} suggest={appMode==='suggest'}
               onSave={data => {
-                apiAdd({ id:generateId(), x:panel.worldX, y:panel.worldY, type:panel.type, ...data });
+                const m = { id:generateId(), x:panel.worldX, y:panel.worldY, type:panel.type, ...data };
+                if (appMode === 'suggest')
+                  apiSuggest({ id:generateId(), action:'add', marker_id:m.id, data:m, original:null });
+                else
+                  apiAdd(m);
                 setPanel(null);
               }}
               onClose={() => setPanel(null)} />
@@ -799,12 +914,30 @@ export default function App() {
       {editTarget && (
         <div className="modal-overlay" onPointerDown={() => setEditTarget(null)}>
           <div className="modal-box" onPointerDown={e => e.stopPropagation()}>
-            <MarkerForm type={editTarget.type} initial={editTarget}
-              onSave={data => { apiUpdate({ ...editTarget, ...data }); setEditTarget(null); }}
-              onDelete={() => { apiDelete(editTarget.id); setEditTarget(null); }}
+            <MarkerForm type={editTarget.type} initial={editTarget} suggest={appMode==='suggest'}
+              onSave={data => {
+                const updated = { ...editTarget, ...data };
+                if (appMode === 'suggest')
+                  apiSuggest({ id:generateId(), action:'edit', marker_id:updated.id, data:updated, original:editTarget });
+                else
+                  apiUpdate(updated);
+                setEditTarget(null);
+              }}
+              onDelete={() => {
+                if (appMode === 'suggest')
+                  apiSuggest({ id:generateId(), action:'delete', marker_id:editTarget.id, data:null, original:editTarget });
+                else
+                  apiDelete(editTarget.id);
+                setEditTarget(null);
+              }}
               onClose={() => setEditTarget(null)} />
           </div>
         </div>
+      )}
+
+      {/* ── Pending sidebar ── */}
+      {pendingOpen && appMode === 'edit' && (
+        <PendingSidebar items={pending} onApprove={handleApprove} onDeny={handleDeny} />
       )}
 
       {/* ── View card ── */}

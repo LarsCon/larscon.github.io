@@ -2,9 +2,10 @@
 const express = require('express');
 const mysql   = require('mysql2/promise');
 
-const app  = express();
-const PORT = 3002;
-const PW   = 'lizard'; // must match PASSWORD constant in widget
+const app          = express();
+const PORT         = 3002;
+const PW           = 'lizard';
+const COMMENTER_PW = 'bigwetnoodle';
 
 // CORS — allow GitHub Pages and local dev
 app.use((req, res, next) => {
@@ -25,7 +26,7 @@ const pool = mysql.createPool({
   connectionLimit:  10,
 });
 
-// Create table on first boot
+// Create tables on first boot
 pool.query(`
   CREATE TABLE IF NOT EXISTS keizaal_markers (
     id         VARCHAR(32)  PRIMARY KEY,
@@ -37,6 +38,18 @@ pool.query(`
   )
 `).then(() => console.log('keizaal_markers table ready'))
   .catch(e  => console.error('Table init error:', e.message));
+
+pool.query(`
+  CREATE TABLE IF NOT EXISTS keizaal_pending (
+    id           VARCHAR(32)  PRIMARY KEY,
+    action       VARCHAR(10)  NOT NULL,
+    marker_id    VARCHAR(32)  NOT NULL,
+    data         JSON,
+    original     JSON,
+    submitted_at TIMESTAMP    DEFAULT CURRENT_TIMESTAMP
+  )
+`).then(() => console.log('keizaal_pending table ready'))
+  .catch(e  => console.error('Pending table init error:', e.message));
 
 // ── SSE broadcast ─────────────────────────────────────────────
 const clients = new Set();
@@ -55,10 +68,24 @@ function auth(req, res) {
   return true;
 }
 
+function authAny(req, res) {
+  const h = req.headers['x-kw-auth'];
+  if (h !== PW && h !== COMMENTER_PW) {
+    res.status(401).json({ error: 'Unauthorized' });
+    return false;
+  }
+  return true;
+}
+
 // ── Row → marker object ───────────────────────────────────────
 function toMarker(row) {
   const data = typeof row.data === 'string' ? JSON.parse(row.data) : row.data;
   return { id: row.id, type: row.type, x: row.x, y: row.y, ...data };
+}
+
+function parseJSON(val) {
+  if (!val) return null;
+  return typeof val === 'string' ? JSON.parse(val) : val;
 }
 
 // ── Routes ────────────────────────────────────────────────────
@@ -76,16 +103,15 @@ app.get('/keizaal/stream', (req, res) => {
   res.setHeader('Content-Type',        'text/event-stream');
   res.setHeader('Cache-Control',       'no-cache');
   res.setHeader('Connection',          'keep-alive');
-  res.setHeader('X-Accel-Buffering',   'no'); // tell nginx not to buffer
+  res.setHeader('X-Accel-Buffering',   'no');
   res.flushHeaders();
 
   clients.add(res);
-  // heartbeat keeps nginx from timing out the connection
   const hb = setInterval(() => res.write(': hb\n\n'), 25000);
   req.on('close', () => { clients.delete(res); clearInterval(hb); });
 });
 
-// POST — add marker
+// POST — add marker (admin)
 app.post('/keizaal/markers', async (req, res) => {
   if (!auth(req, res)) return;
   const { id, type, x, y, ...data } = req.body;
@@ -99,7 +125,7 @@ app.post('/keizaal/markers', async (req, res) => {
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
-// PUT — update marker
+// PUT — update marker (admin)
 app.put('/keizaal/markers/:id', async (req, res) => {
   if (!auth(req, res)) return;
   const { id, type, x, y, ...data } = req.body;
@@ -113,12 +139,81 @@ app.put('/keizaal/markers/:id', async (req, res) => {
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
-// DELETE — remove marker
+// DELETE — remove marker (admin)
 app.delete('/keizaal/markers/:id', async (req, res) => {
   if (!auth(req, res)) return;
   try {
     await pool.query('DELETE FROM keizaal_markers WHERE id=?', [req.params.id]);
     broadcast('delete', { id: req.params.id });
+    res.json({ ok: true });
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+// ── Pending suggestions ───────────────────────────────────────
+
+// POST — submit suggestion (commenter or admin)
+app.post('/keizaal/pending', async (req, res) => {
+  if (!authAny(req, res)) return;
+  const { id, action, marker_id, data, original } = req.body;
+  try {
+    await pool.query(
+      'INSERT INTO keizaal_pending (id, action, marker_id, data, original) VALUES (?,?,?,?,?)',
+      [id, action, marker_id, data ? JSON.stringify(data) : null, original ? JSON.stringify(original) : null]
+    );
+    broadcast('pending-update', {});
+    res.json({ ok: true });
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+// GET — list pending suggestions (admin only)
+app.get('/keizaal/pending', async (req, res) => {
+  if (!auth(req, res)) return;
+  try {
+    const [rows] = await pool.query('SELECT * FROM keizaal_pending ORDER BY submitted_at ASC');
+    res.json(rows.map(r => ({
+      id:           r.id,
+      action:       r.action,
+      marker_id:    r.marker_id,
+      data:         parseJSON(r.data),
+      original:     parseJSON(r.original),
+      submitted_at: r.submitted_at,
+    })));
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+// POST — approve suggestion (admin only)
+app.post('/keizaal/pending/:id/approve', async (req, res) => {
+  if (!auth(req, res)) return;
+  try {
+    const [[row]] = await pool.query('SELECT * FROM keizaal_pending WHERE id=?', [req.params.id]);
+    if (!row) return res.status(404).json({ error: 'Not found' });
+
+    const data = parseJSON(row.data);
+
+    if (row.action === 'add' || row.action === 'edit') {
+      const { id: mid, type, x, y, ...rest } = data;
+      await pool.query(
+        'INSERT INTO keizaal_markers (id, type, x, y, data) VALUES (?,?,?,?,?) ON DUPLICATE KEY UPDATE type=VALUES(type), x=VALUES(x), y=VALUES(y), data=VALUES(data)',
+        [mid, type, x, y, JSON.stringify(rest)]
+      );
+      broadcast(row.action === 'add' ? 'add' : 'update', data);
+    } else if (row.action === 'delete') {
+      await pool.query('DELETE FROM keizaal_markers WHERE id=?', [row.marker_id]);
+      broadcast('delete', { id: row.marker_id });
+    }
+
+    await pool.query('DELETE FROM keizaal_pending WHERE id=?', [req.params.id]);
+    broadcast('pending-update', {});
+    res.json({ ok: true });
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+// POST — deny suggestion (admin only)
+app.post('/keizaal/pending/:id/deny', async (req, res) => {
+  if (!auth(req, res)) return;
+  try {
+    await pool.query('DELETE FROM keizaal_pending WHERE id=?', [req.params.id]);
+    broadcast('pending-update', {});
     res.json({ ok: true });
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
