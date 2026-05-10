@@ -684,7 +684,10 @@ export default function App() {
   const mapImgRef = useRef(null);
   const imgDims   = useRef({ w: 0, h: 0 });
   const imgCache  = useRef({});
-  const dragRef   = useRef({ active:false, startX:0, startY:0, startOffsetX:0, startOffsetY:0, moved:false });
+  const dragRef      = useRef({ active:false, startX:0, startY:0, startOffsetX:0, startOffsetY:0, moved:false });
+  const ptrCache     = useRef(new Map());
+  const pinchRef     = useRef(null);
+  const longPressRef = useRef(null);
 
   const cH = () => window.innerHeight - TOOLBAR_H;
 
@@ -796,27 +799,87 @@ export default function App() {
   }, [markers, searchQuery]);
 
   // ── Pointer ───────────────────────────────────────────────────
+  const clearLongPress = () => {
+    if (longPressRef.current) { clearTimeout(longPressRef.current); longPressRef.current = null; }
+  };
+
   const onPointerDown = e => {
+    try { e.currentTarget.setPointerCapture(e.pointerId); } catch {}
+    ptrCache.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
+
+    if (ptrCache.current.size >= 2) {
+      // Second finger — enter pinch mode, cancel any ongoing drag/long-press
+      clearLongPress();
+      dragRef.current.active = false;
+      pinchRef.current = null;
+      return;
+    }
+
+    // Mouse: only left button; touch: always proceed
+    if (e.button !== 0 && e.pointerType !== 'touch') return;
     if (tbPanel) { setTbPanel(null); return; }
     if (panel)   { setPanel(null);   return; }
-    if (e.button !== 0) return;
-    e.currentTarget.setPointerCapture(e.pointerId);
-    e.currentTarget.style.cursor = 'grabbing';
+
+    if (e.pointerType !== 'touch') e.currentTarget.style.cursor = 'grabbing';
     dragRef.current = { active:true, startX:e.clientX, startY:e.clientY, startOffsetX:offset.x, startOffsetY:offset.y, moved:false };
+
+    // Long-press → placement menu (replaces right-click on touch)
+    if (e.pointerType === 'touch' && (appMode === 'edit' || appMode === 'suggest')) {
+      const ex = e.clientX, ey = e.clientY;
+      longPressRef.current = setTimeout(() => {
+        if (dragRef.current.active && !dragRef.current.moved) {
+          dragRef.current.active = false;
+          const rect = canvasRef.current?.getBoundingClientRect();
+          if (!rect) return;
+          const world = canvasToWorld(ex - rect.left, ey - rect.top);
+          setPanel({ mode:'menu', screenX:ex, screenY:ey, worldX:world.x, worldY:world.y });
+        }
+      }, 550);
+    }
   };
 
   const onPointerMove = e => {
+    ptrCache.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    const count = ptrCache.current.size;
+
+    if (count >= 2) {
+      // Pinch-to-zoom
+      const pts  = [...ptrCache.current.values()];
+      const dist = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
+      const midX = (pts[0].x + pts[1].x) / 2;
+      const midY = (pts[0].y + pts[1].y) / 2;
+      if (pinchRef.current !== null) {
+        const ratio = dist / pinchRef.current;
+        setScale(prev => {
+          const next = Math.min(3, Math.max(0.5, prev * ratio));
+          setOffset(po => doClamp(
+            midX - ((midX - po.x) / prev) * next,
+            midY - ((midY - po.y) / prev) * next,
+            next
+          ));
+          return next;
+        });
+      }
+      pinchRef.current = dist;
+      return;
+    }
+
     const d = dragRef.current;
     if (!d.active) return;
     const dx = e.clientX - d.startX, dy = e.clientY - d.startY;
-    if (!d.moved && Math.hypot(dx, dy) > 4) d.moved = true;
+    if (!d.moved && Math.hypot(dx, dy) > 6) { d.moved = true; clearLongPress(); }
     if (d.moved) setOffset(doClamp(d.startOffsetX + dx, d.startOffsetY + dy, scale));
   };
 
   const onPointerUp = e => {
+    ptrCache.current.delete(e.pointerId);
+    clearLongPress();
+    if (ptrCache.current.size < 2) pinchRef.current = null;
+
     const d = dragRef.current;
-    if (canvasRef.current) canvasRef.current.style.cursor = 'grab';
-    if (d.active && !d.moved && e.button === 0) {
+    if (e.pointerType !== 'touch' && canvasRef.current) canvasRef.current.style.cursor = 'grab';
+
+    if (d.active && !d.moved) {
       const rect  = canvasRef.current.getBoundingClientRect();
       const world = canvasToWorld(e.clientX - rect.left, e.clientY - rect.top);
       const hit   = markers.find(m => Math.hypot(m.x - world.x, m.y - world.y) < 20 / scale);
@@ -830,8 +893,17 @@ export default function App() {
     dragRef.current.active = false;
   };
 
+  const onPointerCancel = e => {
+    ptrCache.current.delete(e.pointerId);
+    clearLongPress();
+    if (ptrCache.current.size < 2) pinchRef.current = null;
+    dragRef.current.active = false;
+  };
+
   const onContextMenu = e => {
     e.preventDefault();
+    // Touch long-press is handled above; this fires for desktop right-click only
+    if (e.pointerType === 'touch') return;
     if ((appMode !== 'edit' && appMode !== 'suggest') || dragRef.current.moved) return;
     const rect  = canvasRef.current.getBoundingClientRect();
     const world = canvasToWorld(e.clientX - rect.left, e.clientY - rect.top);
@@ -1044,7 +1116,8 @@ export default function App() {
       {/* ── Canvas ── */}
       <div className="canvas-container">
         <canvas ref={canvasRef}
-          onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={onPointerUp}
+          onPointerDown={onPointerDown} onPointerMove={onPointerMove}
+          onPointerUp={onPointerUp} onPointerCancel={onPointerCancel}
           onContextMenu={onContextMenu} onWheel={onWheel} className="map-canvas" />
       </div>
 
