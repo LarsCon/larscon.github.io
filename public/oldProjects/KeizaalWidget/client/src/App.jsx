@@ -5,7 +5,8 @@ import './App.css';
 // ── Constants ─────────────────────────────────────────────────────────────────
 const STORAGE_KEY = 'keizaal-markers';
 const SETTINGS_KEY = 'keizaal-settings';
-const IMG_BASE    = '/oldProjects/KeizaalWidget/images/landmarks/';
+const IMG_BASE      = '/oldProjects/KeizaalWidget/images/landmarks/';
+const CITY_IMG_BASE = '/oldProjects/KeizaalWidget/images/majorcities/';
 const TOOLBAR_H   = 44;
 const PASSWORD    = 'lizard';
 
@@ -47,11 +48,23 @@ const LANDMARKS = [
   { file:'Wood_Mill.webp',       label:'Wood Mill' },
 ];
 
-const TYPES = ['Monument','Circle','Plant','Enemy','Ore','Chest'];
+const MAJORCITIES = [
+  { file:'Dawnstar.svg',     label:'Dawnstar' },
+  { file:'Falkreath.svg',    label:'Falkreath' },
+  { file:'MarkarthSide.svg', label:'Markarth' },
+  { file:'Morthal.svg',      label:'Morthal' },
+  { file:'Riften.svg',       label:'Riften' },
+  { file:'Solitude.svg',     label:'Solitude' },
+  { file:'Whiterun.svg',     label:'Whiterun' },
+  { file:'Windhelm.svg',     label:'Windhelm' },
+  { file:'Winterhold.svg',   label:'Winterhold' },
+];
+
+const TYPES = ['Monument','Major City','Plant','Enemy','Ore','Chest'];
 
 const TYPE_COLORS = {
-  Monument:'#FFD700', Circle:'#4499FF', Plant:'#55BB55',
-  Enemy:'#EE4444',    Ore:'#FF8C00',    Chest:'#FFD700',
+  Monument:'#FFD700', 'Major City':'#4499FF', Plant:'#55BB55',
+  Enemy:'#EE4444',    Ore:'#FF8C00',          Chest:'#FFD700',
 };
 
 // ── Pure helpers ──────────────────────────────────────────────────────────────
@@ -69,11 +82,22 @@ function clampOffset(ox, oy, imgW, imgH, cW, cH, sc) {
 }
 
 function matchesFilter(marker, f) {
-  if (f.types.length > 0 && !f.types.includes(marker.type)) return false;
-  const checks = [];
   const me = (marker.enemies || []).map(e => e.name);
   const mp = (marker.plants  || []).map(p => p.name);
   const mo = (marker.nodes   || []).map(o => o.name);
+
+  if (f.types.length > 0) {
+    const direct = f.types.includes(marker.type);
+    // Monuments and Major Cities can contain cross-type content — show them if they match
+    const cross =
+      (f.types.includes('Enemy') && me.length > 0) ||
+      (f.types.includes('Plant') && mp.length > 0) ||
+      (f.types.includes('Ore')   && mo.length > 0) ||
+      (f.types.includes('Chest') && marker.chest);
+    if (!direct && !cross) return false;
+  }
+
+  const checks = [];
   f.enemies.forEach(e => checks.push(me.includes(e)));
   f.plants.forEach(p  => checks.push(mp.includes(p)));
   f.ores.forEach(o    => checks.push(mo.includes(o)));
@@ -120,11 +144,20 @@ function drawMarkerOnCanvas(ctx, marker, cx, cy, r, getImg) {
       } else { drawStar(ctx, cx, cy, r, '#FFD700'); }
       break;
     }
-    case 'Circle': {
-      ctx.beginPath(); ctx.arc(cx, cy, r, 0, 2 * Math.PI);
-      ctx.fillStyle = 'rgba(255,255,255,0.92)'; ctx.fill();
-      ctx.strokeStyle = marker.borderColor || '#4499FF';
-      ctx.lineWidth = Math.max(3, r * 0.25); ctx.stroke();
+    case 'Major City': {
+      if (marker.icon) {
+        const img = getImg(CITY_IMG_BASE + marker.icon);
+        ctx.beginPath(); ctx.arc(cx, cy, r, 0, 2 * Math.PI); ctx.clip();
+        if (img.complete) ctx.drawImage(img, cx - r, cy - r, r * 2, r * 2);
+        else { ctx.fillStyle = '#1a2838'; ctx.fill(); }
+        ctx.restore(); ctx.save();
+        ctx.beginPath(); ctx.arc(cx, cy, r, 0, 2 * Math.PI);
+        ctx.strokeStyle = 'rgba(100,180,255,0.85)'; ctx.lineWidth = 2.5; ctx.stroke();
+      } else {
+        ctx.beginPath(); ctx.arc(cx, cy, r, 0, 2 * Math.PI);
+        ctx.fillStyle = 'rgba(255,255,255,0.92)'; ctx.fill();
+        ctx.strokeStyle = '#4499FF'; ctx.lineWidth = Math.max(3, r * 0.25); ctx.stroke();
+      }
       break;
     }
     case 'Plant':  { const n = (marker.plants  || []).reduce((s,p) => s+p.count, 0); drawNumberCircle(ctx,cx,cy,r,'#55BB55',n); break; }
@@ -185,19 +218,25 @@ function MultiPicker({ label, options, items, onChange }) {
   );
 }
 
-// ── LandmarkPicker ────────────────────────────────────────────────────────────
-function LandmarkPicker({ value, onChange }) {
+// ── IconPicker ────────────────────────────────────────────────────────────────
+function IconPicker({ value, onChange, items, imgBase }) {
   return (
     <div className="lm-grid">
-      {LANDMARKS.map(({ file, label }) => (
+      {items.map(({ file, label }) => (
         <button key={file} type="button" title={label}
           className={`lm-btn${value === file ? ' sel' : ''}`}
           onClick={() => onChange(file)}>
-          <img src={IMG_BASE + file} alt={label} />
+          <img src={imgBase + file} alt={label} />
         </button>
       ))}
     </div>
   );
+}
+function LandmarkPicker({ value, onChange }) {
+  return <IconPicker value={value} onChange={onChange} items={LANDMARKS} imgBase={IMG_BASE} />;
+}
+function CityPicker({ value, onChange }) {
+  return <IconPicker value={value} onChange={onChange} items={MAJORCITIES} imgBase={CITY_IMG_BASE} />;
 }
 
 // ── Field ─────────────────────────────────────────────────────────────────────
@@ -214,8 +253,8 @@ function Field({ label, value, onChange, area }) {
 // ── MarkerForm ────────────────────────────────────────────────────────────────
 function getInitial(type) {
   switch (type) {
-    case 'Monument': return { icon:'', name:'', desc:'', plants:[], enemies:[], nodes:[], chest:false, notes:'' };
-    case 'Circle':   return { borderColor:'#4499FF', name:'', desc:'', plants:[], enemies:[], nodes:[], notes:'' };
+    case 'Monument':   return { icon:'', name:'', desc:'', plants:[], enemies:[], nodes:[], chest:false, notes:'' };
+    case 'Major City': return { icon:'', name:'', desc:'', plants:[], enemies:[], nodes:[], chest:false, notes:'' };
     case 'Plant':    return { plants:[], notes:'' };
     case 'Enemy':    return { enemies:[], notes:'' };
     case 'Ore':      return { nodes:[], notes:'' };
@@ -244,13 +283,15 @@ function MarkerForm({ type, initial, onSave, onDelete, onClose }) {
         <label className="check-row"><input type="checkbox" checked={d.chest} onChange={e => set('chest', e.target.checked)} /> Contains Chest</label>
         <Field label="Notes" value={d.notes} onChange={v => set('notes', v)} area />
       </>}
-      {type === 'Circle' && <>
-        <div className="color-row"><span className="field-label">Border Color</span><input type="color" value={d.borderColor} onChange={e => set('borderColor', e.target.value)} /></div>
+      {type === 'Major City' && <>
+        <span className="field-label">City <span className="req">*required</span></span>
+        <CityPicker value={d.icon} onChange={v => set('icon', v)} />
         <Field label="Name" value={d.name} onChange={v => set('name', v)} />
         <Field label="Description" value={d.desc} onChange={v => set('desc', v)} area />
         <MultiPicker label="Plants"    options={PLANTS}   items={d.plants}   onChange={v => set('plants', v)} />
         <MultiPicker label="Enemies"   options={ENEMIES}  items={d.enemies}  onChange={v => set('enemies', v)} />
         <MultiPicker label="Ore Nodes" options={ORES}     items={d.nodes}    onChange={v => set('nodes', v)} />
+        <label className="check-row"><input type="checkbox" checked={d.chest} onChange={e => set('chest', e.target.checked)} /> Contains Chest</label>
         <Field label="Notes" value={d.notes} onChange={v => set('notes', v)} area />
       </>}
       {type === 'Plant'  && <><MultiPicker label="Plants"    options={PLANTS}   items={d.plants}   onChange={v => set('plants', v)} /><Field label="Notes" value={d.notes} onChange={v => set('notes', v)} area /></>}
@@ -258,7 +299,7 @@ function MarkerForm({ type, initial, onSave, onDelete, onClose }) {
       {type === 'Ore'    && <><MultiPicker label="Ore Nodes" options={ORES}     items={d.nodes}    onChange={v => set('nodes', v)} /><Field label="Notes" value={d.notes} onChange={v => set('notes', v)} area /></>}
       {type === 'Chest'  && <Field label="Notes" value={d.notes} onChange={v => set('notes', v)} area />}
       <div className="form-actions">
-        <button type="button" className="btn-save" disabled={type === 'Monument' && !d.icon} onClick={() => onSave(d)}>Save</button>
+        <button type="button" className="btn-save" disabled={(type === 'Monument' || type === 'Major City') && !d.icon} onClick={() => onSave(d)}>Save</button>
         {onDelete && <button type="button" className="btn-del" onClick={onDelete}>Delete</button>}
       </div>
     </div>
@@ -485,11 +526,15 @@ export default function App() {
 
   const [filter, setFilter] = useState({ types:[], enemies:[], plants:[], ores:[], chest:false, match:'any' });
   const [settings, setSettings] = useState(() => {
-    const def = { tint:'#1a0a00', tintOpacity:0, iconScale:{ Monument:1, Circle:1, Plant:1, Enemy:1, Ore:1, Chest:1 }, boundaryLock:true };
+    const def = { tint:'#1a0a00', tintOpacity:0, iconScale:{ Monument:1, 'Major City':1, Plant:1, Enemy:1, Ore:1, Chest:1 }, boundaryLock:true };
     try {
       const s = JSON.parse(localStorage.getItem(SETTINGS_KEY));
       if (!s) return def;
       if (typeof s.iconScale === 'number') s.iconScale = { ...def.iconScale };
+      if (s.iconScale.Circle !== undefined && s.iconScale['Major City'] === undefined) {
+        s.iconScale['Major City'] = s.iconScale.Circle;
+        delete s.iconScale.Circle;
+      }
       return s;
     } catch { return def; }
   });
