@@ -11,7 +11,17 @@ const TOOLBAR_H   = 44;
 const PASSWORD    = 'lizard';
 
 const ENEMIES  = ['Bears','Chorus','Deer','Elementals','Frost Skeleton','Goats','Horkers','Ice Wolves','Skeleton','Spiders','Trolls','Wolves'];
-const PLANTS   = ['Blue Flower','Deathcap','Glowing Mushroom','Nightshade','Red Flower','Thistle','Yellow Flower'];
+const PLANTS   = [
+  'Ash Creep Cluster','Ashen Grass Pod','Bleeding Crown','Blisterwort',
+  'Blue Mountain Flower','Canis Root','Creep Cluster','Crimson Nirnroot',
+  'Deathbell','Dragon\'s Tongue','Elves Ear','Emperor Parasol Moss',
+  'Fly Amanita','Frost Mirriam','Garlic','Giant Lichen','Gleamblossom',
+  'Glowing Mushroom','Grass Pod','Hanging Moss','Imp Stool','Jazbay Grapes',
+  'Juniper Berries','Lavender','Mora Tapinella','Nightshade','Nirnroot',
+  'Poison Bloom','Purple Mountain Flower','Red Mountain Flower','Scaly Pholiota',
+  'Scathecraw','Snowberries','Swamp Fungal Pod','Thistle Branch','Trama Root',
+  'Tundra Cotton','White Cap','Yellow Mountain Flower',
+];
 const ORES     = ['Coal','Corundum','Dwarven','Ebony','Gold','Iron','Malachite','Moonstone','Orichalcum','Quicksilver','Silver','Steel'];
 
 const LANDMARKS = [

@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:elderscrolls.fandom.com)",
+      "WebFetch(domain:en.uesp.net)",
+      "WebSearch",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:www.carlsguides.com)"
+    ]
+  }
+}
