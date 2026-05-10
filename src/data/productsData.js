@@ -1,6 +1,9 @@
 const BASE = import.meta.env.BASE_URL
 
 export function getProductImageUrl(path) {
+  if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('/')) {
+    return path
+  }
   return `${BASE}assets/products/${path}`
 }
 
@@ -16,20 +19,15 @@ const productsData = [
     linkLabel: 'Try It',
   },
   {
-    id: 'playmat',
-    title: 'Terraria Board Game - Plastic Pocketed Playmat',
-    price: '$119.99',
-    images: [
-      'Playmat/1.jpg',
-      'Playmat/2.jpg',
-      'Playmat/3.jpg',
-      'Playmat/4.jpg',
-    ],
+    id: 'keizaalwidget',
+    title: 'Keizaal Widget - Skyrim Map',
+    price: 'Free',
+    images: ['/oldProjects/KeizaalWidget/images/map1.png'],
     description:
-      "This is a 14 piece CNC milled puzzled pocketed playmat for the Terraria Board Game.\n\nMy friends and I found it difficult to play without a playmat, so I designed a pocketed playmat to hold down game pieces during play. This is truly a game changer, even allowing you to pocket the map pieces upside down to be flipped as players progress!",
-    link: 'https://lcbuildsstore.etsy.com/listing/4465523514/terraria-board-game-plastic-pocketed',
-    linkLabel: 'Buy Now',
-  },
+      'A static Skyrim map widget that lets users place and edit markers, zoom, and pan. Designed for GitHub Pages-style hosting without a backend.',
+    link: 'oldProjects/KeizaalWidget/client/dist/index.html',
+    linkLabel: 'Try It',
+  }
 ]
 
 export default productsData
