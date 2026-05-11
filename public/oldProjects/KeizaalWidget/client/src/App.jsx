@@ -3,15 +3,23 @@ import { subscribeMarkers, apiAdd, apiUpdate, apiDelete, apiSuggest, apiGetPendi
 import './App.css';
 
 // ── Constants ─────────────────────────────────────────────────────────────────
-const STORAGE_KEY = 'keizaal-markers';
+const STORAGE_KEY  = 'keizaal-markers';
 const SETTINGS_KEY = 'keizaal-settings';
+const EXTRAS_KEY   = 'keizaal-extras';
+const FRIENDS_KEY  = 'keizaal-friends';
+const BACKPACK_KEY = 'keizaal-backpack';
+
+const BACKPACK_CATS = [
+  'Weapons','Apparel','Potions','Ingredients','Food',
+  'Scrolls','Books','Soul Gems','Keys','Misc',
+];
 const IMG_BASE      = '/oldProjects/KeizaalWidget/images/landmarks/';
 const CITY_IMG_BASE = '/oldProjects/KeizaalWidget/images/majorcities/';
 const TOOLBAR_H   = 44;
 const PASSWORD_ADMIN     = 'lizard';
 const PASSWORD_COMMENTER = 'bigwetnoodle';
 
-const ENEMIES  = ['Bears','Chorus','Deer','Elementals','Frost Skeleton','Goats','Horkers','Ice Wolves','Skeleton','Spiders','Trolls','Wolves'];
+const ENEMIES  = ['Bears','Chaurus','Deer','Elementals','Falmer','Falmer Wizard','Falmer Warlord','Frost Skeleton','Frostbite Spider','Goats','Horkers','Ice Wolves','Mammoth','Skeleton','Slaughterfish','Spriggan','Spriggan Earth Mother','Trolls','Wolves'];
 const PLANTS   = [
   'Ash Creep Cluster','Ashen Grass Pod','Bleeding Crown','Blisterwort',
   'Blue Mountain Flower','Canis Root','Creep Cluster','Crimson Nirnroot',
@@ -22,6 +30,7 @@ const PLANTS   = [
   'Poison Bloom','Purple Mountain Flower','Red Mountain Flower','Scaly Pholiota',
   'Scathecraw','Snowberries','Swamp Fungal Pod','Thistle Branch','Trama Root',
   'Tundra Cotton','White Cap','Yellow Mountain Flower',
+  'Mammoth Cheese','Namira\'s Rot','Pine Thrush Egg',
 ];
 const ORES     = ['Coal','Copper','Corundum','Dwarven','Ebony','Gold','Iron','Malachite','Moonstone','Orichalcum','Quicksilver','Silver','Steel'];
 
@@ -208,6 +217,9 @@ function Ico({ n, size = 16 }) {
     review:   'M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z',
     eye:      'M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z',
     search:   'M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z',
+    extras:   'M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6L12 2z',
+    people:   'M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z',
+    bag:      'M19 6h-2c0-2.76-2.24-5-5-5S7 3.24 7 6H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-7-3c1.66 0 3 1.34 3 3h-6c0-1.66 1.34-3 3-3zm0 10c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z',
   }[n] || '';
   return <svg viewBox="0 0 24 24" width={size} height={size} fill="currentColor"><path d={d}/></svg>;
 }
@@ -468,9 +480,10 @@ function FilterPanel({ filter, onChange }) {
 }
 
 // ── SettingsPanel ─────────────────────────────────────────────────────────────
-function SettingsPanel({ settings, onChange }) {
-  const [showHelp,  setShowHelp]  = useState(false);
-  const [showGuide, setShowGuide] = useState(false);
+function SettingsPanel({ settings, onChange, extras, onExtrasChange }) {
+  const [showHelp,   setShowHelp]   = useState(false);
+  const [showGuide,  setShowGuide]  = useState(false);
+  const [showExtras, setShowExtras] = useState(false);
   return (
     <div className="tb-panel settings-panel" onPointerDown={e => e.stopPropagation()}>
       <div className="panel-section">
@@ -529,7 +542,7 @@ function SettingsPanel({ settings, onChange }) {
         )}
       </div>
 
-      <div className="panel-section" style={{marginBottom:0}}>
+      <div className="panel-section">
         <button className="guide-btn" onClick={() => setShowGuide(v => !v)}>
           {showGuide ? '▲' : '▼'} Placement Guide
         </button>
@@ -540,6 +553,31 @@ function SettingsPanel({ settings, onChange }) {
               <li>Use consistent names across all markers — capitalisation included</li>
               <li>Don't overlap markers — the one underneath becomes unreachable</li>
             </ul>
+          </div>
+        )}
+      </div>
+
+      <div className="panel-section" style={{marginBottom:0}}>
+        <button className="extras-btn" onClick={() => setShowExtras(v => !v)}>
+          <Ico n="extras" size={14} />
+          <span style={{flex:1, textAlign:'left'}}>Extras</span>
+          <span className="fc-arrow">{showExtras ? '▲' : '▼'}</span>
+        </button>
+        {showExtras && (
+          <div className="extras-card">
+            <p className="extras-notice">
+              Data is saved in your browser. Other browsers will show their own saved data, and there is no current way to save across systems.
+            </p>
+            <label className="check-row" style={{marginBottom:6}}>
+              <input type="checkbox" checked={extras.friends}
+                onChange={e => onExtrasChange({...extras, friends: e.target.checked})} />
+              Friends List
+            </label>
+            <label className="check-row" style={{marginBottom:0}}>
+              <input type="checkbox" checked={extras.backpack}
+                onChange={e => onExtrasChange({...extras, backpack: e.target.checked})} />
+              Backpack Tracker
+            </label>
           </div>
         )}
       </div>
@@ -678,6 +716,121 @@ function PendingSidebar({ items, onApprove, onDeny, onPreview, previewItemId }) 
   );
 }
 
+// ── FriendsSidebar ────────────────────────────────────────────────────────────
+function FriendsSidebar({ onClose }) {
+  const [friends, setFriends] = useState(() => {
+    try { return JSON.parse(localStorage.getItem(FRIENDS_KEY) || '[]'); } catch { return []; }
+  });
+  const [name,  setName]  = useState('');
+  const [notes, setNotes] = useState('');
+
+  const save = list => { setFriends(list); localStorage.setItem(FRIENDS_KEY, JSON.stringify(list)); };
+  const add  = () => {
+    if (!name.trim()) return;
+    save([...friends, { id: generateId(), name: name.trim(), notes: notes.trim() }]);
+    setName(''); setNotes('');
+  };
+
+  return (
+    <div className="extra-sidebar">
+      <div className="extra-sidebar-head">
+        <span className="panel-label" style={{marginBottom:0}}>Friends</span>
+        <button className="extra-close" onClick={onClose}>×</button>
+      </div>
+      <div className="extra-add-form">
+        <input className="extra-input" placeholder="Name" value={name}
+          onChange={e => setName(e.target.value)}
+          onKeyDown={e => e.key === 'Enter' && add()} />
+        <textarea className="extra-textarea" placeholder="Notes (optional)" value={notes}
+          onChange={e => setNotes(e.target.value)} rows={2} />
+        <button className="extra-add-btn" onClick={add} disabled={!name.trim()}>Add Friend</button>
+      </div>
+      {friends.length === 0
+        ? <p className="extra-empty">No friends added yet</p>
+        : friends.map(f => (
+          <div key={f.id} className="extra-card">
+            <div className="extra-card-head">
+              <span className="extra-card-name">{f.name}</span>
+              <button className="extra-card-del" onClick={() => save(friends.filter(x => x.id !== f.id))}>×</button>
+            </div>
+            {f.notes && <p className="extra-card-notes">{f.notes}</p>}
+          </div>
+        ))
+      }
+    </div>
+  );
+}
+
+// ── BackpackSidebar ───────────────────────────────────────────────────────────
+function BackpackSidebar({ onClose }) {
+  const [items,    setItems]    = useState(() => {
+    try { return JSON.parse(localStorage.getItem(BACKPACK_KEY) || '[]'); } catch { return []; }
+  });
+  const [name,     setName]     = useState('');
+  const [category, setCategory] = useState('Misc');
+  const [price,    setPrice]    = useState('');
+  const [catFilter, setCatFilter] = useState('All');
+
+  const save = list => { setItems(list); localStorage.setItem(BACKPACK_KEY, JSON.stringify(list)); };
+  const add  = () => {
+    if (!name.trim()) return;
+    save([...items, { id: generateId(), name: name.trim(), category, price: parseFloat(price) || 0 }]);
+    setName(''); setPrice('');
+  };
+
+  const total   = items.reduce((s, i) => s + i.price, 0);
+  const visible = (catFilter === 'All' ? items : items.filter(i => i.category === catFilter))
+    .slice().sort((a, b) => a.name.localeCompare(b.name));
+  const usedCats = new Set(items.map(i => i.category));
+
+  return (
+    <div className="extra-sidebar">
+      <div className="extra-sidebar-head">
+        <span className="panel-label" style={{marginBottom:0}}>Backpack</span>
+        {items.length > 0 && <span className="extra-gold">{total.toLocaleString()} septims</span>}
+        <button className="extra-close" onClick={onClose}>×</button>
+      </div>
+
+      {/* Category filter */}
+      <div className="bp-cat-wrap">
+        {['All', ...BACKPACK_CATS].filter(c => c === 'All' || usedCats.has(c)).map(c => (
+          <button key={c} className={`bp-cat${catFilter === c ? ' on' : ''}`}
+            onClick={() => setCatFilter(c)}>{c}</button>
+        ))}
+      </div>
+
+      {/* Add form */}
+      <div className="extra-add-form">
+        <input className="extra-input" placeholder="Item name" value={name}
+          onChange={e => setName(e.target.value)}
+          onKeyDown={e => e.key === 'Enter' && add()} />
+        <div className="bp-add-row">
+          <select className="bp-cat-sel" value={category} onChange={e => setCategory(e.target.value)}>
+            {BACKPACK_CATS.map(c => <option key={c} value={c}>{c}</option>)}
+          </select>
+          <input className="bp-price-inp" type="number" min="0" step="1" placeholder="Price"
+            value={price} onChange={e => setPrice(e.target.value)} />
+        </div>
+        <button className="extra-add-btn" onClick={add} disabled={!name.trim()}>Add Item</button>
+      </div>
+
+      {visible.length === 0
+        ? <p className="extra-empty">{catFilter === 'All' ? 'Backpack is empty' : `No ${catFilter} items`}</p>
+        : visible.map(item => (
+          <div key={item.id} className="extra-card">
+            <div className="extra-card-head">
+              <span className="bp-item-cat">{item.category}</span>
+              <span className="extra-card-name">{item.name}</span>
+              {item.price > 0 && <span className="bp-item-price">{item.price.toLocaleString()} g</span>}
+              <button className="extra-card-del" onClick={() => save(items.filter(x => x.id !== item.id))}>×</button>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  );
+}
+
 // ── App ───────────────────────────────────────────────────────────────────────
 export default function App() {
   const canvasRef = useRef(null);
@@ -709,6 +862,11 @@ export default function App() {
 
   const [searchQuery, setSearchQuery] = useState('');
   const [filter, setFilter] = useState({ types:[], enemies:[], plants:[], ores:[], chest:false, match:'any' });
+  const [extras, setExtras] = useState(() => {
+    try { return { friends:false, backpack:false, ...JSON.parse(localStorage.getItem(EXTRAS_KEY) || '{}') }; }
+    catch { return { friends:false, backpack:false }; }
+  });
+  const [extraOpen, setExtraOpen] = useState(null); // null | 'friends' | 'backpack'
   const [settings, setSettings] = useState(() => {
     const def = { tint:'#1a0a00', tintOpacity:0.5, iconScale:{ Monument:1, 'Major City':1.3, Plant:0.7, Enemy:0.7, Ore:0.7, Chest:1, Dud:0.7 }, boundaryLock:true };
     try {
@@ -725,6 +883,11 @@ export default function App() {
 
   // Persist settings locally (viewer prefs)
   useEffect(() => { localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings)); }, [settings]);
+  useEffect(() => { localStorage.setItem(EXTRAS_KEY,   JSON.stringify(extras));   }, [extras]);
+  useEffect(() => {
+    if (extraOpen === 'friends'  && !extras.friends)  setExtraOpen(null);
+    if (extraOpen === 'backpack' && !extras.backpack) setExtraOpen(null);
+  }, [extras, extraOpen]);
 
   // Live server subscription
   useEffect(() => subscribeMarkers(setMarkers, setSync, () => setPendingTick(t => t + 1)), []);
@@ -1087,6 +1250,18 @@ export default function App() {
               {pending.length > 0 && <span className="pending-badge-dot">{pending.length}</span>}
             </button>
           )}
+          {extras.friends && (
+            <button className={`tb-btn${extraOpen==='friends' ? ' tb-open tb-extras' : ' tb-extras'}`}
+              onClick={() => setExtraOpen(v => v === 'friends' ? null : 'friends')} title="Friends">
+              <Ico n="people" />
+            </button>
+          )}
+          {extras.backpack && (
+            <button className={`tb-btn${extraOpen==='backpack' ? ' tb-open tb-extras' : ' tb-extras'}`}
+              onClick={() => setExtraOpen(v => v === 'backpack' ? null : 'backpack')} title="Backpack">
+              <Ico n="bag" />
+            </button>
+          )}
           <button className={`tb-btn${tbPanel==='settings'?' tb-open':''}`}
             onClick={() => setTbPanel(t => t==='settings' ? null : 'settings')} title="Settings">
             <Ico n="settings" />
@@ -1109,7 +1284,7 @@ export default function App() {
       )}
       {tbPanel === 'settings' && (
         <div className="tb-drop tb-drop-right">
-          <SettingsPanel settings={settings} onChange={setSettings} />
+          <SettingsPanel settings={settings} onChange={setSettings} extras={extras} onExtrasChange={setExtras} />
         </div>
       )}
 
@@ -1174,6 +1349,10 @@ export default function App() {
           </div>
         </div>
       )}
+
+      {/* ── Extra sidebars ── */}
+      {extraOpen === 'friends'  && extras.friends  && <FriendsSidebar  onClose={() => setExtraOpen(null)} />}
+      {extraOpen === 'backpack' && extras.backpack && <BackpackSidebar onClose={() => setExtraOpen(null)} />}
 
       {/* ── Pending sidebar ── */}
       {pendingOpen && appMode === 'edit' && (
