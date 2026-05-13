@@ -80,11 +80,11 @@ const MAJORCITIES = [
   { file:'Winterhold.svg',   label:'Winterhold' },
 ];
 
-const TYPES = ['Monument','Major City','Plant','Enemy','Ore','Chest','Dud'];
+const TYPES = ['Monument','Major City','Rumor','Plant','Enemy','Ore','Chest','Dud'];
 
 const TYPE_COLORS = {
-  Monument:'#FFD700', 'Major City':'#4499FF', Plant:'#55BB55',
-  Enemy:'#EE4444',    Ore:'#FF8C00',          Chest:'#FFD700',  Dud:'#FF4040',
+  Monument:'#FFD700', 'Major City':'#4499FF', 'Rumor':'#BB88FF',
+  Plant:'#55BB55',    Enemy:'#EE4444',         Ore:'#FF8C00', Chest:'#FFD700', Dud:'#FF4040',
 };
 
 // ── Pure helpers ──────────────────────────────────────────────────────────────
@@ -189,6 +189,16 @@ function drawMarkerOnCanvas(ctx, marker, cx, cy, r, getImg) {
         ctx.fillStyle = 'rgba(255,255,255,0.92)'; ctx.fill();
         ctx.strokeStyle = '#4499FF'; ctx.lineWidth = Math.max(3, r * 0.25); ctx.stroke();
       }
+      break;
+    }
+    case 'Rumor': {
+      ctx.beginPath(); ctx.arc(cx, cy, r, 0, 2 * Math.PI);
+      ctx.fillStyle = 'rgba(180,136,255,0.18)'; ctx.fill();
+      ctx.strokeStyle = '#BB88FF'; ctx.lineWidth = 2.5; ctx.stroke();
+      ctx.fillStyle = '#CC99FF';
+      ctx.font = `bold ${Math.max(10, r * 1.15)}px Inter,sans-serif`;
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText('?', cx, cy + 1);
       break;
     }
     case 'Plant':  { const n = (marker.plants  || []).reduce((s,p) => s+p.count, 0); drawNumberCircle(ctx,cx,cy,r,'#55BB55',n); break; }
@@ -298,14 +308,15 @@ function Field({ label, value, onChange, area }) {
 // ── MarkerForm ────────────────────────────────────────────────────────────────
 function getInitial(type) {
   switch (type) {
-    case 'Monument':   return { icon:'', name:'', desc:'', plants:[], enemies:[], nodes:[], chest:false, notes:'' };
-    case 'Major City': return { icon:'', name:'', desc:'', plants:[], enemies:[], nodes:[], chest:false, notes:'' };
-    case 'Plant':    return { plants:[], notes:'' };
-    case 'Enemy':    return { enemies:[], notes:'' };
-    case 'Ore':      return { nodes:[], notes:'' };
-    case 'Chest':    return { notes:'' };
-    case 'Dud':      return { notes:'' };
-    default:         return {};
+    case 'Monument':    return { icon:'', name:'', plants:[], enemies:[], nodes:[], chest:false, notes:'' };
+    case 'Major City':  return { icon:'', name:'', plants:[], enemies:[], nodes:[], chest:false, notes:'' };
+    case 'Rumor':  return { name:'', enemies:[], plants:[], nodes:[], notes:'' };
+    case 'Plant':       return { plants:[], notes:'' };
+    case 'Enemy':       return { enemies:[], notes:'' };
+    case 'Ore':         return { nodes:[], notes:'' };
+    case 'Chest':       return { notes:'' };
+    case 'Dud':         return { notes:'' };
+    default:            return {};
   }
 }
 
@@ -322,7 +333,6 @@ function MarkerForm({ type, initial, onSave, onDelete, onClose, suggest }) {
         <span className="field-label">Icon <span className="req">*required</span></span>
         <LandmarkPicker value={d.icon} onChange={v => set('icon', v)} />
         <Field label="Name" value={d.name} onChange={v => set('name', v)} />
-        <Field label="Description" value={d.desc} onChange={v => set('desc', v)} area />
         <MultiPicker label="Plants"    options={PLANTS}   items={d.plants}   onChange={v => set('plants', v)} />
         <MultiPicker label="Enemies"   options={ENEMIES}  items={d.enemies}  onChange={v => set('enemies', v)} />
         <MultiPicker label="Ore Nodes" options={ORES}     items={d.nodes}    onChange={v => set('nodes', v)} />
@@ -333,11 +343,17 @@ function MarkerForm({ type, initial, onSave, onDelete, onClose, suggest }) {
         <span className="field-label">City <span className="req">*required</span></span>
         <CityPicker value={d.icon} onChange={v => set('icon', v)} />
         <Field label="Name" value={d.name} onChange={v => set('name', v)} />
-        <Field label="Description" value={d.desc} onChange={v => set('desc', v)} area />
         <MultiPicker label="Plants"    options={PLANTS}   items={d.plants}   onChange={v => set('plants', v)} />
         <MultiPicker label="Enemies"   options={ENEMIES}  items={d.enemies}  onChange={v => set('enemies', v)} />
         <MultiPicker label="Ore Nodes" options={ORES}     items={d.nodes}    onChange={v => set('nodes', v)} />
         <label className="check-row"><input type="checkbox" checked={d.chest} onChange={e => set('chest', e.target.checked)} /> Contains Chest</label>
+        <Field label="Notes" value={d.notes} onChange={v => set('notes', v)} area />
+      </>}
+      {type === 'Rumor' && <>
+        <Field label="Name" value={d.name} onChange={v => set('name', v)} />
+        <MultiPicker label="Enemies"   options={ENEMIES}  items={d.enemies}  onChange={v => set('enemies', v)} />
+        <MultiPicker label="Plants"    options={PLANTS}   items={d.plants}   onChange={v => set('plants', v)} />
+        <MultiPicker label="Ore Nodes" options={ORES}     items={d.nodes}    onChange={v => set('nodes', v)} />
         <Field label="Notes" value={d.notes} onChange={v => set('notes', v)} area />
       </>}
       {type === 'Plant'  && <><MultiPicker label="Plants"    options={PLANTS}   items={d.plants}   onChange={v => set('plants', v)} /><Field label="Notes" value={d.notes} onChange={v => set('notes', v)} area /></>}
@@ -614,9 +630,8 @@ function ViewCard({ marker, sx, sy, onClose }) {
         <VCRow icon="⚔" items={marker.enemies} />
         <VCRow icon="🌿" items={marker.plants}  />
         <VCRow icon="⛏" items={marker.nodes}   />
-        {marker.desc  && <p className="vc-text">{marker.desc}</p>}
         {marker.notes && <p className="vc-text vc-notes">{marker.notes}</p>}
-        {!marker.chest && !marker.enemies?.length && !marker.plants?.length && !marker.nodes?.length && !marker.desc && !marker.notes && (
+        {!marker.chest && !marker.enemies?.length && !marker.plants?.length && !marker.nodes?.length && !marker.notes && (
           <span className="vc-empty">No details recorded</span>
         )}
       </div>
@@ -630,10 +645,9 @@ function PiMarkerDetail({ marker }) {
   const enemies = marker.enemies || [];
   const plants  = marker.plants  || [];
   const nodes   = marker.nodes   || [];
-  const empty   = !marker.desc && !marker.notes && !marker.chest && !enemies.length && !plants.length && !nodes.length;
+  const empty   = !marker.notes && !marker.chest && !enemies.length && !plants.length && !nodes.length;
   return (
     <div className="pi-detail">
-      {marker.desc    && <p className="pi-text">{marker.desc}</p>}
       {marker.chest   && <p className="pi-text"><span className="pi-field">Chest</span> Yes</p>}
       {enemies.length > 0 && <p className="pi-text"><span className="pi-field">Enemies</span> {enemies.map(e=>`${e.name}×${e.count}`).join(', ')}</p>}
       {plants.length  > 0 && <p className="pi-text"><span className="pi-field">Plants</span> {plants.map(p=>`${p.name}×${p.count}`).join(', ')}</p>}
@@ -648,9 +662,8 @@ function PiDiff({ original, proposed }) {
   const fields = [];
   const str  = v => v || '—';
   const arrStr = (arr) => (arr||[]).map(i=>`${i.name}×${i.count}`).join(', ') || 'none';
-  if (original.name  !== proposed.name)  fields.push({ label:'Name',        from: str(original.name),  to: str(proposed.name) });
-  if (original.desc  !== proposed.desc)  fields.push({ label:'Description', from: str(original.desc),  to: str(proposed.desc) });
-  if (original.icon  !== proposed.icon)  fields.push({ label:'Icon',        from: str(original.icon),  to: str(proposed.icon) });
+  if (original.name  !== proposed.name)  fields.push({ label:'Name', from: str(original.name), to: str(proposed.name) });
+  if (original.icon  !== proposed.icon)  fields.push({ label:'Icon', from: str(original.icon), to: str(proposed.icon) });
   if (original.notes !== proposed.notes) fields.push({ label:'Notes',       from: str(original.notes), to: str(proposed.notes) });
   if (original.chest !== proposed.chest) fields.push({ label:'Chest',       from: original.chest?'Yes':'No', to: proposed.chest?'Yes':'No' });
   if (JSON.stringify(original.enemies||[]) !== JSON.stringify(proposed.enemies||[])) fields.push({ label:'Enemies',  to: arrStr(proposed.enemies) });
@@ -868,7 +881,7 @@ export default function App() {
   });
   const [extraOpen, setExtraOpen] = useState(null); // null | 'friends' | 'backpack'
   const [settings, setSettings] = useState(() => {
-    const def = { tint:'#1a0a00', tintOpacity:0.5, iconScale:{ Monument:1, 'Major City':1.3, Plant:0.7, Enemy:0.7, Ore:0.7, Chest:1, Dud:0.7 }, boundaryLock:true };
+    const def = { tint:'#1a0a00', tintOpacity:0.5, iconScale:{ Monument:1, 'Major City':1.3, Rumor:0.9, Plant:0.7, Enemy:0.7, Ore:0.7, Chest:1, Dud:0.7 }, boundaryLock:true };
     try {
       const s = JSON.parse(localStorage.getItem(SETTINGS_KEY));
       if (!s) return def;
