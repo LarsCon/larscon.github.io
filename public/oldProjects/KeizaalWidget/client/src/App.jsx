@@ -521,7 +521,7 @@ function FilterPanel({ filter, onChange }) {
       <FilterChips label="Forage"       options={PLANTS}       selected={filter.plants}       onToggle={v => tog('plants', v)} />
       <FilterChips label="Ores"         options={ORES}         selected={filter.ores}         onToggle={v => tog('ores', v)} />
       <FilterChips label="Workstations" options={WORKSTATIONS} selected={filter.workstations} onToggle={v => tog('workstations', v)} />
-      {hasAny && <button className="clear-btn" onClick={clear}>Clear All</button>}
+      {hasAny > 0 && <button className="clear-btn" onClick={clear}>Clear All</button>}
     </div>
   );
 }
@@ -641,21 +641,27 @@ function SettingsPanel({ settings, onChange, extras, onExtrasChange }) {
 }
 
 // ── ViewCard ──────────────────────────────────────────────────────────────────
-function VCRow({ icon, items }) {
+function VCSection({ label, color, items, noCount }) {
   if (!items?.length) return null;
   return (
-    <div className="vc-row">
-      {items.map(i => <span key={i.name} className="vc-chip">{icon} {i.name}<em>×{i.count}</em></span>)}
+    <div className="vc-section" style={{ '--vc-sec': color }}>
+      <span className="vc-sec-label">{label}</span>
+      {items.map(item => (
+        <div key={item.name ?? item} className="vc-sec-row">
+          <span className="vc-sec-name">{item.name ?? item}</span>
+          {!noCount && <span className="vc-sec-count">×{item.count}</span>}
+        </div>
+      ))}
     </div>
   );
 }
 
 function ViewCard({ marker, sx, sy, onClose }) {
-  const W = 248;
+  const W = 260;
   let cx = sx + 20, cy = sy - 50;
   if (cx + W > window.innerWidth  - 8) cx = sx - W - 20;
   if (cy < TOOLBAR_H + 8)              cy = TOOLBAR_H + 8;
-  if (cy + 300 > window.innerHeight - 8) cy = window.innerHeight - 308;
+  if (cy + 340 > window.innerHeight - 8) cy = window.innerHeight - 348;
   return (
     <div className="view-card" style={{ left: Math.max(8, cx), top: cy }}
       onPointerDown={e => e.stopPropagation()}>
@@ -666,15 +672,11 @@ function ViewCard({ marker, sx, sy, onClose }) {
       </div>
       <div className="vc-body">
         {marker.chest && <div className="vc-chest">⭐ Contains Chest</div>}
-        <VCRow icon="⚔" items={marker.enemies} />
-        <VCRow icon="🌿" items={marker.plants}  />
-        <VCRow icon="⛏" items={marker.nodes}   />
-        {marker.workstations?.length > 0 && (
-          <div className="vc-row">
-            {marker.workstations.map(w => <span key={w} className="vc-chip">⚒ {w}</span>)}
-          </div>
-        )}
-        {marker.notes && <p className="vc-text vc-notes">{marker.notes}</p>}
+        <VCSection label="Enemies"      color="#EE4444" items={marker.enemies} />
+        <VCSection label="Forage"       color="#55BB55" items={marker.plants}  />
+        <VCSection label="Ore Nodes"    color="#FF8C00" items={marker.nodes}   />
+        <VCSection label="Workstations" color="#CC7722" items={marker.workstations} noCount />
+        {marker.notes && <p className="vc-notes">{marker.notes}</p>}
         {!marker.chest && !marker.enemies?.length && !marker.plants?.length && !marker.nodes?.length && !marker.workstations?.length && !marker.notes && (
           <span className="vc-empty">No details recorded</span>
         )}
@@ -928,7 +930,7 @@ export default function App() {
   const [extraOpen, setExtraOpen] = useState(null); // null | 'friends' | 'backpack'
   const [showSettingsHint, setShowSettingsHint] = useState(() => !localStorage.getItem('keizaal-seen-settings'));
   const [settings, setSettings] = useState(() => {
-    const def = { tint:'#1a0a00', tintOpacity:0.5, iconScale:{ Monument:1, 'Major City':1.3, Rumor:0.9, Plant:0.7, Enemy:0.7, Ore:0.7, Workstation:0.7, Chest:1, Dud:0.7 }, boundaryLock:true };
+    const def = { tint:'#1a0a00', tintOpacity:0.5, iconScale:{ Monument:1, 'Major City':1.3, Rumor:0.9, Plant:0.7, Enemy:0.7, Ore:0.7, Workstation:1, Chest:1, Dud:0.7 }, boundaryLock:true };
     try {
       const s = JSON.parse(localStorage.getItem(SETTINGS_KEY));
       if (!s) return def;
