@@ -178,7 +178,9 @@
   background: rgba(68,153,255,0.25); color: #7ecdff;
   font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 9px;
 }
-.fc-arrow { font-size: 9px; color: rgba(255,255,255,0.3); }
+.fc-arrow { display: flex; align-items: center; color: rgba(255,255,255,0.3); }
+.fc-arrow svg { transition: transform 0.2s ease; }
+.fc-header.open .fc-arrow svg { transform: rotate(180deg); }
 .fc-tags { display: flex; flex-wrap: wrap; gap: 4px; padding: 5px 4px 2px; }
 .fc-tag {
   background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
@@ -223,53 +225,67 @@
 .clear-btn:hover { background: rgba(238,68,68,0.2); }
 
 /* ── Settings panel ──────────────────────────────────────────── */
-.settings-panel { min-width: 240px; }
-.settings-row { display: flex; align-items: center; gap: 10px; }
-.settings-row input[type="color"] { width: 30px; height: 28px; border: none; background: transparent; cursor: pointer; padding: 0; border-radius: 4px; }
-.settings-row input[type="range"] { flex: 1; accent-color: #4499ff; }
-.settings-val { min-width: 36px; text-align: right; font-size: 12px; color: rgba(255,255,255,0.5); }
-.scale-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
-.scale-type { width: 60px; font-size: 11px; font-weight: 600; flex-shrink: 0; }
+.settings-panel { min-width: 256px; display: flex; flex-direction: column; gap: 6px; }
 
-.guide-btn {
-  width: 100%; background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.1); border-radius: 7px;
-  color: rgba(255,255,255,0.45); padding: 7px 10px; font-size: 12px;
-  cursor: pointer; text-align: left; letter-spacing: 0.04em;
+/* Tint row */
+.sp-row { display: flex; align-items: center; gap: 8px; }
+.sp-label { font-size: 11px; color: rgba(255,255,255,0.4); flex-shrink: 0; width: 28px; }
+.sp-color { width: 26px; height: 26px; border: none; background: transparent; cursor: pointer; padding: 0; border-radius: 5px; flex-shrink: 0; }
+.sp-range { flex: 1; accent-color: #4499ff; }
+.sp-val { min-width: 34px; text-align: right; font-size: 11px; color: rgba(255,255,255,0.4); flex-shrink: 0; }
+
+/* Checkbox */
+.sp-check {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 12px; color: rgba(255,255,255,0.55); cursor: pointer;
+  padding: 2px 0;
 }
-.guide-btn:hover { background: rgba(255,255,255,0.09); color: rgba(255,255,255,0.7); }
+.sp-check input { accent-color: #4499ff; }
 
-.guide-card {
-  margin-top: 8px;
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 8px; padding: 10px 12px;
+/* Divider */
+.sp-divider { border: none; border-top: 1px solid rgba(255,255,255,0.07); margin: 2px 0; }
+
+/* Collapsible rows (scale, help, guide) */
+.sp-collapse {
+  width: 100%; display: flex; align-items: center; justify-content: space-between;
+  background: none; border: none; border-radius: 7px;
+  color: rgba(255,255,255,0.5); padding: 6px 4px; font-size: 12px;
+  cursor: pointer; gap: 8px; text-align: left;
+  transition: color 0.15s;
+}
+.sp-collapse svg { transition: transform 0.2s ease; flex-shrink: 0; color: rgba(255,255,255,0.25); }
+.sp-collapse.open svg { transform: rotate(180deg); }
+.sp-collapse:hover { color: rgba(255,255,255,0.85); }
+.sp-collapse:hover svg { color: rgba(255,255,255,0.5); }
+
+/* Scale sliders */
+.sp-scale-list { display: flex; flex-direction: column; gap: 5px; padding: 4px 0 6px; }
+.sp-scale-row { display: flex; align-items: center; gap: 8px; }
+.sp-scale-type { width: 80px; font-size: 11px; font-weight: 600; flex-shrink: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* Info cards (help / placement guide) */
+.sp-card {
+  background: rgba(255,255,255,0.02);
+  border-left: 2px solid rgba(255,255,255,0.08);
+  border-radius: 0 6px 6px 0;
+  padding: 8px 10px; margin-bottom: 2px;
 }
 
 .guide-list {
   margin: 0; padding: 0; list-style: none;
-  display: flex; flex-direction: column; gap: 5px;
+  display: flex; flex-direction: column; gap: 4px;
 }
 .guide-list li {
-  font-size: 11px; color: rgba(255,255,255,0.45);
+  font-size: 11px; color: rgba(255,255,255,0.4);
   line-height: 1.4; padding-left: 10px; position: relative;
 }
-.guide-list li::before { content: '–'; position: absolute; left: 0; color: rgba(255,255,255,0.2); }
-
-.guide-key {
-  font-weight: 700; color: rgba(255,255,255,0.75);
-  margin-right: 4px;
-}
-
-.guide-divider {
-  border: none; border-top: 1px solid rgba(255,255,255,0.07);
-  margin: 8px 0;
-}
-
+.guide-list li::before { content: '–'; position: absolute; left: 0; color: rgba(255,255,255,0.18); }
+.guide-key { font-weight: 700; color: rgba(255,255,255,0.7); margin-right: 3px; }
+.guide-divider { border: none; border-top: 1px solid rgba(255,255,255,0.06); margin: 7px 0; }
 .guide-sub {
-  margin: 0 0 6px; font-size: 10px; font-weight: 700;
-  text-transform: uppercase; letter-spacing: 0.08em;
-  color: rgba(255,255,255,0.25);
+  margin: 0 0 5px; font-size: 9px; font-weight: 800;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  color: rgba(255,255,255,0.22);
 }
 
 /* ── Canvas ──────────────────────────────────────────────────── */
@@ -547,6 +563,8 @@
   color: rgba(255,215,0,0.65); font-size: 12px; font-weight: 600;
   letter-spacing: 0.05em;
 }
+.extras-btn svg:last-child { transition: transform 0.2s ease; color: rgba(255,215,0,0.4); }
+.extras-btn.open svg:last-child { transform: rotate(180deg); }
 .extras-btn:hover { background: rgba(255,215,0,0.1); color: #ffd700; }
 .extras-card {
   margin-top: 8px;

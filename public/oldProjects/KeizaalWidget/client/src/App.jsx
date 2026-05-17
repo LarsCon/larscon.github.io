@@ -87,6 +87,7 @@ const MAJORCITIES = [
 ];
 
 const TYPES = ['Monument','Major City','Rumor','Plant','Enemy','Ore','Workstation','Chest','Dud'];
+const TYPE_LABELS = { Plant: 'Forage' }; // display name overrides; internal type stays 'Plant'
 
 const TYPE_COLORS = {
   Monument:'#FFD700', 'Major City':'#4499FF', 'Rumor':'#BB88FF',
@@ -247,10 +248,21 @@ function Ico({ n, size = 16 }) {
     eye:      'M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z',
     search:   'M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z',
     extras:   'M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6L12 2z',
+    chevron:  'M6 9l6 6 6-6',
     people:   'M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z',
     bag:      'M19 6h-2c0-2.76-2.24-5-5-5S7 3.24 7 6H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-7-3c1.66 0 3 1.34 3 3h-6c0-1.66 1.34-3 3-3zm0 10c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z',
   }[n] || '';
-  return <svg viewBox="0 0 24 24" width={size} height={size} fill="currentColor"><path d={d}/></svg>;
+  const stroke = n === 'chevron';
+  return (
+    <svg viewBox="0 0 24 24" width={size} height={size}
+      fill={stroke ? 'none' : 'currentColor'}
+      stroke={stroke ? 'currentColor' : 'none'}
+      strokeWidth={stroke ? 2.5 : 0}
+      strokeLinecap={stroke ? 'round' : undefined}
+      strokeLinejoin={stroke ? 'round' : undefined}>
+      <path d={d}/>
+    </svg>
+  );
 }
 
 // ── MultiPicker ───────────────────────────────────────────────────────────────
@@ -390,7 +402,7 @@ function MarkerForm({ type, initial, onSave, onDelete, onClose, suggest }) {
   return (
     <div className="marker-form">
       <div className="form-head">
-        <span className="form-title">{type}</span>
+        <span className="form-title">{TYPE_LABELS[type] || type}</span>
         <button type="button" className="form-x" onClick={onClose}>×</button>
       </div>
       {type === 'Monument' && <>
@@ -502,10 +514,10 @@ function FilterChips({ label, options, selected, onToggle }) {
   const visible = q ? options.filter(o => o.toLowerCase().includes(q.toLowerCase())) : options;
   return (
     <div className="fc-section">
-      <button className="fc-header" onClick={() => setOpen(v => !v)}>
+      <button className={`fc-header${open ? ' open' : ''}`} onClick={() => setOpen(v => !v)}>
         <span className="fc-label">{label}</span>
         {selected.length > 0 && <span className="fc-sel-count">{selected.length}</span>}
-        <span className="fc-arrow">{open ? '▲' : '▼'}</span>
+        <span className="fc-arrow"><Ico n="chevron" size={12} /></span>
       </button>
       {selected.length > 0 && (
         <div className="fc-tags">
@@ -547,7 +559,7 @@ function FilterPanel({ filter, onChange }) {
           {TYPES.map(t => (
             <button key={t} className={`chip${filter.types.includes(t) ? ' on' : ''}`}
               style={filter.types.includes(t) ? { borderColor: TYPE_COLORS[t], color: TYPE_COLORS[t] } : {}}
-              onClick={() => tog('types', t)}>{t}</button>
+              onClick={() => tog('types', t)}>{TYPE_LABELS[t] || t}</button>
           ))}
         </div>
       </div>
@@ -569,114 +581,125 @@ function FilterPanel({ filter, onChange }) {
 
 // ── SettingsPanel ─────────────────────────────────────────────────────────────
 function SettingsPanel({ settings, onChange, extras, onExtrasChange }) {
+  const [showScale,  setShowScale]  = useState(false);
   const [showHelp,   setShowHelp]   = useState(false);
   const [showGuide,  setShowGuide]  = useState(false);
   const [showExtras, setShowExtras] = useState(false);
   return (
     <div className="tb-panel settings-panel" onPointerDown={e => e.stopPropagation()}>
-      <div className="panel-section">
-        <span className="panel-label">Map Tint</span>
-        <div className="settings-row">
-          <input type="color" value={settings.tint} onChange={e => onChange({...settings, tint: e.target.value})} />
-          <input type="range" min="0" max="0.75" step="0.05" value={settings.tintOpacity}
-            onChange={e => onChange({...settings, tintOpacity: +e.target.value})} />
-          <span className="settings-val">{Math.round(settings.tintOpacity * 100)}%</span>
+
+      {/* ── Map tint ── */}
+      <div className="sp-row">
+        <span className="sp-label">Tint</span>
+        <input type="color" className="sp-color" value={settings.tint}
+          onChange={e => onChange({...settings, tint: e.target.value})} />
+        <input type="range" className="sp-range" min="0" max="0.75" step="0.05"
+          value={settings.tintOpacity}
+          onChange={e => onChange({...settings, tintOpacity: +e.target.value})} />
+        <span className="sp-val">{Math.round(settings.tintOpacity * 100)}%</span>
+      </div>
+
+      {/* ── Boundary lock ── */}
+      <label className="sp-check">
+        <input type="checkbox" checked={settings.boundaryLock}
+          onChange={e => onChange({...settings, boundaryLock: e.target.checked})} />
+        Lock pan to boundary
+      </label>
+
+      <div className="sp-divider" />
+
+      {/* ── Marker scale (collapsible) ── */}
+      <button className={`sp-collapse${showScale ? ' open' : ''}`} onClick={() => setShowScale(v => !v)}>
+        <span>Marker Scale</span><Ico n="chevron" size={13} />
+      </button>
+      {showScale && (
+        <div className="sp-scale-list">
+          {TYPES.map(t => (
+            <div key={t} className="sp-scale-row">
+              <span className="sp-scale-type" style={{ color: TYPE_COLORS[t] }}>{TYPE_LABELS[t] || t}</span>
+              <input type="range" min="0.4" max="2.5" step="0.1"
+                value={settings.iconScale[t] ?? 1}
+                onChange={e => onChange({ ...settings, iconScale: { ...settings.iconScale, [t]: +e.target.value } })} />
+              <span className="sp-val">{(settings.iconScale[t] ?? 1).toFixed(1)}×</span>
+            </div>
+          ))}
         </div>
-      </div>
-      <div className="panel-section">
-        <span className="panel-label">Marker Scale</span>
-        {TYPES.map(t => (
-          <div key={t} className="scale-row">
-            <span className="scale-type" style={{ color: TYPE_COLORS[t] }}>{t}</span>
-            <input type="range" min="0.4" max="2.5" step="0.1"
-              value={settings.iconScale[t] ?? 1}
-              onChange={e => onChange({ ...settings, iconScale: { ...settings.iconScale, [t]: +e.target.value } })} />
-            <span className="settings-val">{(settings.iconScale[t] ?? 1).toFixed(1)}×</span>
-          </div>
-        ))}
-      </div>
-      <div className="panel-section">
-        <label className="check-row" style={{marginBottom:0}}>
-          <input type="checkbox" checked={settings.boundaryLock}
-            onChange={e => onChange({...settings, boundaryLock: e.target.checked})} />
-          Lock pan to map boundary
-        </label>
-      </div>
+      )}
 
-      <div className="panel-section">
-        <button className="guide-btn" onClick={() => setShowHelp(v => !v)}>
-          {showHelp ? '▲' : '▼'} Help
-        </button>
-        {showHelp && (
-          <div className="guide-card">
-            <p className="guide-sub">Desktop</p>
-            <ul className="guide-list">
-              <li><span className="guide-key">Click + drag</span> Pan map</li>
-              <li><span className="guide-key">Scroll wheel</span> Zoom in / out</li>
-              <li><span className="guide-key">Click marker</span> View details</li>
-            </ul>
-            <div className="guide-divider" />
-            <p className="guide-sub">Mobile</p>
-            <ul className="guide-list">
-              <li><span className="guide-key">Touch + drag</span> Pan map</li>
-              <li><span className="guide-key">Pinch</span> Zoom in / out</li>
-              <li><span className="guide-key">Tap marker</span> View details</li>
-            </ul>
-            <div className="guide-divider" />
-            <ul className="guide-list">
-              <li><span className="guide-key">Filter</span> Show or hide markers by type and content</li>
-              <li><span className="guide-key">Settings</span> Adjust tint, marker scale, and pan boundary</li>
-            </ul>
-            <div className="guide-divider" />
-            <p className="guide-sub">Unlock to edit</p>
-            <ul className="guide-list">
-              <li><span className="guide-key">Right click / Long press</span> Place a new marker</li>
-              <li><span className="guide-key">Click / Tap marker</span> Edit or delete marker</li>
-              <li>First time editing? Read the Placement Guide below.</li>
-            </ul>
-          </div>
-        )}
-      </div>
+      <div className="sp-divider" />
 
-      <div className="panel-section">
-        <button className="guide-btn" onClick={() => setShowGuide(v => !v)}>
-          {showGuide ? '▲' : '▼'} Placement Guide
-        </button>
-        {showGuide && (
-          <div className="guide-card">
-            <ul className="guide-list">
-              <li>Enemies, Plants, and Ore nodes found at a Monument belong inside that Monument marker</li>
-              <li>Use consistent names across all markers — capitalisation included</li>
-              <li>Don't overlap markers — the one underneath becomes unreachable</li>
-            </ul>
-          </div>
-        )}
-      </div>
+      {/* ── Help ── */}
+      <button className={`sp-collapse${showHelp ? ' open' : ''}`} onClick={() => setShowHelp(v => !v)}>
+        <span>Help</span><Ico n="chevron" size={13} />
+      </button>
+      {showHelp && (
+        <div className="sp-card">
+          <p className="guide-sub">Desktop</p>
+          <ul className="guide-list">
+            <li><span className="guide-key">Click + drag</span> Pan map</li>
+            <li><span className="guide-key">Scroll wheel</span> Zoom in / out</li>
+            <li><span className="guide-key">Click marker</span> View details</li>
+          </ul>
+          <div className="guide-divider" />
+          <p className="guide-sub">Mobile</p>
+          <ul className="guide-list">
+            <li><span className="guide-key">Touch + drag</span> Pan map</li>
+            <li><span className="guide-key">Pinch</span> Zoom in / out</li>
+            <li><span className="guide-key">Tap marker</span> View details</li>
+          </ul>
+          <div className="guide-divider" />
+          <ul className="guide-list">
+            <li><span className="guide-key">Filter</span> Show or hide markers by type</li>
+            <li><span className="guide-key">Settings</span> Adjust tint, scale, and pan</li>
+          </ul>
+          <div className="guide-divider" />
+          <p className="guide-sub">Unlock to edit</p>
+          <ul className="guide-list">
+            <li><span className="guide-key">Right click / Long press</span> Place a marker</li>
+            <li><span className="guide-key">Click / Tap marker</span> Edit or delete</li>
+          </ul>
+        </div>
+      )}
 
-      <div className="panel-section" style={{marginBottom:0}}>
-        <button className="extras-btn" onClick={() => setShowExtras(v => !v)}>
-          <Ico n="extras" size={14} />
-          <span style={{flex:1, textAlign:'left'}}>Extras</span>
-          <span className="fc-arrow">{showExtras ? '▲' : '▼'}</span>
-        </button>
-        {showExtras && (
-          <div className="extras-card">
-            <p className="extras-notice">
-              Data is saved in your browser. Other browsers will show their own saved data, and there is no current way to save across systems.
-            </p>
-            <label className="check-row" style={{marginBottom:6}}>
-              <input type="checkbox" checked={extras.friends}
-                onChange={e => onExtrasChange({...extras, friends: e.target.checked})} />
-              Friends List
-            </label>
-            <label className="check-row" style={{marginBottom:0}}>
-              <input type="checkbox" checked={extras.backpack}
-                onChange={e => onExtrasChange({...extras, backpack: e.target.checked})} />
-              Backpack Tracker
-            </label>
-          </div>
-        )}
-      </div>
+      {/* ── Placement guide ── */}
+      <button className={`sp-collapse${showGuide ? ' open' : ''}`} onClick={() => setShowGuide(v => !v)}>
+        <span>Placement Guide</span><Ico n="chevron" size={13} />
+      </button>
+      {showGuide && (
+        <div className="sp-card">
+          <ul className="guide-list">
+            <li>Enemies, Forage, and Ore nodes found at a location belong inside that Monument marker</li>
+            <li>Use consistent names across all markers — capitalisation included</li>
+            <li>Don't overlap markers — the one underneath becomes unreachable</li>
+          </ul>
+        </div>
+      )}
+
+      <div className="sp-divider" />
+
+      {/* ── Extras ── */}
+      <button className={`extras-btn${showExtras ? ' open' : ''}`} onClick={() => setShowExtras(v => !v)}>
+        <Ico n="extras" size={14} />
+        <span style={{flex:1, textAlign:'left'}}>Extras</span>
+        <Ico n="chevron" size={13} />
+      </button>
+      {showExtras && (
+        <div className="extras-card">
+          <p className="extras-notice">
+            Saved in your browser only — not synced across devices.
+          </p>
+          <label className="sp-check" style={{marginBottom:4}}>
+            <input type="checkbox" checked={extras.friends}
+              onChange={e => onExtrasChange({...extras, friends: e.target.checked})} />
+            Friends List
+          </label>
+          <label className="sp-check">
+            <input type="checkbox" checked={extras.backpack}
+              onChange={e => onExtrasChange({...extras, backpack: e.target.checked})} />
+            Backpack Tracker
+          </label>
+        </div>
+      )}
     </div>
   );
 }
@@ -707,7 +730,7 @@ function ViewCard({ marker, sx, sy, onClose }) {
     <div className="view-card" style={{ left: Math.max(8, cx), top: cy }}
       onPointerDown={e => e.stopPropagation()}>
       <div className="vc-head">
-        <span className="vc-type" style={{ color: TYPE_COLORS[marker.type] }}>{marker.type}</span>
+        <span className="vc-type" style={{ color: TYPE_COLORS[marker.type] }}>{TYPE_LABELS[marker.type] || marker.type}</span>
         {marker.name && <span className="vc-name">{marker.name}</span>}
         <button className="vc-x" onClick={onClose}>×</button>
       </div>
@@ -778,7 +801,7 @@ function PendingItem({ item, onApprove, onDeny, onPreview, isPreviewing }) {
     <div className={`pi-card${isPreviewing ? ' pi-previewing' : ''}`}>
       <div className="pi-head">
         <span className={`pi-badge pi-${item.action}`}>{item.action}</span>
-        <span className="pi-type" style={{ color: TYPE_COLORS[marker?.type] }}>{marker?.type}</span>
+        <span className="pi-type" style={{ color: TYPE_COLORS[marker?.type] }}>{TYPE_LABELS[marker?.type] || marker?.type}</span>
         {marker?.name && <span className="pi-name">{marker.name}</span>}
         <button className={`pi-eye${isPreviewing ? ' on' : ''}`}
           onClick={() => onPreview(isPreviewing ? null : item)}
@@ -1417,7 +1440,7 @@ export default function App() {
           <div className="ctx-grid">
             {TYPES.map(type => (
               <button key={type} className="ctx-item" onClick={() => setPanel({...panel, mode:'form', type})}>
-                <span className="ctx-dot" style={{ background: TYPE_COLORS[type] }} />{type}
+                <span className="ctx-dot" style={{ background: TYPE_COLORS[type] }} />{TYPE_LABELS[type] || type}
               </button>
             ))}
           </div>
