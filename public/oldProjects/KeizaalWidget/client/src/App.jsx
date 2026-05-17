@@ -13,13 +13,18 @@ const BACKPACK_CATS = [
   'Weapons','Apparel','Potions','Ingredients','Food',
   'Scrolls','Books','Soul Gems','Keys','Misc',
 ];
+
+const WORKSTATIONS = [
+  'Alchemy Lab','Cooking Pot','Enchanting Table','Forge',
+  'Grindstone','Smelter','Tanning Rack','Workbench',
+];
 const IMG_BASE      = '/oldProjects/KeizaalWidget/images/landmarks/';
 const CITY_IMG_BASE = '/oldProjects/KeizaalWidget/images/majorcities/';
 const TOOLBAR_H   = 44;
 const PASSWORD_ADMIN     = 'lizard';
 const PASSWORD_COMMENTER = 'bigwetnoodle';
 
-const ENEMIES  = ['Bears','Chaurus','Deer','Elementals','Falmer','Falmer Wizard','Falmer Warlord','Frost Skeleton','Frostbite Spider','Goats','Horkers','Ice Wolves','Mammoth','Skeleton','Slaughterfish','Spriggan','Spriggan Earth Mother','Trolls','Wolves'];
+const ENEMIES  = ['Bear','Bloodhound','Cave Bear','Chaurus','Deer','Elementals','Falmer','Falmer Wizard','Falmer Warlord','Frost Skeleton','Frost Troll','Frostbite Spider','Giant','Goats','Horkers','Ice Wolves','Mammoth','Sabre Cat','Skeleton','Slaughterfish','Spriggan','Spriggan Earth Mother','Trolls','Wolves'];
 const PLANTS   = [
   'Ash Creep Cluster','Ashen Grass Pod','Bleeding Crown','Blisterwort',
   'Blue Mountain Flower','Canis Root','Creep Cluster','Crimson Nirnroot',
@@ -30,7 +35,8 @@ const PLANTS   = [
   'Poison Bloom','Purple Mountain Flower','Red Mountain Flower','Scaly Pholiota',
   'Scathecraw','Snowberries','Swamp Fungal Pod','Thistle Branch','Trama Root',
   'Tundra Cotton','White Cap','Yellow Mountain Flower',
-  'Mammoth Cheese','Namira\'s Rot','Pine Thrush Egg',
+  'Apple','Charred Skeever','Clam','Egg Sac','Honey',
+  'Mammoth Cheese','Namira\'s Rot','Pine Thrush Egg','Torch',
 ];
 const ORES     = ['Coal','Copper','Corundum','Dwarven','Ebony','Gold','Iron','Malachite','Moonstone','Orichalcum','Quicksilver','Silver','Steel'];
 
@@ -121,7 +127,6 @@ function matchesFilter(marker, f) {
   f.enemies.forEach(e => checks.push(me.includes(e)));
   f.plants.forEach(p  => checks.push(mp.includes(p)));
   f.ores.forEach(o    => checks.push(mo.includes(o)));
-  if (f.chest) checks.push(!!marker.chest);
   if (!checks.length) return true;
   return f.match === 'all' ? checks.every(Boolean) : checks.some(Boolean);
 }
@@ -130,9 +135,10 @@ function matchesSearch(marker, q) {
   const parts = [
     marker.type, marker.name, marker.desc, marker.notes,
     marker.chest ? 'chest' : '',
-    ...(marker.enemies || []).map(e => e.name),
-    ...(marker.plants  || []).map(p => p.name),
-    ...(marker.nodes   || []).map(o => o.name),
+    ...(marker.enemies      || []).map(e => e.name),
+    ...(marker.plants       || []).map(p => p.name),
+    ...(marker.nodes        || []).map(o => o.name),
+    ...(marker.workstations || []),
   ];
   return parts.join(' ').toLowerCase().includes(q);
 }
@@ -305,12 +311,25 @@ function Field({ label, value, onChange, area }) {
   );
 }
 
+// ── WorkstationPicker ─────────────────────────────────────────────────────────
+function WorkstationPicker({ value = [], onChange }) {
+  const toggle = w => onChange(value.includes(w) ? value.filter(x => x !== w) : [...value, w]);
+  return (
+    <div className="ws-grid">
+      {WORKSTATIONS.map(w => (
+        <button key={w} type="button" className={`ws-btn${value.includes(w) ? ' on' : ''}`}
+          onClick={() => toggle(w)}>{w}</button>
+      ))}
+    </div>
+  );
+}
+
 // ── MarkerForm ────────────────────────────────────────────────────────────────
 function getInitial(type) {
   switch (type) {
-    case 'Monument':    return { icon:'', name:'', plants:[], enemies:[], nodes:[], chest:false, notes:'' };
+    case 'Monument':    return { icon:'', name:'', plants:[], enemies:[], nodes:[], workstations:[], chest:false, notes:'' };
     case 'Major City':  return { icon:'', name:'', plants:[], enemies:[], nodes:[], chest:false, notes:'' };
-    case 'Rumor':  return { name:'', enemies:[], plants:[], nodes:[], notes:'' };
+    case 'Rumor':       return { name:'', enemies:[], plants:[], nodes:[], workstations:[], notes:'' };
     case 'Plant':       return { plants:[], notes:'' };
     case 'Enemy':       return { enemies:[], notes:'' };
     case 'Ore':         return { nodes:[], notes:'' };
@@ -333,9 +352,11 @@ function MarkerForm({ type, initial, onSave, onDelete, onClose, suggest }) {
         <span className="field-label">Icon <span className="req">*required</span></span>
         <LandmarkPicker value={d.icon} onChange={v => set('icon', v)} />
         <Field label="Name" value={d.name} onChange={v => set('name', v)} />
-        <MultiPicker label="Plants"    options={PLANTS}   items={d.plants}   onChange={v => set('plants', v)} />
-        <MultiPicker label="Enemies"   options={ENEMIES}  items={d.enemies}  onChange={v => set('enemies', v)} />
-        <MultiPicker label="Ore Nodes" options={ORES}     items={d.nodes}    onChange={v => set('nodes', v)} />
+        <MultiPicker label="Enemies"    options={ENEMIES} items={d.enemies}  onChange={v => set('enemies', v)} />
+        <MultiPicker label="Forage"     options={PLANTS}  items={d.plants}   onChange={v => set('plants', v)} />
+        <MultiPicker label="Ore Nodes"  options={ORES}    items={d.nodes}    onChange={v => set('nodes', v)} />
+        <span className="field-label" style={{marginTop:4}}>Workstations</span>
+        <WorkstationPicker value={d.workstations} onChange={v => set('workstations', v)} />
         <label className="check-row"><input type="checkbox" checked={d.chest} onChange={e => set('chest', e.target.checked)} /> Contains Chest</label>
         <Field label="Notes" value={d.notes} onChange={v => set('notes', v)} area />
       </>}
@@ -343,20 +364,22 @@ function MarkerForm({ type, initial, onSave, onDelete, onClose, suggest }) {
         <span className="field-label">City <span className="req">*required</span></span>
         <CityPicker value={d.icon} onChange={v => set('icon', v)} />
         <Field label="Name" value={d.name} onChange={v => set('name', v)} />
-        <MultiPicker label="Plants"    options={PLANTS}   items={d.plants}   onChange={v => set('plants', v)} />
-        <MultiPicker label="Enemies"   options={ENEMIES}  items={d.enemies}  onChange={v => set('enemies', v)} />
-        <MultiPicker label="Ore Nodes" options={ORES}     items={d.nodes}    onChange={v => set('nodes', v)} />
+        <MultiPicker label="Enemies"    options={ENEMIES} items={d.enemies}  onChange={v => set('enemies', v)} />
+        <MultiPicker label="Forage"     options={PLANTS}  items={d.plants}   onChange={v => set('plants', v)} />
+        <MultiPicker label="Ore Nodes"  options={ORES}    items={d.nodes}    onChange={v => set('nodes', v)} />
         <label className="check-row"><input type="checkbox" checked={d.chest} onChange={e => set('chest', e.target.checked)} /> Contains Chest</label>
         <Field label="Notes" value={d.notes} onChange={v => set('notes', v)} area />
       </>}
       {type === 'Rumor' && <>
         <Field label="Name" value={d.name} onChange={v => set('name', v)} />
-        <MultiPicker label="Enemies"   options={ENEMIES}  items={d.enemies}  onChange={v => set('enemies', v)} />
-        <MultiPicker label="Plants"    options={PLANTS}   items={d.plants}   onChange={v => set('plants', v)} />
-        <MultiPicker label="Ore Nodes" options={ORES}     items={d.nodes}    onChange={v => set('nodes', v)} />
+        <MultiPicker label="Enemies"    options={ENEMIES} items={d.enemies}  onChange={v => set('enemies', v)} />
+        <MultiPicker label="Forage"     options={PLANTS}  items={d.plants}   onChange={v => set('plants', v)} />
+        <MultiPicker label="Ore Nodes"  options={ORES}    items={d.nodes}    onChange={v => set('nodes', v)} />
+        <span className="field-label" style={{marginTop:4}}>Workstations</span>
+        <WorkstationPicker value={d.workstations} onChange={v => set('workstations', v)} />
         <Field label="Notes" value={d.notes} onChange={v => set('notes', v)} area />
       </>}
-      {type === 'Plant'  && <><MultiPicker label="Plants"    options={PLANTS}   items={d.plants}   onChange={v => set('plants', v)} /><Field label="Notes" value={d.notes} onChange={v => set('notes', v)} area /></>}
+      {type === 'Plant'  && <><MultiPicker label="Forage"    options={PLANTS}   items={d.plants}   onChange={v => set('plants', v)} /><Field label="Notes" value={d.notes} onChange={v => set('notes', v)} area /></>}
       {type === 'Enemy'  && <><MultiPicker label="Enemies"   options={ENEMIES}  items={d.enemies}  onChange={v => set('enemies', v)} /><Field label="Notes" value={d.notes} onChange={v => set('notes', v)} area /></>}
       {type === 'Ore'    && <><MultiPicker label="Ore Nodes" options={ORES}     items={d.nodes}    onChange={v => set('nodes', v)} /><Field label="Notes" value={d.notes} onChange={v => set('notes', v)} area /></>}
       {type === 'Chest'  && <Field label="Notes" value={d.notes} onChange={v => set('notes', v)} area />}
@@ -462,8 +485,8 @@ function FilterPanel({ filter, onChange }) {
     const arr = filter[field];
     onChange({ ...filter, [field]: arr.includes(val) ? arr.filter(x => x !== val) : [...arr, val] });
   };
-  const clear = () => onChange({ types:[], enemies:[], plants:[], ores:[], chest:false, match:'any' });
-  const hasAny = filter.types.length || filter.enemies.length || filter.plants.length || filter.ores.length || filter.chest;
+  const clear = () => onChange({ types:[], enemies:[], plants:[], ores:[], match:'any' });
+  const hasAny = filter.types.length || filter.enemies.length || filter.plants.length || filter.ores.length;
   return (
     <div className="tb-panel filter-panel" onPointerDown={e => e.stopPropagation()}>
       <div className="panel-section">
@@ -484,12 +507,8 @@ function FilterPanel({ filter, onChange }) {
         </div>
       </div>
       <FilterChips label="Enemies" options={ENEMIES} selected={filter.enemies} onToggle={v => tog('enemies', v)} />
-      <FilterChips label="Plants"  options={PLANTS}  selected={filter.plants}  onToggle={v => tog('plants', v)} />
+      <FilterChips label="Forage"  options={PLANTS}  selected={filter.plants}  onToggle={v => tog('plants', v)} />
       <FilterChips label="Ores"    options={ORES}    selected={filter.ores}    onToggle={v => tog('ores', v)} />
-      <label className="check-row" style={{marginTop:6}}>
-        <input type="checkbox" checked={filter.chest} onChange={e => onChange({...filter, chest: e.target.checked})} />
-        Has Chest
-      </label>
       {hasAny && <button className="clear-btn" onClick={clear}>Clear All</button>}
     </div>
   );
@@ -630,6 +649,11 @@ function ViewCard({ marker, sx, sy, onClose }) {
         <VCRow icon="⚔" items={marker.enemies} />
         <VCRow icon="🌿" items={marker.plants}  />
         <VCRow icon="⛏" items={marker.nodes}   />
+        {marker.workstations?.length > 0 && (
+          <div className="vc-row">
+            {marker.workstations.map(w => <span key={w} className="vc-chip">⚒ {w}</span>)}
+          </div>
+        )}
         {marker.notes && <p className="vc-text vc-notes">{marker.notes}</p>}
         {!marker.chest && !marker.enemies?.length && !marker.plants?.length && !marker.nodes?.length && !marker.notes && (
           <span className="vc-empty">No details recorded</span>
@@ -652,6 +676,7 @@ function PiMarkerDetail({ marker }) {
       {enemies.length > 0 && <p className="pi-text"><span className="pi-field">Enemies</span> {enemies.map(e=>`${e.name}×${e.count}`).join(', ')}</p>}
       {plants.length  > 0 && <p className="pi-text"><span className="pi-field">Plants</span> {plants.map(p=>`${p.name}×${p.count}`).join(', ')}</p>}
       {nodes.length   > 0 && <p className="pi-text"><span className="pi-field">Ore</span> {nodes.map(o=>`${o.name}×${o.count}`).join(', ')}</p>}
+      {marker.workstations?.length > 0 && <p className="pi-text"><span className="pi-field">Stations</span> {marker.workstations.join(', ')}</p>}
       {marker.notes   && <p className="pi-text pi-muted">{marker.notes}</p>}
       {empty          && <p className="pi-text pi-muted">No details recorded</p>}
     </div>
@@ -668,7 +693,8 @@ function PiDiff({ original, proposed }) {
   if (original.chest !== proposed.chest) fields.push({ label:'Chest',       from: original.chest?'Yes':'No', to: proposed.chest?'Yes':'No' });
   if (JSON.stringify(original.enemies||[]) !== JSON.stringify(proposed.enemies||[])) fields.push({ label:'Enemies',  to: arrStr(proposed.enemies) });
   if (JSON.stringify(original.plants ||[]) !== JSON.stringify(proposed.plants ||[])) fields.push({ label:'Plants',   to: arrStr(proposed.plants) });
-  if (JSON.stringify(original.nodes  ||[]) !== JSON.stringify(proposed.nodes  ||[])) fields.push({ label:'Ore',      to: arrStr(proposed.nodes) });
+  if (JSON.stringify(original.nodes        ||[]) !== JSON.stringify(proposed.nodes        ||[])) fields.push({ label:'Ore',      to: arrStr(proposed.nodes) });
+  if (JSON.stringify(original.workstations||[]) !== JSON.stringify(proposed.workstations||[])) fields.push({ label:'Stations', to: (proposed.workstations||[]).join(', ')||'none' });
   if (fields.length === 0) return <p className="pi-text pi-muted">No content changes — position may have moved</p>;
   return (
     <div className="pi-diff">
@@ -874,14 +900,15 @@ export default function App() {
   const [viewCard,   setViewCard]   = useState(null);     // { id, sx, sy }
 
   const [searchQuery, setSearchQuery] = useState('');
-  const [filter, setFilter] = useState({ types:[], enemies:[], plants:[], ores:[], chest:false, match:'any' });
+  const [filter, setFilter] = useState({ types:[], enemies:[], plants:[], ores:[], match:'any' });
   const [extras, setExtras] = useState(() => {
     try { return { friends:false, backpack:false, ...JSON.parse(localStorage.getItem(EXTRAS_KEY) || '{}') }; }
     catch { return { friends:false, backpack:false }; }
   });
   const [extraOpen, setExtraOpen] = useState(null); // null | 'friends' | 'backpack'
+  const [showSettingsHint, setShowSettingsHint] = useState(() => !localStorage.getItem('keizaal-seen-settings'));
   const [settings, setSettings] = useState(() => {
-    const def = { tint:'#1a0a00', tintOpacity:0.5, iconScale:{ Monument:1, 'Major City':1.3, Rumor:0.9, Plant:0.7, Enemy:0.7, Ore:0.7, Chest:1, Dud:0.7 }, boundaryLock:true };
+    const def = { tint:'#1a0a00', tintOpacity:0.5, iconScale:{ Monument:1, 'Major City':1.3, Rumor:0.9, Plant:0.7, Enemy:0.7, Ore:0.7, Chest:1, Dud:0.7, 'Learn More':0.9 }, boundaryLock:true };
     try {
       const s = JSON.parse(localStorage.getItem(SETTINGS_KEY));
       if (!s) return def;
@@ -959,7 +986,7 @@ export default function App() {
 
   // Filter computation
   const filteredIds = useMemo(() => {
-    const active = filter.types.length || filter.enemies.length || filter.plants.length || filter.ores.length || filter.chest;
+    const active = filter.types.length || filter.enemies.length || filter.plants.length || filter.ores.length;
     if (!active) return null;
     const ids = new Set();
     markers.forEach(m => { if (matchesFilter(m, filter)) ids.add(m.id); });
@@ -1224,11 +1251,12 @@ export default function App() {
   }, [canvasSize, scale, doClamp]);
 
   const menuStyle = panel?.mode === 'menu' ? (() => {
-    const pw=162, ph=230;
-    let px=panel.screenX+6, py=panel.screenY+6;
-    if (px+pw > window.innerWidth -8) px=panel.screenX-pw-6;
-    if (py+ph > window.innerHeight-8) py=window.innerHeight-ph-8;
-    return { left:Math.max(8,px), top:Math.max(8,py) };
+    const cols = 2, rows = Math.ceil(TYPES.length / cols);
+    const pw = 256, ph = rows * 44 + 16;
+    let px = panel.screenX + 6, py = panel.screenY + 6;
+    if (px + pw > window.innerWidth  - 8) px = panel.screenX - pw - 6;
+    if (py + ph > window.innerHeight - 8) py = window.innerHeight - ph - 8;
+    return { left: Math.max(8, px), top: Math.max(TOOLBAR_H + 8, py) };
   })() : null;
 
   const viewMarker = viewCard ? markers.find(m => m.id === viewCard.id) : null;
@@ -1275,10 +1303,21 @@ export default function App() {
               <Ico n="bag" />
             </button>
           )}
-          <button className={`tb-btn${tbPanel==='settings'?' tb-open':''}`}
-            onClick={() => setTbPanel(t => t==='settings' ? null : 'settings')} title="Settings">
-            <Ico n="settings" />
-          </button>
+          <div className="tb-settings-wrap">
+            <button className={`tb-btn${tbPanel==='settings'?' tb-open':''}`}
+              onClick={() => {
+                setTbPanel(t => t==='settings' ? null : 'settings');
+                if (showSettingsHint) { setShowSettingsHint(false); localStorage.setItem('keizaal-seen-settings','1'); }
+              }} title="Settings">
+              <Ico n="settings" />
+            </button>
+            {showSettingsHint && (
+              <div className="settings-hint">
+                Help &amp; controls inside
+                <span className="settings-hint-arrow" />
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -1312,11 +1351,13 @@ export default function App() {
       {/* ── Right-click placement menu ── */}
       {panel?.mode === 'menu' && (
         <div className="ctx-panel" style={menuStyle} onPointerDown={e => e.stopPropagation()}>
-          {TYPES.map(type => (
-            <button key={type} className="ctx-item" onClick={() => setPanel({...panel, mode:'form', type})}>
-              <span className="ctx-dot" style={{ background: TYPE_COLORS[type] }} />{type}
-            </button>
-          ))}
+          <div className="ctx-grid">
+            {TYPES.map(type => (
+              <button key={type} className="ctx-item" onClick={() => setPanel({...panel, mode:'form', type})}>
+                <span className="ctx-dot" style={{ background: TYPE_COLORS[type] }} />{type}
+              </button>
+            ))}
+          </div>
         </div>
       )}
 

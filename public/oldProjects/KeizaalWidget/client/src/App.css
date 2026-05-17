@@ -287,16 +287,22 @@
   border: 1px solid rgba(255,255,255,0.1);
   border-radius: 12px;
   box-shadow: 0 12px 40px rgba(0,0,0,0.7);
-  z-index: 200; width: 162px; overflow: hidden;
+  z-index: 200; overflow: hidden;
   animation: dropIn 0.12s ease;
 }
-.ctx-item {
-  display: flex; align-items: center; gap: 10px; width: 100%;
-  background: none; border: none; color: #e8e8e8;
-  padding: 10px 14px; cursor: pointer; font-size: 13px; text-align: left;
+.ctx-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
 }
+.ctx-item {
+  display: flex; align-items: center; gap: 8px;
+  background: none; border: none; color: #e8e8e8;
+  padding: 10px 12px; cursor: pointer; font-size: 12px; text-align: left;
+  border-right: 1px solid rgba(255,255,255,0.05);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.ctx-item:nth-child(even) { border-right: none; }
 .ctx-item:hover { background: rgba(255,255,255,0.09); }
-.ctx-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; box-shadow: 0 0 0 1.5px rgba(0,0,0,0.5); }
+.ctx-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; box-shadow: 0 0 0 1.5px rgba(0,0,0,0.5); }
 
 /* ── Marker form ─────────────────────────────────────────────── */
 .marker-form { padding: 14px; }
@@ -323,8 +329,8 @@
 
 /* ── MultiPicker ─────────────────────────────────────────────── */
 .multi-picker { margin-bottom: 12px; }
-.multi-row { display: flex; gap: 6px; align-items: center; }
-.multi-row select { flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 7px; color: #e8e8e8; padding: 6px 7px; font-size: 12px; }
+.multi-row { display: flex; gap: 6px; align-items: center; min-width: 0; }
+.multi-row select { flex: 1; min-width: 0; max-width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 7px; color: #e8e8e8; padding: 6px 7px; font-size: 12px; overflow: hidden; text-overflow: ellipsis; }
 .multi-row select option { background: #0e1520; color: #e8e8e8; }
 .qty-inp { width: 48px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 7px; color: #e8e8e8; padding: 6px; font-size: 12px; text-align: center; }
 .add-btn { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.14); color: #e8e8e8; padding: 6px 10px; border-radius: 7px; cursor: pointer; font-size: 12px; white-space: nowrap; }
@@ -335,6 +341,17 @@
 .tag-qty { width: 36px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); border-radius: 4px; color: #e8e8e8; padding: 1px 4px; font-size: 11px; text-align: center; }
 .tag-x { background: none; border: none; color: rgba(255,255,255,0.4); cursor: pointer; font-size: 14px; line-height: 1; padding: 0 3px; }
 .tag-x:hover { color: #ff7070; }
+
+/* ── Workstation picker ──────────────────────────────────────── */
+.ws-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-bottom: 10px; }
+.ws-btn {
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 6px; color: rgba(255,255,255,0.45);
+  padding: 5px 6px; font-size: 11px; cursor: pointer; text-align: center;
+  transition: all 0.12s;
+}
+.ws-btn:hover { background: rgba(255,255,255,0.1); color: #e8e8e8; }
+.ws-btn.on { background: rgba(255,215,0,0.14); border-color: rgba(255,215,0,0.35); color: #ffd700; }
 
 /* ── Landmark grid ───────────────────────────────────────────── */
 .lm-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 5px; margin-bottom: 12px; max-height: 200px; overflow-y: auto; background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.07); border-radius: 8px; padding: 6px; }
@@ -544,10 +561,11 @@
 }
 .bp-cat:hover { background: rgba(255,255,255,0.09); color: #e8e8e8; }
 .bp-cat.on { background: rgba(255,215,0,0.14); border-color: rgba(255,215,0,0.32); color: #ffd700; }
-.bp-add-row { display: flex; gap: 6px; }
+.bp-add-row { display: flex; gap: 6px; min-width: 0; }
 .bp-cat-sel {
-  flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+  flex: 1; min-width: 0; max-width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
   border-radius: 7px; color: #e8e8e8; padding: 6px 7px; font-size: 12px; outline: none;
+  overflow: hidden; text-overflow: ellipsis;
 }
 .bp-cat-sel option { background: #0e1520; color: #e8e8e8; }
 .bp-price-inp {
@@ -559,6 +577,46 @@
   color: rgba(255,215,0,0.55); flex-shrink: 0;
 }
 .bp-item-price { font-size: 11px; color: rgba(255,215,0,0.8); flex-shrink: 0; margin-left: auto; margin-right: 6px; }
+
+/* ── Settings hint ───────────────────────────────────────────── */
+.tb-settings-wrap { position: relative; }
+.settings-hint {
+  position: absolute;
+  right: 0; top: calc(100% + 10px);
+  background: rgba(20,28,44,0.97);
+  border: 1px solid rgba(255,215,0,0.28);
+  border-radius: 10px;
+  padding: 8px 13px;
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255,215,0,0.92);
+  white-space: nowrap;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,215,0,0.07);
+  animation: hint-appear 0.3s ease;
+  pointer-events: none;
+  z-index: 200;
+}
+.settings-hint-arrow {
+  position: absolute;
+  bottom: 100%; right: 11px;
+  width: 0; height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-bottom: 7px solid rgba(255,215,0,0.28);
+}
+.settings-hint-arrow::after {
+  content: '';
+  position: absolute;
+  top: 2px; left: -5px;
+  width: 0; height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-bottom: 6px solid rgba(20,28,44,0.97);
+}
+@keyframes hint-appear {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
 
 /* ── Mobile / touch ──────────────────────────────────────────── */
 @media (pointer: coarse) {

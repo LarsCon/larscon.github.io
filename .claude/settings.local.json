@@ -5,7 +5,8 @@
       "WebFetch(domain:en.uesp.net)",
       "WebSearch",
       "WebFetch(domain:github.com)",
-      "WebFetch(domain:www.carlsguides.com)"
+      "WebFetch(domain:www.carlsguides.com)",
+      "Bash(npm run *)"
     ]
   }
 }
