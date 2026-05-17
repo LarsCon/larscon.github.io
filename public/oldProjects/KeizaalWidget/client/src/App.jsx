@@ -86,11 +86,11 @@ const MAJORCITIES = [
   { file:'Winterhold.svg',   label:'Winterhold' },
 ];
 
-const TYPES = ['Monument','Major City','Rumor','Plant','Enemy','Ore','Chest','Dud'];
+const TYPES = ['Monument','Major City','Rumor','Plant','Enemy','Ore','Workstation','Chest','Dud'];
 
 const TYPE_COLORS = {
   Monument:'#FFD700', 'Major City':'#4499FF', 'Rumor':'#BB88FF',
-  Plant:'#55BB55',    Enemy:'#EE4444',         Ore:'#FF8C00', Chest:'#FFD700', Dud:'#FF4040',
+  Plant:'#55BB55', Enemy:'#EE4444', Ore:'#FF8C00', Workstation:'#CC7722', Chest:'#FFD700', Dud:'#FF4040',
 };
 
 // ── Pure helpers ──────────────────────────────────────────────────────────────
@@ -108,25 +108,27 @@ function clampOffset(ox, oy, imgW, imgH, cW, cH, sc) {
 }
 
 function matchesFilter(marker, f) {
-  const me = (marker.enemies || []).map(e => e.name);
-  const mp = (marker.plants  || []).map(p => p.name);
-  const mo = (marker.nodes   || []).map(o => o.name);
+  const me = (marker.enemies      || []).map(e => e.name);
+  const mp = (marker.plants       || []).map(p => p.name);
+  const mo = (marker.nodes        || []).map(o => o.name);
+  const mw = (marker.workstations || []);
 
   if (f.types.length > 0) {
     const direct = f.types.includes(marker.type);
-    // Monuments and Major Cities can contain cross-type content — show them if they match
     const cross =
-      (f.types.includes('Enemy') && me.length > 0) ||
-      (f.types.includes('Plant') && mp.length > 0) ||
-      (f.types.includes('Ore')   && mo.length > 0) ||
-      (f.types.includes('Chest') && marker.chest);
+      (f.types.includes('Enemy')       && me.length > 0) ||
+      (f.types.includes('Plant')        && mp.length > 0) ||
+      (f.types.includes('Ore')          && mo.length > 0) ||
+      (f.types.includes('Workstation')  && mw.length > 0) ||
+      (f.types.includes('Chest')        && marker.chest);
     if (!direct && !cross) return false;
   }
 
   const checks = [];
-  f.enemies.forEach(e => checks.push(me.includes(e)));
-  f.plants.forEach(p  => checks.push(mp.includes(p)));
-  f.ores.forEach(o    => checks.push(mo.includes(o)));
+  f.enemies.forEach(e     => checks.push(me.includes(e)));
+  f.plants.forEach(p      => checks.push(mp.includes(p)));
+  f.ores.forEach(o        => checks.push(mo.includes(o)));
+  f.workstations.forEach(w => checks.push(mw.includes(w)));
   if (!checks.length) return true;
   return f.match === 'all' ? checks.every(Boolean) : checks.some(Boolean);
 }
@@ -156,14 +158,14 @@ function drawStar(ctx, cx, cy, r, color) {
   ctx.strokeStyle = 'rgba(0,0,0,0.5)'; ctx.lineWidth = 1.5; ctx.stroke();
 }
 
-function drawNumberCircle(ctx, cx, cy, r, color, n) {
+function drawLetterCircle(ctx, cx, cy, r, color, letter) {
   ctx.beginPath(); ctx.arc(cx, cy, r, 0, 2 * Math.PI);
   ctx.fillStyle = color; ctx.fill();
   ctx.strokeStyle = 'rgba(0,0,0,0.45)'; ctx.lineWidth = 2; ctx.stroke();
   ctx.fillStyle = '#fff';
-  ctx.font = `bold ${Math.max(9, r * 0.88)}px Inter,sans-serif`;
+  ctx.font = `bold ${Math.max(9, r * 0.9)}px Inter,sans-serif`;
   ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-  ctx.fillText(n > 99 ? '99+' : String(n), cx, cy);
+  ctx.fillText(letter, cx, cy);
 }
 
 function drawMarkerOnCanvas(ctx, marker, cx, cy, r, getImg) {
@@ -207,9 +209,10 @@ function drawMarkerOnCanvas(ctx, marker, cx, cy, r, getImg) {
       ctx.fillText('?', cx, cy + 1);
       break;
     }
-    case 'Plant':  { const n = (marker.plants  || []).reduce((s,p) => s+p.count, 0); drawNumberCircle(ctx,cx,cy,r,'#55BB55',n); break; }
-    case 'Enemy':  { const n = (marker.enemies || []).reduce((s,e) => s+e.count, 0); drawNumberCircle(ctx,cx,cy,r,'#EE4444',n); break; }
-    case 'Ore':    { const n = (marker.nodes   || []).reduce((s,o) => s+o.count, 0); drawNumberCircle(ctx,cx,cy,r,'#FF8C00',n); break; }
+    case 'Plant':       { drawLetterCircle(ctx, cx, cy, r, '#55BB55', 'F'); break; }
+    case 'Enemy':       { drawLetterCircle(ctx, cx, cy, r, '#EE4444', 'E'); break; }
+    case 'Ore':         { drawLetterCircle(ctx, cx, cy, r, '#FF8C00', 'O'); break; }
+    case 'Workstation': { drawLetterCircle(ctx, cx, cy, r, '#CC7722', 'W'); break; }
     case 'Chest': { drawStar(ctx, cx, cy, r, '#FFD700'); break; }
     case 'Dud': {
       ctx.beginPath(); ctx.arc(cx, cy, r, 0, 2 * Math.PI);
@@ -328,11 +331,12 @@ function WorkstationPicker({ value = [], onChange }) {
 function getInitial(type) {
   switch (type) {
     case 'Monument':    return { icon:'', name:'', plants:[], enemies:[], nodes:[], workstations:[], chest:false, notes:'' };
-    case 'Major City':  return { icon:'', name:'', plants:[], enemies:[], nodes:[], chest:false, notes:'' };
+    case 'Major City':  return { icon:'', name:'', plants:[], enemies:[], nodes:[], workstations:[], chest:false, notes:'' };
     case 'Rumor':       return { name:'', enemies:[], plants:[], nodes:[], workstations:[], notes:'' };
     case 'Plant':       return { plants:[], notes:'' };
     case 'Enemy':       return { enemies:[], notes:'' };
     case 'Ore':         return { nodes:[], notes:'' };
+    case 'Workstation': return { workstations:[], notes:'' };
     case 'Chest':       return { notes:'' };
     case 'Dud':         return { notes:'' };
     default:            return {};
@@ -367,6 +371,8 @@ function MarkerForm({ type, initial, onSave, onDelete, onClose, suggest }) {
         <MultiPicker label="Enemies"    options={ENEMIES} items={d.enemies}  onChange={v => set('enemies', v)} />
         <MultiPicker label="Forage"     options={PLANTS}  items={d.plants}   onChange={v => set('plants', v)} />
         <MultiPicker label="Ore Nodes"  options={ORES}    items={d.nodes}    onChange={v => set('nodes', v)} />
+        <span className="field-label" style={{marginTop:4}}>Workstations</span>
+        <WorkstationPicker value={d.workstations} onChange={v => set('workstations', v)} />
         <label className="check-row"><input type="checkbox" checked={d.chest} onChange={e => set('chest', e.target.checked)} /> Contains Chest</label>
         <Field label="Notes" value={d.notes} onChange={v => set('notes', v)} area />
       </>}
@@ -380,6 +386,11 @@ function MarkerForm({ type, initial, onSave, onDelete, onClose, suggest }) {
         <Field label="Notes" value={d.notes} onChange={v => set('notes', v)} area />
       </>}
       {type === 'Plant'  && <><MultiPicker label="Forage"    options={PLANTS}   items={d.plants}   onChange={v => set('plants', v)} /><Field label="Notes" value={d.notes} onChange={v => set('notes', v)} area /></>}
+      {type === 'Workstation' && <>
+        <span className="field-label">Workstations</span>
+        <WorkstationPicker value={d.workstations} onChange={v => set('workstations', v)} />
+        <Field label="Notes" value={d.notes} onChange={v => set('notes', v)} area />
+      </>}
       {type === 'Enemy'  && <><MultiPicker label="Enemies"   options={ENEMIES}  items={d.enemies}  onChange={v => set('enemies', v)} /><Field label="Notes" value={d.notes} onChange={v => set('notes', v)} area /></>}
       {type === 'Ore'    && <><MultiPicker label="Ore Nodes" options={ORES}     items={d.nodes}    onChange={v => set('nodes', v)} /><Field label="Notes" value={d.notes} onChange={v => set('notes', v)} area /></>}
       {type === 'Chest'  && <Field label="Notes" value={d.notes} onChange={v => set('notes', v)} area />}
@@ -485,8 +496,8 @@ function FilterPanel({ filter, onChange }) {
     const arr = filter[field];
     onChange({ ...filter, [field]: arr.includes(val) ? arr.filter(x => x !== val) : [...arr, val] });
   };
-  const clear = () => onChange({ types:[], enemies:[], plants:[], ores:[], match:'any' });
-  const hasAny = filter.types.length || filter.enemies.length || filter.plants.length || filter.ores.length;
+  const clear = () => onChange({ types:[], enemies:[], plants:[], ores:[], workstations:[], match:'any' });
+  const hasAny = filter.types.length || filter.enemies.length || filter.plants.length || filter.ores.length || filter.workstations.length;
   return (
     <div className="tb-panel filter-panel" onPointerDown={e => e.stopPropagation()}>
       <div className="panel-section">
@@ -506,9 +517,10 @@ function FilterPanel({ filter, onChange }) {
           <button className={`match-btn${filter.match==='all'?' on':''}`} onClick={() => onChange({...filter, match:'all'})}>All</button>
         </div>
       </div>
-      <FilterChips label="Enemies" options={ENEMIES} selected={filter.enemies} onToggle={v => tog('enemies', v)} />
-      <FilterChips label="Forage"  options={PLANTS}  selected={filter.plants}  onToggle={v => tog('plants', v)} />
-      <FilterChips label="Ores"    options={ORES}    selected={filter.ores}    onToggle={v => tog('ores', v)} />
+      <FilterChips label="Enemies"      options={ENEMIES}      selected={filter.enemies}      onToggle={v => tog('enemies', v)} />
+      <FilterChips label="Forage"       options={PLANTS}       selected={filter.plants}       onToggle={v => tog('plants', v)} />
+      <FilterChips label="Ores"         options={ORES}         selected={filter.ores}         onToggle={v => tog('ores', v)} />
+      <FilterChips label="Workstations" options={WORKSTATIONS} selected={filter.workstations} onToggle={v => tog('workstations', v)} />
       {hasAny && <button className="clear-btn" onClick={clear}>Clear All</button>}
     </div>
   );
@@ -556,10 +568,18 @@ function SettingsPanel({ settings, onChange, extras, onExtrasChange }) {
         </button>
         {showHelp && (
           <div className="guide-card">
+            <p className="guide-sub">Desktop</p>
             <ul className="guide-list">
-              <li><span className="guide-key">Left click + drag</span> Pan map</li>
-              <li><span className="guide-key">Scroll</span> Zoom in / out</li>
-              <li><span className="guide-key">Left click marker</span> View marker details</li>
+              <li><span className="guide-key">Click + drag</span> Pan map</li>
+              <li><span className="guide-key">Scroll wheel</span> Zoom in / out</li>
+              <li><span className="guide-key">Click marker</span> View details</li>
+            </ul>
+            <div className="guide-divider" />
+            <p className="guide-sub">Mobile</p>
+            <ul className="guide-list">
+              <li><span className="guide-key">Touch + drag</span> Pan map</li>
+              <li><span className="guide-key">Pinch</span> Zoom in / out</li>
+              <li><span className="guide-key">Tap marker</span> View details</li>
             </ul>
             <div className="guide-divider" />
             <ul className="guide-list">
@@ -569,8 +589,8 @@ function SettingsPanel({ settings, onChange, extras, onExtrasChange }) {
             <div className="guide-divider" />
             <p className="guide-sub">Unlock to edit</p>
             <ul className="guide-list">
-              <li><span className="guide-key">Right click</span> Place a new marker</li>
-              <li><span className="guide-key">Left click marker</span> Edit or delete marker</li>
+              <li><span className="guide-key">Right click / Long press</span> Place a new marker</li>
+              <li><span className="guide-key">Click / Tap marker</span> Edit or delete marker</li>
               <li>First time editing? Read the Placement Guide below.</li>
             </ul>
           </div>
@@ -655,7 +675,7 @@ function ViewCard({ marker, sx, sy, onClose }) {
           </div>
         )}
         {marker.notes && <p className="vc-text vc-notes">{marker.notes}</p>}
-        {!marker.chest && !marker.enemies?.length && !marker.plants?.length && !marker.nodes?.length && !marker.notes && (
+        {!marker.chest && !marker.enemies?.length && !marker.plants?.length && !marker.nodes?.length && !marker.workstations?.length && !marker.notes && (
           <span className="vc-empty">No details recorded</span>
         )}
       </div>
@@ -669,12 +689,12 @@ function PiMarkerDetail({ marker }) {
   const enemies = marker.enemies || [];
   const plants  = marker.plants  || [];
   const nodes   = marker.nodes   || [];
-  const empty   = !marker.notes && !marker.chest && !enemies.length && !plants.length && !nodes.length;
+  const empty   = !marker.notes && !marker.chest && !enemies.length && !plants.length && !nodes.length && !marker.workstations?.length;
   return (
     <div className="pi-detail">
       {marker.chest   && <p className="pi-text"><span className="pi-field">Chest</span> Yes</p>}
       {enemies.length > 0 && <p className="pi-text"><span className="pi-field">Enemies</span> {enemies.map(e=>`${e.name}×${e.count}`).join(', ')}</p>}
-      {plants.length  > 0 && <p className="pi-text"><span className="pi-field">Plants</span> {plants.map(p=>`${p.name}×${p.count}`).join(', ')}</p>}
+      {plants.length  > 0 && <p className="pi-text"><span className="pi-field">Forage</span> {plants.map(p=>`${p.name}×${p.count}`).join(', ')}</p>}
       {nodes.length   > 0 && <p className="pi-text"><span className="pi-field">Ore</span> {nodes.map(o=>`${o.name}×${o.count}`).join(', ')}</p>}
       {marker.workstations?.length > 0 && <p className="pi-text"><span className="pi-field">Stations</span> {marker.workstations.join(', ')}</p>}
       {marker.notes   && <p className="pi-text pi-muted">{marker.notes}</p>}
@@ -691,8 +711,8 @@ function PiDiff({ original, proposed }) {
   if (original.icon  !== proposed.icon)  fields.push({ label:'Icon', from: str(original.icon), to: str(proposed.icon) });
   if (original.notes !== proposed.notes) fields.push({ label:'Notes',       from: str(original.notes), to: str(proposed.notes) });
   if (original.chest !== proposed.chest) fields.push({ label:'Chest',       from: original.chest?'Yes':'No', to: proposed.chest?'Yes':'No' });
-  if (JSON.stringify(original.enemies||[]) !== JSON.stringify(proposed.enemies||[])) fields.push({ label:'Enemies',  to: arrStr(proposed.enemies) });
-  if (JSON.stringify(original.plants ||[]) !== JSON.stringify(proposed.plants ||[])) fields.push({ label:'Plants',   to: arrStr(proposed.plants) });
+  if (JSON.stringify(original.enemies||[]) !== JSON.stringify(proposed.enemies||[])) fields.push({ label:'Enemies', to: arrStr(proposed.enemies) });
+  if (JSON.stringify(original.plants ||[]) !== JSON.stringify(proposed.plants ||[])) fields.push({ label:'Forage',  to: arrStr(proposed.plants) });
   if (JSON.stringify(original.nodes        ||[]) !== JSON.stringify(proposed.nodes        ||[])) fields.push({ label:'Ore',      to: arrStr(proposed.nodes) });
   if (JSON.stringify(original.workstations||[]) !== JSON.stringify(proposed.workstations||[])) fields.push({ label:'Stations', to: (proposed.workstations||[]).join(', ')||'none' });
   if (fields.length === 0) return <p className="pi-text pi-muted">No content changes — position may have moved</p>;
@@ -900,7 +920,7 @@ export default function App() {
   const [viewCard,   setViewCard]   = useState(null);     // { id, sx, sy }
 
   const [searchQuery, setSearchQuery] = useState('');
-  const [filter, setFilter] = useState({ types:[], enemies:[], plants:[], ores:[], match:'any' });
+  const [filter, setFilter] = useState({ types:[], enemies:[], plants:[], ores:[], workstations:[], match:'any' });
   const [extras, setExtras] = useState(() => {
     try { return { friends:false, backpack:false, ...JSON.parse(localStorage.getItem(EXTRAS_KEY) || '{}') }; }
     catch { return { friends:false, backpack:false }; }
@@ -908,7 +928,7 @@ export default function App() {
   const [extraOpen, setExtraOpen] = useState(null); // null | 'friends' | 'backpack'
   const [showSettingsHint, setShowSettingsHint] = useState(() => !localStorage.getItem('keizaal-seen-settings'));
   const [settings, setSettings] = useState(() => {
-    const def = { tint:'#1a0a00', tintOpacity:0.5, iconScale:{ Monument:1, 'Major City':1.3, Rumor:0.9, Plant:0.7, Enemy:0.7, Ore:0.7, Chest:1, Dud:0.7, 'Learn More':0.9 }, boundaryLock:true };
+    const def = { tint:'#1a0a00', tintOpacity:0.5, iconScale:{ Monument:1, 'Major City':1.3, Rumor:0.9, Plant:0.7, Enemy:0.7, Ore:0.7, Workstation:0.7, Chest:1, Dud:0.7 }, boundaryLock:true };
     try {
       const s = JSON.parse(localStorage.getItem(SETTINGS_KEY));
       if (!s) return def;
@@ -986,7 +1006,7 @@ export default function App() {
 
   // Filter computation
   const filteredIds = useMemo(() => {
-    const active = filter.types.length || filter.enemies.length || filter.plants.length || filter.ores.length;
+    const active = filter.types.length || filter.enemies.length || filter.plants.length || filter.ores.length || filter.workstations.length;
     if (!active) return null;
     const ids = new Set();
     markers.forEach(m => { if (matchesFilter(m, filter)) ids.add(m.id); });
