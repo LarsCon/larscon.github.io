@@ -158,6 +158,16 @@ function drawStar(ctx, cx, cy, r, color) {
   ctx.strokeStyle = 'rgba(0,0,0,0.5)'; ctx.lineWidth = 1.5; ctx.stroke();
 }
 
+function drawNumberCircle(ctx, cx, cy, r, color, n) {
+  ctx.beginPath(); ctx.arc(cx, cy, r, 0, 2 * Math.PI);
+  ctx.fillStyle = color; ctx.fill();
+  ctx.strokeStyle = 'rgba(0,0,0,0.45)'; ctx.lineWidth = 2; ctx.stroke();
+  ctx.fillStyle = '#fff';
+  ctx.font = `bold ${Math.max(9, r * 0.88)}px Inter,sans-serif`;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText(n > 99 ? '99+' : String(n), cx, cy);
+}
+
 function drawLetterCircle(ctx, cx, cy, r, color, letter) {
   ctx.beginPath(); ctx.arc(cx, cy, r, 0, 2 * Math.PI);
   ctx.fillStyle = color; ctx.fill();
@@ -209,9 +219,9 @@ function drawMarkerOnCanvas(ctx, marker, cx, cy, r, getImg) {
       ctx.fillText('?', cx, cy + 1);
       break;
     }
-    case 'Plant':       { drawLetterCircle(ctx, cx, cy, r, '#55BB55', 'F'); break; }
-    case 'Enemy':       { drawLetterCircle(ctx, cx, cy, r, '#EE4444', 'E'); break; }
-    case 'Ore':         { drawLetterCircle(ctx, cx, cy, r, '#FF8C00', 'O'); break; }
+    case 'Plant':       { const n = (marker.plants  || []).reduce((s,p) => s+p.count, 0); drawNumberCircle(ctx,cx,cy,r,'#55BB55',n); break; }
+    case 'Enemy':       { const n = (marker.enemies || []).reduce((s,e) => s+e.count, 0); drawNumberCircle(ctx,cx,cy,r,'#EE4444',n); break; }
+    case 'Ore':         { const n = (marker.nodes   || []).reduce((s,o) => s+o.count, 0); drawNumberCircle(ctx,cx,cy,r,'#FF8C00',n); break; }
     case 'Workstation': { drawLetterCircle(ctx, cx, cy, r, '#CC7722', 'W'); break; }
     case 'Chest': { drawStar(ctx, cx, cy, r, '#FFD700'); break; }
     case 'Dud': {
@@ -245,25 +255,56 @@ function Ico({ n, size = 16 }) {
 
 // ── MultiPicker ───────────────────────────────────────────────────────────────
 function MultiPicker({ label, options, items, onChange }) {
-  const [sel, setSel] = useState('');
-  const [qty, setQty] = useState(1);
-  const add = () => {
-    if (!sel) return;
-    const ex = items.find(i => i.name === sel);
-    onChange(ex ? items.map(i => i.name === sel ? {...i, count: i.count + qty} : i) : [...items, {name:sel, count:qty}]);
-    setSel(''); setQty(1);
+  const [query, setQuery] = useState('');
+  const [open,  setOpen]  = useState(false);
+  const [qty,   setQty]   = useState(1);
+  const wrapRef = useRef(null);
+
+  const filtered = query
+    ? options.filter(o => o.toLowerCase().includes(query.toLowerCase()))
+    : options;
+
+  const pick = name => {
+    const ex = items.find(i => i.name === name);
+    onChange(ex
+      ? items.map(i => i.name === name ? { ...i, count: i.count + qty } : i)
+      : [...items, { name, count: qty }]);
+    setQuery(''); setOpen(false); setQty(1);
   };
+
+  // Close on outside click
+  useEffect(() => {
+    if (!open) return;
+    const handler = e => { if (wrapRef.current && !wrapRef.current.contains(e.target)) setOpen(false); };
+    document.addEventListener('pointerdown', handler);
+    return () => document.removeEventListener('pointerdown', handler);
+  }, [open]);
+
   return (
     <div className="multi-picker">
       <span className="field-label">{label}</span>
-      <div className="multi-row">
-        <select value={sel} onChange={e => setSel(e.target.value)}>
-          <option value="">Select…</option>
-          {options.map(o => <option key={o} value={o}>{o}</option>)}
-        </select>
+      <div className="mp-row">
+        <div className="mp-search-wrap" ref={wrapRef}>
+          <input
+            className="mp-search"
+            value={query}
+            placeholder="Search…"
+            onChange={e => { setQuery(e.target.value); setOpen(true); }}
+            onFocus={() => setOpen(true)}
+          />
+          {open && filtered.length > 0 && (
+            <div className="mp-drop">
+              {filtered.map(o => (
+                <button key={o} type="button" className="mp-option"
+                  onPointerDown={e => { e.preventDefault(); pick(o); }}>
+                  {o}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
         <input type="number" min="1" max="99" value={qty}
           onChange={e => setQty(Math.max(1, +e.target.value || 1))} className="qty-inp" />
-        <button type="button" onClick={add} disabled={!sel} className="add-btn">Add</button>
       </div>
       {items.length > 0 && (
         <div className="tag-list">
