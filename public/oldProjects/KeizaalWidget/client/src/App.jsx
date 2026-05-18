@@ -1272,6 +1272,12 @@ export default function App() {
 
     displayMarkers.forEach(m => {
       if (skipId && m.id === skipId) return;
+      if (m.type === 'Plant'      && !(m.plants?.length))  return;
+      if (m.type === 'Enemy'      && !(m.enemies?.length)) return;
+      if (m.type === 'Ore'        && !(m.nodes?.length))   return;
+      if (m.type === 'Rumor'      && !(m.enemies?.length) && !(m.plants?.length) && !(m.nodes?.length)) return;
+      if (m.type === 'Monument'   && !(m.enemies?.length) && !(m.plants?.length) && !(m.nodes?.length) && !(m.workstations?.length)) return;
+      if (m.type === 'Major City' && !(m.enemies?.length) && !(m.plants?.length) && !(m.nodes?.length) && !(m.workstations?.length)) return;
       const r  = 14 * Math.sqrt(scale) * (settings.iconScale[m.type] ?? 1);
       const cx = m.x * scale + offset.x;
       const cy = m.y * scale + offset.y;
