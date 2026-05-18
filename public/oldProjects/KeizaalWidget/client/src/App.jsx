@@ -1085,11 +1085,12 @@ export default function App() {
   // Strip premium items from display when not admin-unlocked
   const displayMarkers = useMemo(() => {
     if (adminUnlocked) return markers;
-    return markers.map(m => ({
-      ...m,
-      plants: (m.plants || []).filter(p => !PREMIUM.has(p.name)),
-      nodes:  (m.nodes  || []).filter(o => !PREMIUM.has(o.name)),
-    }));
+    return markers.map(m => {
+      const plants = (m.plants || []).filter(p => !PREMIUM.has(p.name));
+      const nodes  = (m.nodes  || []).filter(o => !PREMIUM.has(o.name));
+      const _hadPremium = plants.length < (m.plants?.length || 0) || nodes.length < (m.nodes?.length || 0);
+      return { ...m, plants, nodes, _hadPremium };
+    });
   }, [markers, adminUnlocked]);
 
   // Filter computation
@@ -1272,12 +1273,14 @@ export default function App() {
 
     displayMarkers.forEach(m => {
       if (skipId && m.id === skipId) return;
-      if (m.type === 'Plant'      && !(m.plants?.length))  return;
-      if (m.type === 'Enemy'      && !(m.enemies?.length)) return;
-      if (m.type === 'Ore'        && !(m.nodes?.length))   return;
-      if (m.type === 'Rumor'      && !(m.enemies?.length) && !(m.plants?.length) && !(m.nodes?.length)) return;
-      if (m.type === 'Monument'   && !(m.enemies?.length) && !(m.plants?.length) && !(m.nodes?.length) && !(m.workstations?.length)) return;
-      if (m.type === 'Major City' && !(m.enemies?.length) && !(m.plants?.length) && !(m.nodes?.length) && !(m.workstations?.length)) return;
+      if (m._hadPremium) {
+        if (m.type === 'Plant'      && !(m.plants?.length))  return;
+        if (m.type === 'Enemy'      && !(m.enemies?.length)) return;
+        if (m.type === 'Ore'        && !(m.nodes?.length))   return;
+        if (m.type === 'Rumor'      && !(m.enemies?.length) && !(m.plants?.length) && !(m.nodes?.length)) return;
+        if (m.type === 'Monument'   && !(m.enemies?.length) && !(m.plants?.length) && !(m.nodes?.length) && !(m.workstations?.length)) return;
+        if (m.type === 'Major City' && !(m.enemies?.length) && !(m.plants?.length) && !(m.nodes?.length) && !(m.workstations?.length)) return;
+      }
       const r  = 14 * Math.sqrt(scale) * (settings.iconScale[m.type] ?? 1);
       const cx = m.x * scale + offset.x;
       const cy = m.y * scale + offset.y;
