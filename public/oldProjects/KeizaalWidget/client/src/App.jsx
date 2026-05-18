@@ -40,6 +40,8 @@ const PLANTS   = [
 ];
 const ORES     = ['Coal','Copper','Corundum','Dwarven','Ebony','Gold','Iron','Malachite','Moonstone','Orichalcum','Quicksilver','Silver','Steel'];
 
+const PREMIUM  = new Set(['Torch','Dwarven','Ebony','Moonstone','Quicksilver']);
+
 const LANDMARKS = [
   { file:'Camp.svg',             label:'Camp' },
   { file:'GiantCamp.svg',        label:'Giant Camp' },
@@ -544,7 +546,7 @@ function FilterChips({ label, options, selected, onToggle }) {
 }
 
 // ── FilterPanel ───────────────────────────────────────────────────────────────
-function FilterPanel({ filter, onChange, total = 0, visible = 0 }) {
+function FilterPanel({ filter, onChange, total = 0, visible = 0, adminUnlocked = false }) {
   const tog = (field, val) => {
     const arr = filter[field];
     onChange({ ...filter, [field]: arr.includes(val) ? arr.filter(x => x !== val) : [...arr, val] });
@@ -580,8 +582,8 @@ function FilterPanel({ filter, onChange, total = 0, visible = 0 }) {
         </div>
       </div>
       <FilterChips label="Enemies"      options={ENEMIES}      selected={filter.enemies}      onToggle={v => tog('enemies', v)} />
-      <FilterChips label="Forage"       options={PLANTS}       selected={filter.plants}       onToggle={v => tog('plants', v)} />
-      <FilterChips label="Ores"         options={ORES}         selected={filter.ores}         onToggle={v => tog('ores', v)} />
+      <FilterChips label="Forage"       options={adminUnlocked ? PLANTS : PLANTS.filter(p => !PREMIUM.has(p))} selected={filter.plants}       onToggle={v => tog('plants', v)} />
+      <FilterChips label="Ores"         options={adminUnlocked ? ORES   : ORES.filter(o => !PREMIUM.has(o))}   selected={filter.ores}         onToggle={v => tog('ores', v)} />
       <FilterChips label="Workstations" options={WORKSTATIONS} selected={filter.workstations} onToggle={v => tog('workstations', v)} />
       {hasAny > 0 && <button className="clear-btn" onClick={clear}>Clear All</button>}
     </div>
@@ -983,6 +985,7 @@ export default function App() {
   const [offset, setOffset] = useState({ x:0, y:0 });
   const [markers, setMarkers] = useState([]);
   const [sync, setSync] = useState('connecting'); // 'connecting'|'live'|'error'
+  const [adminUnlocked, setAdminUnlocked] = useState(false);
 
   const [appMode,      setAppMode]      = useState('view');  // 'view' | 'edit' | 'suggest'
   const [tbPanel,      setTbPanel]      = useState(null);    // 'password'|'filter'|'settings'|null
@@ -1079,6 +1082,16 @@ export default function App() {
 
   const canvasToWorld = (px, py) => ({ x:(px - offset.x)/scale, y:(py - offset.y)/scale });
 
+  // Strip premium items from display when not admin-unlocked
+  const displayMarkers = useMemo(() => {
+    if (adminUnlocked) return markers;
+    return markers.map(m => ({
+      ...m,
+      plants: (m.plants || []).filter(p => !PREMIUM.has(p.name)),
+      nodes:  (m.nodes  || []).filter(o => !PREMIUM.has(o.name)),
+    }));
+  }, [markers, adminUnlocked]);
+
   // Filter computation
   const filteredIds = useMemo(() => {
     const active = filter.types.length || filter.enemies.length || filter.plants.length || filter.ores.length || filter.workstations.length;
@@ -1092,9 +1105,9 @@ export default function App() {
     const q = searchQuery.trim().toLowerCase();
     if (!q) return null;
     const ids = new Set();
-    markers.forEach(m => { if (matchesSearch(m, q)) ids.add(m.id); });
+    displayMarkers.forEach(m => { if (matchesSearch(m, q)) ids.add(m.id); });
     return ids;
-  }, [markers, searchQuery]);
+  }, [displayMarkers, searchQuery]);
 
   const visibleCount = useMemo(() => {
     if (!filteredIds && !searchIds) return markers.length;
@@ -1257,7 +1270,7 @@ export default function App() {
     const skipId = (previewItem?.action === 'edit' || previewItem?.action === 'delete')
       ? previewItem.original?.id : null;
 
-    markers.forEach(m => {
+    displayMarkers.forEach(m => {
       if (skipId && m.id === skipId) return;
       const r  = 14 * Math.sqrt(scale) * (settings.iconScale[m.type] ?? 1);
       const cx = m.x * scale + offset.x;
@@ -1325,7 +1338,7 @@ export default function App() {
         ctx.restore();
       }
     }
-  }, [canvasSize, markers, offset, scale, drawTick, getImg, filteredIds, searchIds, settings, previewItem]);
+  }, [canvasSize, displayMarkers, offset, scale, drawTick, getImg, filteredIds, searchIds, settings, previewItem]);
 
   // ── Helpers ───────────────────────────────────────────────────
   const lockToggle = () => {
@@ -1362,7 +1375,7 @@ export default function App() {
     return { left: Math.max(8, px), top: Math.max(TOOLBAR_H + 8, py) };
   })() : null;
 
-  const viewMarker = viewCard ? markers.find(m => m.id === viewCard.id) : null;
+  const viewMarker = viewCard ? displayMarkers.find(m => m.id === viewCard.id) : null;
   const filterIsOn = filteredIds !== null;
 
   return (
@@ -1428,13 +1441,13 @@ export default function App() {
       {tbPanel === 'password' && (
         <div className="tb-drop tb-drop-left">
           <PasswordPanel
-            onAdmin={()     => { setAppMode('edit');    setTbPanel(null); }}
+            onAdmin={()     => { setAppMode('edit'); setAdminUnlocked(true); setTbPanel(null); }}
             onCommenter={()  => { setAppMode('suggest'); setTbPanel(null); }} />
         </div>
       )}
       {tbPanel === 'filter' && (
         <div className="tb-drop tb-drop-right">
-          <FilterPanel filter={filter} onChange={setFilter} total={markers.length} visible={visibleCount} />
+          <FilterPanel filter={filter} onChange={setFilter} total={markers.length} visible={visibleCount} adminUnlocked={adminUnlocked} />
         </div>
       )}
       {tbPanel === 'settings' && (
