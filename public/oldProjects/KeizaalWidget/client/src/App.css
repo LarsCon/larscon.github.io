@@ -152,6 +152,20 @@
 
 /* ── Filter panel ────────────────────────────────────────────── */
 .filter-panel { min-width: 260px; }
+.fp-count {
+  display: flex; align-items: baseline; gap: 2px;
+  padding: 2px 2px 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  margin-bottom: 2px;
+}
+.fp-count-num {
+  font-size: 22px; font-weight: 700; line-height: 1;
+  color: rgba(255,255,255,0.85);
+  transition: color 0.2s;
+}
+.fp-count-of {
+  font-size: 11px; color: rgba(255,255,255,0.35);
+}
 
 .chip-wrap { display: flex; flex-wrap: wrap; gap: 5px; }
 .chip {

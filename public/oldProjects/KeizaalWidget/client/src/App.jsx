@@ -544,15 +544,24 @@ function FilterChips({ label, options, selected, onToggle }) {
 }
 
 // ── FilterPanel ───────────────────────────────────────────────────────────────
-function FilterPanel({ filter, onChange }) {
+function FilterPanel({ filter, onChange, total = 0, visible = 0 }) {
   const tog = (field, val) => {
     const arr = filter[field];
     onChange({ ...filter, [field]: arr.includes(val) ? arr.filter(x => x !== val) : [...arr, val] });
   };
   const clear = () => onChange({ types:[], enemies:[], plants:[], ores:[], workstations:[], match:'any' });
   const hasAny = filter.types.length || filter.enemies.length || filter.plants.length || filter.ores.length || filter.workstations.length;
+  const isFiltered = hasAny > 0;
   return (
     <div className="tb-panel filter-panel" onPointerDown={e => e.stopPropagation()}>
+      <div className="fp-count">
+        <span className="fp-count-num" style={isFiltered ? { color: '#7ecdff' } : {}}>
+          {visible}
+        </span>
+        <span className="fp-count-of">
+          {isFiltered ? ` / ${total} points showing` : ` points on map`}
+        </span>
+      </div>
       <div className="panel-section">
         <span className="panel-label">Point Type</span>
         <div className="chip-wrap">
@@ -1087,6 +1096,14 @@ export default function App() {
     return ids;
   }, [markers, searchQuery]);
 
+  const visibleCount = useMemo(() => {
+    if (!filteredIds && !searchIds) return markers.length;
+    return markers.filter(m =>
+      (!filteredIds || filteredIds.has(m.id)) &&
+      (!searchIds   || searchIds.has(m.id))
+    ).length;
+  }, [markers, filteredIds, searchIds]);
+
   // ── Pointer ───────────────────────────────────────────────────
   const clearLongPress = () => {
     if (longPressRef.current) { clearTimeout(longPressRef.current); longPressRef.current = null; }
@@ -1417,7 +1434,7 @@ export default function App() {
       )}
       {tbPanel === 'filter' && (
         <div className="tb-drop tb-drop-right">
-          <FilterPanel filter={filter} onChange={setFilter} />
+          <FilterPanel filter={filter} onChange={setFilter} total={markers.length} visible={visibleCount} />
         </div>
       )}
       {tbPanel === 'settings' && (
