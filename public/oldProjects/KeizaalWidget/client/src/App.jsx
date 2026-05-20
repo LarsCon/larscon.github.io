@@ -832,24 +832,21 @@ function PiDiff({ original, proposed }) {
 function PendingItem({ item, onApprove, onDeny, onPreview, isPreviewing }) {
   const marker = item.action === 'delete' ? item.original : item.data;
   return (
-    <div className={`pi-card${isPreviewing ? ' pi-previewing' : ''}`}>
+    <div className={`pi-card${isPreviewing ? ' pi-previewing' : ''}`}
+      onClick={() => onPreview(isPreviewing ? null : item)}
+      title={isPreviewing ? 'Clear preview' : 'Preview on map'}>
       <div className="pi-head">
         <span className={`pi-badge pi-${item.action}`}>{item.action}</span>
         <span className="pi-type" style={{ color: TYPE_COLORS[marker?.type] }}>{TYPE_LABELS[marker?.type] || marker?.type}</span>
         {marker?.name && <span className="pi-name">{marker.name}</span>}
         {item.submitted_by && <span className="pi-submitter">{item.submitted_by}</span>}
-        <button className={`pi-eye${isPreviewing ? ' on' : ''}`}
-          onClick={() => onPreview(isPreviewing ? null : item)}
-          title={isPreviewing ? 'Clear preview' : 'Preview on map'}>
-          <Ico n="eye" size={14} />
-        </button>
       </div>
       {item.action === 'edit' && item.original
         ? <PiDiff original={item.original} proposed={item.data} />
         : <PiMarkerDetail marker={marker} />}
       <div className="pi-actions">
-        <button className="pi-approve" onClick={onApprove}>Approve</button>
-        <button className="pi-deny"    onClick={onDeny}>Deny</button>
+        <button className="pi-approve" onClick={e => { e.stopPropagation(); onApprove(); }}>Approve</button>
+        <button className="pi-deny"    onClick={e => { e.stopPropagation(); onDeny(); }}>Deny</button>
       </div>
     </div>
   );
@@ -1055,10 +1052,11 @@ function LoginScreen({ onLogin }) {
   );
 }
 
-// ── LogsPanel ─────────────────────────────────────────────────────────────────
-function LogsPanel() {
+// ── LogsSidebar ───────────────────────────────────────────────────────────────
+function LogsSidebar({ onClose }) {
   const [logs,    setLogs]    = useState([]);
   const [loading, setLoading] = useState(true);
+  const [q,       setQ]       = useState('');
 
   useEffect(() => {
     apiGetAuthLog()
@@ -1067,26 +1065,46 @@ function LogsPanel() {
       .catch(() => setLoading(false));
   }, []);
 
+  // Names that appear exactly once in the full log = first-ever login
+  const firstTimers = useMemo(() => {
+    const counts = {};
+    logs.forEach(l => { counts[l.name] = (counts[l.name] || 0) + 1; });
+    return new Set(Object.keys(counts).filter(n => counts[n] === 1));
+  }, [logs]);
+
   const fmt = ts => {
     const d = new Date(ts);
-    return d.toLocaleDateString() + ' ' + d.toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
+    return d.toLocaleDateString() + ' ' + d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
 
+  const filtered = q.trim()
+    ? logs.filter(l =>
+        l.name.toLowerCase().includes(q.toLowerCase()) ||
+        l.access_level.toLowerCase().includes(q.toLowerCase())
+      )
+    : logs;
+
   return (
-    <div className="tb-panel logs-panel" onPointerDown={e => e.stopPropagation()}>
-      <span className="panel-label">Access Log</span>
-      {loading
-        ? <p className="logs-empty">Loading…</p>
-        : logs.length === 0
-          ? <p className="logs-empty">No entries yet</p>
-          : logs.map(l => (
-              <div key={l.id} className="log-row">
-                <span className="log-name">{l.name}</span>
-                <span className={`log-level log-level-${l.access_level}`}>{l.access_level}</span>
-                <span className="log-time">{fmt(l.logged_at)}</span>
-              </div>
-            ))
-      }
+    <div className="logs-sidebar">
+      <div className="logs-sidebar-head">
+        <span className="panel-label" style={{ marginBottom: 0 }}>Access Log</span>
+        <button className="extra-close" onClick={onClose}>×</button>
+      </div>
+      <input className="logs-search" value={q} onChange={e => setQ(e.target.value)} placeholder="Search name or level…" />
+      <div className="logs-list">
+        {loading
+          ? <p className="logs-empty">Loading…</p>
+          : filtered.length === 0
+            ? <p className="logs-empty">{q ? 'No results' : 'No entries yet'}</p>
+            : filtered.map(l => (
+                <div key={l.id} className={`log-row${firstTimers.has(l.name) ? ' log-row-new' : ''}`}>
+                  <span className="log-name">{l.name}</span>
+                  <span className={`log-level log-level-${l.access_level}`}>{l.access_level}</span>
+                  <span className="log-time">{fmt(l.logged_at)}</span>
+                </div>
+              ))
+        }
+      </div>
     </div>
   );
 }
@@ -1119,6 +1137,7 @@ export default function App() {
   const [appMode,      setAppMode]      = useState('view');  // 'view' | 'edit' | 'suggest'
   const [tbPanel,      setTbPanel]      = useState(null);    // 'password'|'filter'|'settings'|null
   const [pendingOpen,  setPendingOpen]  = useState(false);
+  const [logsOpen,     setLogsOpen]     = useState(false);
   const [pending,      setPending]      = useState([]);
   const [pendingTick,  setPendingTick]  = useState(0);
   const [previewItem,  setPreviewItem]  = useState(null);
@@ -1554,7 +1573,7 @@ export default function App() {
           <span className="tb-user">{authSession.name}</span>
         </div>
         <div className="tb-center">
-          <span className="tb-title">Keizaal</span>
+          <span className="tb-title">Children of the Hist</span>
           <span className={`sync-dot sync-${sync}`} title={{ live:'Live sync', connecting:'Connecting…', error:'Sync error' }[sync]} />
         </div>
         <div className="tb-right">
@@ -1572,8 +1591,8 @@ export default function App() {
             </button>
           )}
           {adminUnlocked && (
-            <button className={`tb-btn${tbPanel==='logs'?' tb-open':''}`}
-              onClick={() => setTbPanel(t => t==='logs' ? null : 'logs')} title="Access log">
+            <button className={`tb-btn${logsOpen?' tb-open':''}`}
+              onClick={() => setLogsOpen(v => !v)} title="Access log">
               <Ico n="log" />
             </button>
           )}
@@ -1621,10 +1640,8 @@ export default function App() {
           <SettingsPanel settings={settings} onChange={setSettings} extras={extras} onExtrasChange={setExtras} />
         </div>
       )}
-      {tbPanel === 'logs' && adminUnlocked && (
-        <div className="tb-drop tb-drop-right">
-          <LogsPanel />
-        </div>
+      {logsOpen && adminUnlocked && (
+        <LogsSidebar onClose={() => setLogsOpen(false)} />
       )}
 
       {/* ── Canvas ── */}
