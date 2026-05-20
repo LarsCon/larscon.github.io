@@ -488,14 +488,19 @@ function MarkerForm({ type, initial, onSave, onDelete, onClose, suggest }) {
 }
 
 // ── SearchBar ─────────────────────────────────────────────────
-function SearchBar({ value, onChange }) {
+function SearchBar({ value, onChange, onLongPress }) {
   const [open, setOpen] = useState(false);
   const inputRef = useRef(null);
+  const lpTimer = useRef(null);
   const activate = () => { setOpen(true); setTimeout(() => inputRef.current?.focus(), 0); };
   const clear = () => { onChange(''); setOpen(false); };
+  const lpStart = () => { if (onLongPress) lpTimer.current = setTimeout(onLongPress, 3000); };
+  const lpCancel = () => { if (lpTimer.current) { clearTimeout(lpTimer.current); lpTimer.current = null; } };
   return (
     <div className="tb-search">
-      <button className={`tb-btn${open || value ? ' tb-open' : ''}`} onClick={activate} title="Search markers">
+      <button className={`tb-btn${open || value ? ' tb-open' : ''}`}
+        onClick={activate} onPointerDown={lpStart} onPointerUp={lpCancel} onPointerLeave={lpCancel}
+        title="Search markers">
         <Ico n="search" />
       </button>
       {(open || value) && (
@@ -1749,7 +1754,7 @@ export default function App() {
             title={appMode !== 'view' ? 'Return to view' : authSession.level === 'admin' ? 'Enter edit mode' : 'Enter suggest mode'}>
             <Ico n={appMode !== 'view' ? 'unlock' : 'lock'} />
           </button>
-          {appMode === 'view' && <SearchBar value={searchQuery} onChange={setSearchQuery} />}
+          {appMode === 'view' && <SearchBar value={searchQuery} onChange={setSearchQuery} onLongPress={logout} />}
           <span className="tb-user">{authSession.name}</span>
         </div>
         <div className="tb-center">
@@ -1803,9 +1808,11 @@ export default function App() {
               </div>
             )}
           </div>
-          <button className="tb-btn tb-logout" onClick={logout} title="Sign out">
-            <Ico n="logout" size={16} />
-          </button>
+          {adminUnlocked && (
+            <button className="tb-btn tb-logout" onClick={logout} title="Sign out">
+              <Ico n="logout" size={16} />
+            </button>
+          )}
         </div>
       </div>
 
