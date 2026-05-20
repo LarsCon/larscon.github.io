@@ -1098,9 +1098,11 @@ function LoginScreen({ onLogin }) {
 
 // ── LogsSidebar ───────────────────────────────────────────────────────────────
 function LogsSidebar({ onClose }) {
-  const [logs,    setLogs]    = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [q,       setQ]       = useState('');
+  const [logs,         setLogs]         = useState([]);
+  const [loading,      setLoading]      = useState(true);
+  const [q,            setQ]            = useState('');
+  const [userView,     setUserView]     = useState(false);
+  const [expandedUser, setExpandedUser] = useState(null);
 
   useEffect(() => {
     apiGetAuthLog()
@@ -1109,11 +1111,27 @@ function LogsSidebar({ onClose }) {
       .catch(() => setLoading(false));
   }, []);
 
-  // Names that appear exactly once in the full log = first-ever login
   const firstTimers = useMemo(() => {
     const counts = {};
     logs.forEach(l => { counts[l.name] = (counts[l.name] || 0) + 1; });
     return new Set(Object.keys(counts).filter(n => counts[n] === 1));
+  }, [logs]);
+
+  const users = useMemo(() => {
+    const map = {};
+    logs.forEach(l => {
+      if (!map[l.name]) map[l.name] = { name: l.name, entries: [] };
+      map[l.name].entries.push(l);
+    });
+    return Object.values(map)
+      .map(u => ({
+        name:      u.name,
+        entries:   u.entries,           // server returns DESC, so [0] = most recent
+        lastLogin: u.entries[0].logged_at,
+        level:     u.entries[0].access_level,
+        isNew:     u.entries.length === 1,
+      }))
+      .sort((a, b) => new Date(b.lastLogin) - new Date(a.lastLogin));
   }, [logs]);
 
   const fmt = ts => {
@@ -1121,33 +1139,65 @@ function LogsSidebar({ onClose }) {
     return d.toLocaleDateString() + ' ' + d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
 
-  const filtered = q.trim()
-    ? logs.filter(l =>
-        l.name.toLowerCase().includes(q.toLowerCase()) ||
-        l.access_level.toLowerCase().includes(q.toLowerCase())
-      )
-    : logs;
+  const lq = q.trim().toLowerCase();
+  const filteredLogs  = lq ? logs.filter(l  => l.name.toLowerCase().includes(lq) || l.access_level.toLowerCase().includes(lq))  : logs;
+  const filteredUsers = lq ? users.filter(u => u.name.toLowerCase().includes(lq) || u.level.toLowerCase().includes(lq)) : users;
+
+  const switchView = v => { setUserView(v); setExpandedUser(null); };
 
   return (
     <div className="logs-sidebar">
       <div className="logs-sidebar-head">
         <span className="panel-label" style={{ marginBottom: 0 }}>Access Log</span>
+        <div className="logs-view-toggle">
+          <button className={`logs-view-btn${!userView ? ' on' : ''}`} onClick={() => switchView(false)}>Live</button>
+          <button className={`logs-view-btn${userView  ? ' on' : ''}`} onClick={() => switchView(true)}>Users</button>
+        </div>
         <button className="extra-close" onClick={onClose}>×</button>
       </div>
       <input className="logs-search" value={q} onChange={e => setQ(e.target.value)} placeholder="Search name or level…" />
       <div className="logs-list">
-        {loading
-          ? <p className="logs-empty">Loading…</p>
-          : filtered.length === 0
-            ? <p className="logs-empty">{q ? 'No results' : 'No entries yet'}</p>
-            : filtered.map(l => (
+        {loading ? (
+          <p className="logs-empty">Loading…</p>
+        ) : userView ? (
+          filteredUsers.length === 0
+            ? <p className="logs-empty">{lq ? 'No results' : 'No entries yet'}</p>
+            : filteredUsers.map(u => {
+                const expanded = expandedUser === u.name;
+                return (
+                  <div key={u.name} className={`log-user-card${u.isNew ? ' log-row-new' : ''}`}>
+                    <div className="log-user-head" onClick={() => setExpandedUser(v => v === u.name ? null : u.name)}>
+                      <span className="log-name">{u.name}</span>
+                      <span className={`log-level log-level-${u.level}`}>{u.level}</span>
+                      <span className="log-time">{fmt(u.lastLogin)}</span>
+                      <span className={`log-user-chevron${expanded ? ' open' : ''}`}>
+                        <Ico n="chevron" size={11} />
+                      </span>
+                    </div>
+                    {expanded && (
+                      <div className="log-user-entries">
+                        {u.entries.map(l => (
+                          <div key={l.id} className="log-entry-sub">
+                            <span className={`log-level log-level-${l.access_level}`}>{l.access_level}</span>
+                            <span className="log-time">{fmt(l.logged_at)}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })
+        ) : (
+          filteredLogs.length === 0
+            ? <p className="logs-empty">{lq ? 'No results' : 'No entries yet'}</p>
+            : filteredLogs.map(l => (
                 <div key={l.id} className={`log-row${firstTimers.has(l.name) ? ' log-row-new' : ''}`}>
                   <span className="log-name">{l.name}</span>
                   <span className={`log-level log-level-${l.access_level}`}>{l.access_level}</span>
                   <span className="log-time">{fmt(l.logged_at)}</span>
                 </div>
               ))
-        }
+        )}
       </div>
     </div>
   );

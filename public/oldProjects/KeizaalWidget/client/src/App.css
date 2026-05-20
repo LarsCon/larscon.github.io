@@ -942,6 +942,70 @@
 
 .log-time { font-size: 10px; color: rgba(255,255,255,0.28); white-space: nowrap; flex-shrink: 0; }
 
+.logs-view-toggle {
+  display: flex; gap: 4px;
+  margin: 8px 14px 4px;
+  flex-shrink: 0;
+}
+.logs-view-btn {
+  flex: 1; padding: 5px 0; border-radius: 6px; border: none;
+  background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.4);
+  font-size: 11px; font-weight: 600; letter-spacing: 0.04em; cursor: pointer;
+  transition: background 0.12s, color 0.12s;
+}
+.logs-view-btn.on {
+  background: rgba(68,153,255,0.18); color: #7ecdff;
+}
+.logs-view-btn:hover:not(.on) { background: rgba(255,255,255,0.09); color: rgba(255,255,255,0.65); }
+
+.log-user-card {
+  border-radius: 8px; border: 1px solid rgba(255,255,255,0.06);
+  background: rgba(255,255,255,0.03);
+  overflow: hidden;
+  transition: border-color 0.12s;
+}
+.log-user-card.log-row-new {
+  border-color: rgba(80,200,100,0.3);
+  background: rgba(80,200,100,0.05);
+}
+
+.log-user-head {
+  display: grid;
+  grid-template-columns: 1fr auto auto auto;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 10px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+.log-user-head:hover { background: rgba(255,255,255,0.05); }
+
+.log-user-chevron {
+  color: rgba(255,255,255,0.25);
+  display: flex; align-items: center;
+  transition: transform 0.18s, color 0.12s;
+}
+.log-user-chevron.open {
+  transform: rotate(180deg);
+  color: rgba(255,255,255,0.5);
+}
+
+.log-user-entries {
+  border-top: 1px solid rgba(255,255,255,0.06);
+  display: flex; flex-direction: column; gap: 1px;
+  padding: 4px 0;
+  background: rgba(0,0,0,0.15);
+}
+
+.log-entry-sub {
+  display: flex; align-items: center; gap: 8px;
+  padding: 5px 12px 5px 20px;
+  font-size: 11px;
+  color: rgba(255,255,255,0.45);
+}
+.log-entry-sub .log-level { font-size: 8px; padding: 1px 5px; }
+
 /* ── Drawing canvas ──────────────────────────────────────────── */
 .draw-canvas {
   position: absolute; top: 0; left: 0;
