@@ -76,6 +76,9 @@ pool.query(`
 // ── SSE broadcast ─────────────────────────────────────────────
 const clients = new Set();
 
+// In-memory drawing state (clears on server restart)
+let drawStrokes = [];
+
 function broadcast(event, payload) {
   const msg = `event: ${event}\ndata: ${JSON.stringify(payload)}\n\n`;
   clients.forEach(r => r.write(msg));
@@ -239,6 +242,29 @@ app.post('/keizaal/pending/:id/deny', async (req, res) => {
     broadcast('pending-update', {});
     res.json({ ok: true });
   } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+// ── Drawing ───────────────────────────────────────────────────
+
+app.get('/keizaal/draw/state', (_req, res) => {
+  res.json(drawStrokes);
+});
+
+app.post('/keizaal/draw/stroke', (req, res) => {
+  if (!authAny(req, res)) return;
+  const stroke = req.body;
+  if (stroke?.id && !drawStrokes.find(s => s.id === stroke.id)) {
+    drawStrokes.push(stroke);
+  }
+  broadcast('draw-stroke', stroke);
+  res.json({ ok: true });
+});
+
+app.post('/keizaal/draw/clear', (req, res) => {
+  if (!authAny(req, res)) return;
+  drawStrokes = [];
+  broadcast('draw-clear', {});
+  res.json({ ok: true });
 });
 
 // ── Auth log ──────────────────────────────────────────────────

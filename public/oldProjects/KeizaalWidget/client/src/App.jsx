@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { subscribeMarkers, apiAdd, apiUpdate, apiDelete, apiSuggest, apiGetPending, apiApprovePending, apiDenyPending, apiLogAuth, apiGetAuthLog, setSessionAuth } from './api';
+import { subscribeMarkers, apiAdd, apiUpdate, apiDelete, apiSuggest, apiGetPending, apiApprovePending, apiDenyPending, apiLogAuth, apiGetAuthLog, apiGetDraw, apiDrawStroke, apiDrawClear, setSessionAuth } from './api';
 import './App.css';
 
 // ── Constants ─────────────────────────────────────────────────────────────────
@@ -62,6 +62,9 @@ const PLANTS   = [
 const ORES     = ['Coal','Copper','Corundum','Dwarven','Ebony','Gold','Iron','Malachite','Moonstone','Orichalcum','Quicksilver','Silver','Steel'];
 
 const PREMIUM  = new Set(['Torch','Dwarven','Ebony','Moonstone','Quicksilver']);
+
+const PAINT_COLORS = ['#ff4444','#ff9900','#ffee44','#55cc55','#44aaff','#aa66ff','#ff66bb','#ffffff'];
+const PAINT_WIDTHS = [2, 4, 8, 16];
 
 const LANDMARKS = [
   { file:'Camp.svg',             label:'Camp' },
@@ -276,6 +279,7 @@ function Ico({ n, size = 16 }) {
     bag:      'M19 6h-2c0-2.76-2.24-5-5-5S7 3.24 7 6H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-7-3c1.66 0 3 1.34 3 3h-6c0-1.66 1.34-3 3-3zm0 10c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z',
     log:      'M3 3h18v2H3zm0 4h18v2H3zm0 4h12v2H3zm0 4h12v2H3zm11 3l5-3-5-3v6z',
     logout:   'M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z',
+    pen:      'M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z',
   }[n] || '';
   const stroke = n === 'chevron';
   return (
@@ -1109,10 +1113,41 @@ function LogsSidebar({ onClose }) {
   );
 }
 
+// ── DrawingToolbar ────────────────────────────────────────────────────────────
+function DrawingToolbar({ color, onColor, width, onWidth, eraser, onEraser, onClear, onClose }) {
+  return (
+    <div className="draw-toolbar">
+      <div className="draw-colors">
+        {PAINT_COLORS.map(c => (
+          <button key={c} className={`draw-swatch${color === c && !eraser ? ' on' : ''}`}
+            style={{ background: c }}
+            onClick={() => { onColor(c); onEraser(false); }} />
+        ))}
+      </div>
+      <div className="draw-toolbar-sep" />
+      <div className="draw-widths">
+        {PAINT_WIDTHS.map(w => (
+          <button key={w} className={`draw-width-btn${width === w && !eraser ? ' on' : ''}`}
+            onClick={() => { onWidth(w); onEraser(false); }} title={`${w}px`}>
+            <div className="draw-width-line" style={{ height: Math.min(w, 10) }} />
+          </button>
+        ))}
+      </div>
+      <div className="draw-toolbar-sep" />
+      <button className={`draw-tool-btn${eraser ? ' on' : ''}`}
+        onClick={() => onEraser(v => !v)}>Eraser</button>
+      <button className="draw-tool-btn draw-erase-all" onClick={onClear}>Clear All</button>
+      <button className="draw-close-btn" onClick={onClose} title="Close drawing">×</button>
+    </div>
+  );
+}
+
 // ── App ───────────────────────────────────────────────────────────────────────
 export default function App() {
-  const canvasRef = useRef(null);
-  const mapImgRef = useRef(null);
+  const canvasRef    = useRef(null);
+  const drawCanvasRef = useRef(null);
+  const paintRef     = useRef(null); // stroke currently being drawn
+  const mapImgRef    = useRef(null);
   const imgDims   = useRef({ w: 0, h: 0 });
   const imgCache  = useRef({});
   const dragRef      = useRef({ active:false, startX:0, startY:0, startOffsetX:0, startOffsetY:0, moved:false });
@@ -1179,7 +1214,21 @@ export default function App() {
   const isAuthed = !!authSession;
   useEffect(() => {
     if (!isAuthed) return;
-    return subscribeMarkers(setMarkers, setSync, () => setPendingTick(t => t + 1));
+    return subscribeMarkers(
+      setMarkers, setSync,
+      () => setPendingTick(t => t + 1),
+      stroke => setPaintStrokes(prev => prev.some(s => s.id === stroke.id) ? prev : [...prev, stroke]),
+      () => setPaintStrokes([])
+    );
+  }, [isAuthed]);
+
+  // Fetch existing draw strokes on login
+  useEffect(() => {
+    if (!isAuthed) return;
+    apiGetDraw()
+      .then(r => r.json())
+      .then(strokes => { if (Array.isArray(strokes)) setPaintStrokes(strokes); })
+      .catch(() => {});
   }, [isAuthed]);
 
   // Clear search when leaving view mode
@@ -1224,7 +1273,13 @@ export default function App() {
     return imgCache.current[src];
   }, []);
 
-  const [drawTick, setDrawTick] = useState(0);
+  const [drawTick,     setDrawTick]     = useState(0);
+  const [paintStrokes, setPaintStrokes] = useState([]);
+  const [drawOpen,     setDrawOpen]     = useState(false);
+  const [drawColor,    setDrawColor]    = useState('#ff4444');
+  const [drawWidth,    setDrawWidth]    = useState(4);
+  const [drawEraser,   setDrawEraser]   = useState(false);
+  const [paintTick,    setPaintTick]    = useState(0);
 
   const doClamp = useCallback((ox, oy, sc) => {
     if (!settings.boundaryLock) return { x: ox, y: oy };
@@ -1233,6 +1288,64 @@ export default function App() {
   }, [canvasSize, settings.boundaryLock]);
 
   const canvasToWorld = (px, py) => ({ x:(px - offset.x)/scale, y:(py - offset.y)/scale });
+
+  // ── Drawing canvas render ─────────────────────────────────────
+  useEffect(() => {
+    const canvas = drawCanvasRef.current;
+    if (!canvas) return;
+    canvas.width  = canvasSize.width;
+    canvas.height = canvasSize.height;
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const live = paintRef.current?.points?.length ? [...paintStrokes, paintRef.current] : paintStrokes;
+    live.forEach(stroke => {
+      if (stroke.points.length < 2) return;
+      ctx.save();
+      ctx.globalCompositeOperation = stroke.eraser ? 'destination-out' : 'source-over';
+      ctx.strokeStyle = stroke.eraser ? 'rgba(0,0,0,1)' : stroke.color;
+      ctx.lineWidth   = stroke.width;
+      ctx.lineCap     = 'round';
+      ctx.lineJoin    = 'round';
+      ctx.beginPath();
+      stroke.points.forEach((pt, i) => {
+        const sx = pt.x * scale + offset.x;
+        const sy = pt.y * scale + offset.y;
+        if (i === 0) ctx.moveTo(sx, sy); else ctx.lineTo(sx, sy);
+      });
+      ctx.stroke();
+      ctx.restore();
+    });
+  }, [paintStrokes, canvasSize, offset, scale, paintTick]);
+
+  // ── Drawing pointer handlers ──────────────────────────────────
+  const drawPointerDown = e => {
+    try { e.currentTarget.setPointerCapture(e.pointerId); } catch {}
+    const rect = drawCanvasRef.current.getBoundingClientRect();
+    const world = canvasToWorld(e.clientX - rect.left, e.clientY - rect.top);
+    paintRef.current = { id: generateId(), color: drawColor, width: drawWidth, eraser: drawEraser, points: [world] };
+    setPaintTick(t => t + 1);
+  };
+  const drawPointerMove = e => {
+    if (!paintRef.current) return;
+    const rect = drawCanvasRef.current.getBoundingClientRect();
+    const world = canvasToWorld(e.clientX - rect.left, e.clientY - rect.top);
+    paintRef.current.points.push(world);
+    setPaintTick(t => t + 1);
+  };
+  const drawPointerUp = () => {
+    if (!paintRef.current) return;
+    const stroke = paintRef.current;
+    paintRef.current = null;
+    if (stroke.points.length > 0) {
+      setPaintStrokes(prev => prev.some(s => s.id === stroke.id) ? prev : [...prev, stroke]);
+      apiDrawStroke(stroke).catch(() => {});
+    }
+    setPaintTick(t => t + 1);
+  };
+  const drawPointerCancel = () => {
+    paintRef.current = null;
+    setPaintTick(t => t + 1);
+  };
 
   // Strip premium items from display when not admin-unlocked
   const displayMarkers = useMemo(() => {
@@ -1516,6 +1629,9 @@ export default function App() {
     setAuthSession(null);
     setAppMode('view');
     setMarkers([]);
+    setPaintStrokes([]);
+    setDrawOpen(false);
+    paintRef.current = null;
     setSync('connecting');
     setTbPanel(null);
     setPanel(null);
@@ -1596,6 +1712,13 @@ export default function App() {
               <Ico n="log" />
             </button>
           )}
+          <button className={`tb-btn tb-draw${drawOpen?' tb-open':''}`}
+            onClick={() => {
+              if (drawOpen) { paintRef.current = null; setPaintTick(t => t + 1); setDrawEraser(false); }
+              setDrawOpen(v => !v);
+            }} title="Drawing tools">
+            <Ico n="pen" />
+          </button>
           {extras.friends && (
             <button className={`tb-btn${extraOpen==='friends' ? ' tb-open tb-extras' : ' tb-extras'}`}
               onClick={() => setExtraOpen(v => v === 'friends' ? null : 'friends')} title="Friends">
@@ -1650,6 +1773,10 @@ export default function App() {
           onPointerDown={onPointerDown} onPointerMove={onPointerMove}
           onPointerUp={onPointerUp} onPointerCancel={onPointerCancel}
           onContextMenu={onContextMenu} onWheel={onWheel} className="map-canvas" />
+        <canvas ref={drawCanvasRef}
+          className={`draw-canvas${drawOpen ? ' draw-active' : ''}`}
+          onPointerDown={drawPointerDown} onPointerMove={drawPointerMove}
+          onPointerUp={drawPointerUp} onPointerCancel={drawPointerCancel} />
       </div>
 
       {/* ── Right-click placement menu ── */}
@@ -1721,6 +1848,26 @@ export default function App() {
       {/* ── View card ── */}
       {viewMarker && (
         <ViewCard marker={viewMarker} sx={viewCard.sx} sy={viewCard.sy} onClose={() => setViewCard(null)} />
+      )}
+
+      {/* ── Drawing toolbar ── */}
+      {drawOpen && (
+        <DrawingToolbar
+          color={drawColor} onColor={setDrawColor}
+          width={drawWidth} onWidth={setDrawWidth}
+          eraser={drawEraser} onEraser={setDrawEraser}
+          onClear={() => {
+            paintRef.current = null;
+            setPaintStrokes([]);
+            setPaintTick(t => t + 1);
+            apiDrawClear().catch(() => {});
+          }}
+          onClose={() => {
+            paintRef.current = null;
+            setPaintTick(t => t + 1);
+            setDrawEraser(false);
+            setDrawOpen(false);
+          }} />
       )}
     </div>
   );

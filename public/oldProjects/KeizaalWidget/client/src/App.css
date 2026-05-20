@@ -303,7 +303,7 @@
 }
 
 /* ── Canvas ──────────────────────────────────────────────────── */
-.canvas-container { position: absolute; top: 44px; left: 0; right: 0; bottom: 0; }
+.canvas-container { position: absolute; top: 44px; left: 0; right: 0; bottom: 0; overflow: hidden; }
 
 .map-canvas {
   width: 100%; height: 100%; display: block; cursor: grab;
@@ -941,3 +941,115 @@
 .log-level-commenter { background: rgba(68,153,255,0.15); color: #7ecdff; }
 
 .log-time { font-size: 10px; color: rgba(255,255,255,0.28); white-space: nowrap; flex-shrink: 0; }
+
+/* ── Drawing canvas ──────────────────────────────────────────── */
+.draw-canvas {
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+}
+.draw-canvas.draw-active {
+  pointer-events: all;
+  cursor: crosshair;
+  touch-action: none;
+}
+
+/* ── Drawing toolbar ─────────────────────────────────────────── */
+.draw-toolbar {
+  position: fixed;
+  bottom: 16px; left: 50%; transform: translateX(-50%);
+  display: flex; align-items: center; gap: 8px;
+  background: rgba(8, 13, 22, 0.96);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 14px;
+  padding: 10px 14px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.7);
+  z-index: 120;
+  animation: dropIn 0.15s ease;
+  user-select: none;
+  max-width: calc(100vw - 32px);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.draw-toolbar-sep {
+  width: 1px; height: 22px;
+  background: rgba(255,255,255,0.1);
+  flex-shrink: 0;
+}
+
+.draw-colors { display: flex; gap: 5px; align-items: center; }
+
+.draw-swatch {
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+  transition: transform 0.12s, border-color 0.12s;
+}
+.draw-swatch:hover { transform: scale(1.2); }
+.draw-swatch.on { border-color: rgba(255,255,255,0.9); transform: scale(1.18); }
+
+.draw-widths { display: flex; gap: 4px; align-items: center; }
+
+.draw-width-btn {
+  display: flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s;
+}
+.draw-width-btn:hover { background: rgba(255,255,255,0.1); }
+.draw-width-btn.on { background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.35); }
+
+.draw-width-line {
+  background: rgba(255,255,255,0.75);
+  border-radius: 2px;
+  width: 14px;
+}
+
+.draw-tool-btn {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 7px;
+  color: rgba(255,255,255,0.55);
+  padding: 4px 10px;
+  font-size: 11px; font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.12s;
+}
+.draw-tool-btn:hover { background: rgba(255,255,255,0.1); color: #e8e8e8; }
+.draw-tool-btn.on { background: rgba(255,215,0,0.15); border-color: rgba(255,215,0,0.35); color: #ffd700; }
+
+.draw-erase-all {
+  background: rgba(238,68,68,0.1);
+  border-color: rgba(238,68,68,0.25);
+  color: #ff8a8a;
+}
+.draw-erase-all:hover { background: rgba(238,68,68,0.2); }
+
+.draw-close-btn {
+  background: none; border: none;
+  color: rgba(255,255,255,0.3);
+  font-size: 20px; line-height: 1;
+  cursor: pointer; padding: 0 2px;
+  flex-shrink: 0;
+}
+.draw-close-btn:hover { color: #fff; }
+
+/* Draw button in toolbar */
+.tb-btn.tb-draw { color: rgba(255,255,255,0.5); }
+.tb-btn.tb-draw.tb-open { color: #a0c8ff; border-color: rgba(160,200,255,0.25); background: rgba(160,200,255,0.08); }
+
+/* Mobile drawing toolbar */
+@media (pointer: coarse) {
+  .draw-toolbar { bottom: 12px; padding: 10px 10px; gap: 6px; }
+  .draw-swatch { width: 22px; height: 22px; }
+  .draw-width-btn { width: 34px; height: 34px; }
+  .draw-tool-btn { padding: 7px 12px; font-size: 12px; }
+}

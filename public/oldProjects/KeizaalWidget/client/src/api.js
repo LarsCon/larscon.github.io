@@ -8,7 +8,7 @@ const json = () => ({ 'Content-Type': 'application/json' });
 const auth = () => ({ 'Content-Type': 'application/json', 'X-KW-Auth': _pw });
 const hdr  = () => ({ 'X-KW-Auth': _pw });
 
-export function subscribeMarkers(onData, onStatus, onPendingUpdate) {
+export function subscribeMarkers(onData, onStatus, onPendingUpdate, onDrawStroke, onDrawClear) {
   let current = [];
   onStatus('connecting');
 
@@ -37,6 +37,12 @@ export function subscribeMarkers(onData, onStatus, onPendingUpdate) {
   es.addEventListener('pending-update', () => {
     if (onPendingUpdate) onPendingUpdate();
   });
+  es.addEventListener('draw-stroke', e => {
+    if (onDrawStroke) onDrawStroke(JSON.parse(e.data));
+  });
+  es.addEventListener('draw-clear', () => {
+    if (onDrawClear) onDrawClear();
+  });
 
   es.onerror = () => onStatus('error');
 
@@ -59,3 +65,8 @@ export const apiDenyPending    = (id) => fetch(`${BASE}/keizaal/pending/${id}/de
 // Auth log
 export const apiLogAuth    = (body) => fetch(`${BASE}/keizaal/auth-log`, { method:'POST', headers: json(), body: JSON.stringify(body) });
 export const apiGetAuthLog = ()     => fetch(`${BASE}/keizaal/auth-log`, { headers: hdr() });
+
+// Drawing
+export const apiGetDraw    = ()       => fetch(`${BASE}/keizaal/draw/state`);
+export const apiDrawStroke = (stroke) => fetch(`${BASE}/keizaal/draw/stroke`, { method:'POST', headers: auth(), body: JSON.stringify(stroke) });
+export const apiDrawClear  = ()       => fetch(`${BASE}/keizaal/draw/clear`,  { method:'POST', headers: auth() });
