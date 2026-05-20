@@ -275,6 +275,7 @@ function Ico({ n, size = 16 }) {
     people:   'M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z',
     bag:      'M19 6h-2c0-2.76-2.24-5-5-5S7 3.24 7 6H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-7-3c1.66 0 3 1.34 3 3h-6c0-1.66 1.34-3 3-3zm0 10c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z',
     log:      'M3 3h18v2H3zm0 4h18v2H3zm0 4h12v2H3zm0 4h12v2H3zm11 3l5-3-5-3v6z',
+    logout:   'M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z',
   }[n] || '';
   const stroke = n === 'chevron';
   return (
@@ -1024,7 +1025,10 @@ function LoginScreen({ onLogin }) {
   return (
     <div className="login-screen">
       <div className="login-box">
-        <h1 className="login-title">Children of the Hist</h1>
+        <h1 className="login-title">
+          <span className="login-title-sub">Children of the</span>
+          <span className="login-title-main">Hist</span>
+        </h1>
         {savedName
           ? <p className="login-greeting">Welcome back, <strong>{savedName}</strong></p>
           : (
@@ -1601,7 +1605,7 @@ export default function App() {
             )}
           </div>
           <button className="tb-btn tb-logout" onClick={logout} title="Sign out">
-            <Ico n="lock" size={14} />
+            <Ico n="logout" size={16} />
           </button>
         </div>
       </div>
