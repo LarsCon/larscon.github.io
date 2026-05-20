@@ -1024,7 +1024,7 @@ function LoginScreen({ onLogin }) {
   return (
     <div className="login-screen">
       <div className="login-box">
-        <h1 className="login-title">Keizaal</h1>
+        <h1 className="login-title">Children of the Hist</h1>
         {savedName
           ? <p className="login-greeting">Welcome back, <strong>{savedName}</strong></p>
           : (

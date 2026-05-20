@@ -796,9 +796,9 @@
 
 .login-title {
   margin: 0;
-  font-size: 22px; font-weight: 700;
-  letter-spacing: 0.18em; text-transform: uppercase;
-  color: rgba(255,255,255,0.55);
+  font-size: 17px; font-weight: 600;
+  letter-spacing: 0.1em;
+  color: rgba(255,255,255,0.45);
   text-align: center;
 }
 
