@@ -45,7 +45,7 @@ const TOOLBAR_H   = 44;
 const PASSWORD_ADMIN     = 'lizard';
 const PASSWORD_COMMENTER = 'bigwetnoodle';
 
-const ENEMIES  = ['Bear','Bloodhound','Cave Bear','Chaurus','Deer','Elementals','Falmer','Falmer Wizard','Falmer Warlord','Frost Skeleton','Frost Troll','Frostbite Spider','Giant','Goats','Horkers','Ice Wolves','Mammoth','Mudcrabs','Sabre Cat','Skeleton','Slaughterfish','Spriggan','Spriggan Earth Mother','Trolls','Wolves'];
+const ENEMIES  = ['Bear','Bloodhound','Cave Bear','Chaurus','Corrupted Shade','Deer','Elementals','Falmer','Falmer Wizard','Falmer Warlord','Frost Skeleton','Frost Troll','Frostbite Spider','Ghost','Giant','Goats','Horkers','Ice Wolves','Mammoth','Mudcrabs','Sabre Cat','Skeleton','Slaughterfish','Spriggan','Spriggan Earth Mother','Trolls','Wolves'];
 const PLANTS   = [
   'Ash Creep Cluster','Ashen Grass Pod','Bleeding Crown','Blisterwort',
   'Blue Mountain Flower','Canis Root','Creep Cluster','Crimson Nirnroot',
@@ -488,7 +488,7 @@ function MarkerForm({ type, initial, onSave, onDelete, onClose, suggest }) {
 }
 
 // ── SearchBar ─────────────────────────────────────────────────
-function SearchBar({ value, onChange, onLongPress }) {
+function SearchBar({ value, onChange, onLongPress, zeroResults = false }) {
   const [open, setOpen] = useState(false);
   const inputRef = useRef(null);
   const lpTimer = useRef(null);
@@ -511,6 +511,9 @@ function SearchBar({ value, onChange, onLongPress }) {
           placeholder="Search…" autoFocus />
       )}
       {value && <button className="tb-search-clear" onClick={clear}>×</button>}
+      {zeroResults && (open || value) && (
+        <div className="brelf-hint">Talk to Brelf if you're looking for that</div>
+      )}
     </div>
   );
 }
@@ -578,7 +581,7 @@ function FilterChips({ label, options, selected, onToggle }) {
 }
 
 // ── FilterPanel ───────────────────────────────────────────────────────────────
-function FilterPanel({ filter, onChange, total = 0, visible = 0, adminUnlocked = false }) {
+function FilterPanel({ filter, onChange, total = 0, visible = 0, adminUnlocked = false, presentOptions = null }) {
   const tog = (field, val) => {
     const arr = filter[field];
     onChange({ ...filter, [field]: arr.includes(val) ? arr.filter(x => x !== val) : [...arr, val] });
@@ -586,6 +589,11 @@ function FilterPanel({ filter, onChange, total = 0, visible = 0, adminUnlocked =
   const clear = () => onChange({ types:[], enemies:[], plants:[], ores:[], workstations:[], match:'any' });
   const hasAny = filter.types.length || filter.enemies.length || filter.plants.length || filter.ores.length || filter.workstations.length;
   const isFiltered = hasAny > 0;
+  // Keep items present on map, plus anything already selected (so selected chips don't vanish)
+  const avail = (set, all, sel) => all.filter(x => (set?.has(x) ?? true) || sel.includes(x));
+  const visibleTypes = TYPES.filter(t => !presentOptions || presentOptions.types.has(t) || filter.types.includes(t));
+  const allPlants = adminUnlocked ? PLANTS : PLANTS.filter(p => !PREMIUM.has(p));
+  const allOres   = adminUnlocked ? ORES   : ORES.filter(o => !PREMIUM.has(o));
   return (
     <div className="tb-panel filter-panel" onPointerDown={e => e.stopPropagation()}>
       <div className="fp-count">
@@ -599,7 +607,7 @@ function FilterPanel({ filter, onChange, total = 0, visible = 0, adminUnlocked =
       <div className="panel-section">
         <span className="panel-label">Point Type</span>
         <div className="chip-wrap">
-          {TYPES.map(t => (
+          {visibleTypes.map(t => (
             <button key={t} className={`chip${filter.types.includes(t) ? ' on' : ''}`}
               style={filter.types.includes(t) ? { borderColor: TYPE_COLORS[t], color: TYPE_COLORS[t] } : {}}
               onClick={() => tog('types', t)}>{TYPE_LABELS[t] || t}</button>
@@ -613,10 +621,10 @@ function FilterPanel({ filter, onChange, total = 0, visible = 0, adminUnlocked =
           <button className={`match-btn${filter.match==='all'?' on':''}`} onClick={() => onChange({...filter, match:'all'})}>All</button>
         </div>
       </div>
-      <FilterChips label="Enemies"      options={ENEMIES}      selected={filter.enemies}      onToggle={v => tog('enemies', v)} />
-      <FilterChips label="Forage"       options={adminUnlocked ? PLANTS : PLANTS.filter(p => !PREMIUM.has(p))} selected={filter.plants}       onToggle={v => tog('plants', v)} />
-      <FilterChips label="Ores"         options={adminUnlocked ? ORES   : ORES.filter(o => !PREMIUM.has(o))}   selected={filter.ores}         onToggle={v => tog('ores', v)} />
-      <FilterChips label="Workstations" options={WORKSTATIONS} selected={filter.workstations} onToggle={v => tog('workstations', v)} />
+      <FilterChips label="Enemies"      options={avail(presentOptions?.enemies, ENEMIES, filter.enemies)} selected={filter.enemies} onToggle={v => tog('enemies', v)} />
+      <FilterChips label="Forage"       options={avail(presentOptions?.plants, allPlants, filter.plants)} selected={filter.plants} onToggle={v => tog('plants', v)} />
+      <FilterChips label="Ores"         options={avail(presentOptions?.ores, allOres, filter.ores)} selected={filter.ores} onToggle={v => tog('ores', v)} />
+      <FilterChips label="Workstations" options={avail(presentOptions?.workstations, WORKSTATIONS, filter.workstations)} selected={filter.workstations} onToggle={v => tog('workstations', v)} />
       {hasAny > 0 && <button className="clear-btn" onClick={clear}>Clear All</button>}
     </div>
   );
@@ -1460,6 +1468,19 @@ export default function App() {
     });
   }, [markers, adminUnlocked]);
 
+  // What's actually on the map (drives filter option visibility)
+  const presentOptions = useMemo(() => {
+    const types = new Set(), enemies = new Set(), plants = new Set(), ores = new Set(), workstations = new Set();
+    displayMarkers.forEach(m => {
+      types.add(m.type);
+      (m.enemies      || []).forEach(e => enemies.add(e.name));
+      (m.plants       || []).forEach(p => plants.add(p.name));
+      (m.nodes        || []).forEach(o => ores.add(o.name));
+      (m.workstations || []).forEach(w => workstations.add(w));
+    });
+    return { types, enemies, plants, ores, workstations };
+  }, [displayMarkers]);
+
   // Filter computation
   const filteredIds = useMemo(() => {
     const active = filter.types.length || filter.enemies.length || filter.plants.length || filter.ores.length || filter.workstations.length;
@@ -1804,7 +1825,7 @@ export default function App() {
             title={appMode !== 'view' ? 'Return to view' : authSession.level === 'admin' ? 'Enter edit mode' : 'Enter suggest mode'}>
             <Ico n={appMode !== 'view' ? 'unlock' : 'lock'} />
           </button>
-          {appMode === 'view' && <SearchBar value={searchQuery} onChange={setSearchQuery} onLongPress={logout} />}
+          {appMode === 'view' && <SearchBar value={searchQuery} onChange={setSearchQuery} onLongPress={logout} zeroResults={visibleCount === 0 && !!searchQuery.trim()} />}
           <span className="tb-user">{authSession.name}</span>
         </div>
         <div className="tb-center">
@@ -1869,7 +1890,7 @@ export default function App() {
       {/* ── Toolbar panels ── */}
       {tbPanel === 'filter' && (
         <div className="tb-drop tb-drop-right">
-          <FilterPanel filter={filter} onChange={setFilter} total={markers.length} visible={visibleCount} adminUnlocked={adminUnlocked} />
+          <FilterPanel filter={filter} onChange={setFilter} total={markers.length} visible={visibleCount} adminUnlocked={adminUnlocked} presentOptions={presentOptions} />
         </div>
       )}
       {tbPanel === 'settings' && (
