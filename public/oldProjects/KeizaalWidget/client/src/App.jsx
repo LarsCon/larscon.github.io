@@ -1162,8 +1162,8 @@ function DrawingPanel({ color, onColor, width, onWidth, eraser, onEraser, onClea
       </div>
       <div className="draw-widths">
         {PAINT_WIDTHS.map(w => (
-          <button key={w} className={`draw-width-btn${width === w && !eraser ? ' on' : ''}`}
-            onClick={() => { onWidth(w); onEraser(false); }} title={`${w}px`}>
+          <button key={w} className={`draw-width-btn${width === w ? ' on' : ''}`}
+            onClick={() => onWidth(w)} title={`${w}px`}>
             <div className="draw-width-line" style={{ height: Math.min(w * 2, 10) }} />
           </button>
         ))}
@@ -1324,7 +1324,7 @@ export default function App() {
   const [paintStrokes, setPaintStrokes] = useState([]);
   const [drawOpen,     setDrawOpen]     = useState(false);
   const [drawColor,    setDrawColor]    = useState('#ff4444');
-  const [drawWidth,    setDrawWidth]    = useState(4);
+  const [drawWidth,    setDrawWidth]    = useState(1);
   const [drawEraser,   setDrawEraser]   = useState(false);
   const [paintTick,    setPaintTick]    = useState(0);
 
@@ -1369,7 +1369,7 @@ export default function App() {
     try { e.currentTarget.setPointerCapture(e.pointerId); } catch {}
     const rect = drawCanvasRef.current.getBoundingClientRect();
     const world = canvasToWorld(e.clientX - rect.left, e.clientY - rect.top);
-    paintRef.current = { id: generateId(), color: drawColor, width: drawWidth, eraser: drawEraser, points: [world] };
+    paintRef.current = { id: generateId(), color: drawColor, width: drawEraser ? drawWidth * 2 : drawWidth, eraser: drawEraser, points: [world] };
     setPaintTick(t => t + 1);
   };
   const drawPointerMove = e => {
