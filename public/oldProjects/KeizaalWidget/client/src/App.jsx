@@ -64,7 +64,7 @@ const ORES     = ['Coal','Copper','Corundum','Dwarven','Ebony','Gold','Iron','Ma
 const PREMIUM  = new Set(['Torch','Dwarven','Ebony','Moonstone','Quicksilver']);
 
 const PAINT_COLORS = ['#ff4444','#ff9900','#ffee44','#55cc55','#44aaff','#aa66ff','#ff66bb','#ffffff'];
-const PAINT_WIDTHS = [2, 4, 8, 16];
+const PAINT_WIDTHS = [1, 2, 4, 8];
 
 const LANDMARKS = [
   { file:'Camp.svg',             label:'Camp' },
@@ -619,8 +619,9 @@ function FilterPanel({ filter, onChange, total = 0, visible = 0, adminUnlocked =
 
 // ── SettingsPanel ─────────────────────────────────────────────────────────────
 function SettingsPanel({ settings, onChange, extras, onExtrasChange }) {
-  const [showScale,  setShowScale]  = useState(false);
-  const [showHelp,   setShowHelp]   = useState(false);
+  const [showScale,      setShowScale]      = useState(false);
+  const [showVisibility, setShowVisibility] = useState(false);
+  const [showHelp,       setShowHelp]       = useState(false);
   const [showGuide,  setShowGuide]  = useState(false);
   const [showExtras, setShowExtras] = useState(false);
   return (
@@ -666,35 +667,69 @@ function SettingsPanel({ settings, onChange, extras, onExtrasChange }) {
 
       <div className="sp-divider" />
 
+      {/* ── Visibility & Layers ── */}
+      <button className={`sp-collapse${showVisibility ? ' open' : ''}`} onClick={() => setShowVisibility(v => !v)}>
+        <span>Visibility & Layers</span><Ico n="chevron" size={13} />
+      </button>
+      {showVisibility && (
+        <div className="sp-scale-list">
+          <label className="sp-check" style={{marginBottom:2}}>
+            <input type="checkbox" checked={settings.drawingsAboveIcons ?? false}
+              onChange={e => onChange({ ...settings, drawingsAboveIcons: e.target.checked })} />
+            Drawings above map icons
+          </label>
+          <div className="sp-scale-row">
+            <span className="sp-scale-type" style={{color:'rgba(255,255,255,0.4)'}}>Markers</span>
+            <input type="range" min="0" max="1" step="0.05"
+              value={settings.markerOpacity ?? 1}
+              onChange={e => onChange({ ...settings, markerOpacity: +e.target.value })} />
+            <span className="sp-val">{Math.round((settings.markerOpacity ?? 1) * 100)}%</span>
+          </div>
+          <div className="sp-scale-row">
+            <span className="sp-scale-type" style={{color:'rgba(255,255,255,0.4)'}}>Drawings</span>
+            <input type="range" min="0" max="1" step="0.05"
+              value={settings.drawOpacity ?? 0.85}
+              onChange={e => onChange({ ...settings, drawOpacity: +e.target.value })} />
+            <span className="sp-val">{Math.round((settings.drawOpacity ?? 0.85) * 100)}%</span>
+          </div>
+        </div>
+      )}
+
+      <div className="sp-divider" />
+
       {/* ── Help ── */}
       <button className={`sp-collapse${showHelp ? ' open' : ''}`} onClick={() => setShowHelp(v => !v)}>
         <span>Help</span><Ico n="chevron" size={13} />
       </button>
       {showHelp && (
         <div className="sp-card">
-          <p className="guide-sub">Desktop</p>
+          <p className="guide-sub">Navigation</p>
           <ul className="guide-list">
-            <li><span className="guide-key">Click + drag</span> Pan map</li>
-            <li><span className="guide-key">Scroll wheel</span> Zoom in / out</li>
-            <li><span className="guide-key">Click marker</span> View details</li>
+            <li><span className="guide-key">Drag / Touch drag</span> Pan the map</li>
+            <li><span className="guide-key">Scroll / Pinch</span> Zoom in or out</li>
+            <li><span className="guide-key">Click / Tap marker</span> View details</li>
           </ul>
           <div className="guide-divider" />
-          <p className="guide-sub">Mobile</p>
+          <p className="guide-sub">Drawing</p>
           <ul className="guide-list">
-            <li><span className="guide-key">Touch + drag</span> Pan map</li>
-            <li><span className="guide-key">Pinch</span> Zoom in / out</li>
-            <li><span className="guide-key">Tap marker</span> View details</li>
+            <li><span className="guide-key">Pen icon</span> Bottom-right — open drawing tools</li>
+            <li>Pick color, stroke size, or eraser; all members see changes live</li>
+            <li><span className="guide-key">Visibility & Layers</span> Layer order and opacity in Settings</li>
           </ul>
           <div className="guide-divider" />
+          <p className="guide-sub">Edit / Suggest mode</p>
           <ul className="guide-list">
-            <li><span className="guide-key">Filter</span> Show or hide markers by type</li>
-            <li><span className="guide-key">Settings</span> Adjust tint, scale, and pan</li>
-          </ul>
-          <div className="guide-divider" />
-          <p className="guide-sub">Unlock to edit</p>
-          <ul className="guide-list">
-            <li><span className="guide-key">Right click / Long press</span> Place a marker</li>
+            <li><span className="guide-key">Lock icon</span> Toggle edit or suggest mode</li>
+            <li><span className="guide-key">Right click / Long press</span> Place a new marker</li>
             <li><span className="guide-key">Click / Tap marker</span> Edit or delete</li>
+            <li>Commenters submit suggestions — admins approve or deny</li>
+          </ul>
+          <div className="guide-divider" />
+          <p className="guide-sub">Toolbar</p>
+          <ul className="guide-list">
+            <li><span className="guide-key">Filter</span> Narrow markers by type or content</li>
+            <li><span className="guide-key">Settings</span> Tint, marker scale, visibility & layers</li>
+            <li><span className="guide-key">Friends / Backpack</span> Local extras — enable in Settings</li>
           </ul>
         </div>
       )}
@@ -1113,10 +1148,11 @@ function LogsSidebar({ onClose }) {
   );
 }
 
-// ── DrawingToolbar ────────────────────────────────────────────────────────────
-function DrawingToolbar({ color, onColor, width, onWidth, eraser, onEraser, onClear, onClose }) {
+// ── DrawingPanel ──────────────────────────────────────────────────────────────
+function DrawingPanel({ color, onColor, width, onWidth, eraser, onEraser, onClear }) {
+  const [confirmClear, setConfirmClear] = useState(false);
   return (
-    <div className="draw-toolbar">
+    <div className="draw-panel">
       <div className="draw-colors">
         {PAINT_COLORS.map(c => (
           <button key={c} className={`draw-swatch${color === c && !eraser ? ' on' : ''}`}
@@ -1124,30 +1160,41 @@ function DrawingToolbar({ color, onColor, width, onWidth, eraser, onEraser, onCl
             onClick={() => { onColor(c); onEraser(false); }} />
         ))}
       </div>
-      <div className="draw-toolbar-sep" />
       <div className="draw-widths">
         {PAINT_WIDTHS.map(w => (
           <button key={w} className={`draw-width-btn${width === w && !eraser ? ' on' : ''}`}
             onClick={() => { onWidth(w); onEraser(false); }} title={`${w}px`}>
-            <div className="draw-width-line" style={{ height: Math.min(w, 10) }} />
+            <div className="draw-width-line" style={{ height: Math.min(w * 2, 10) }} />
           </button>
         ))}
       </div>
-      <div className="draw-toolbar-sep" />
-      <button className={`draw-tool-btn${eraser ? ' on' : ''}`}
-        onClick={() => onEraser(v => !v)}>Eraser</button>
-      <button className="draw-tool-btn draw-erase-all" onClick={onClear}>Clear All</button>
-      <button className="draw-close-btn" onClick={onClose} title="Close drawing">×</button>
+      <div className="draw-tools-row">
+        <button className={`draw-tool-btn${eraser ? ' on' : ''}`}
+          onClick={() => onEraser(v => !v)}>Eraser</button>
+        {confirmClear ? (
+          <>
+            <span className="draw-confirm-text">Sure?</span>
+            <button className="draw-tool-btn draw-erase-all"
+              onClick={() => { onClear(); setConfirmClear(false); }}>Yes</button>
+            <button className="draw-tool-btn"
+              onClick={() => setConfirmClear(false)}>No</button>
+          </>
+        ) : (
+          <button className="draw-tool-btn draw-erase-all"
+            onClick={() => setConfirmClear(true)}>Clear All</button>
+        )}
+      </div>
     </div>
   );
 }
 
 // ── App ───────────────────────────────────────────────────────────────────────
 export default function App() {
-  const canvasRef    = useRef(null);
-  const drawCanvasRef = useRef(null);
-  const paintRef     = useRef(null); // stroke currently being drawn
-  const mapImgRef    = useRef(null);
+  const canvasRef        = useRef(null);
+  const drawCanvasRef    = useRef(null);
+  const paintRef         = useRef(null);
+  const offscreenDrawRef = useRef(null);
+  const mapImgRef        = useRef(null);
   const imgDims   = useRef({ w: 0, h: 0 });
   const imgCache  = useRef({});
   const dragRef      = useRef({ active:false, startX:0, startY:0, startOffsetX:0, startOffsetY:0, moved:false });
@@ -1189,7 +1236,7 @@ export default function App() {
   const [extraOpen, setExtraOpen] = useState(null); // null | 'friends' | 'backpack'
   const [showSettingsHint, setShowSettingsHint] = useState(() => !localStorage.getItem('keizaal-seen-settings'));
   const [settings, setSettings] = useState(() => {
-    const def = { tint:'#1a0a00', tintOpacity:0.5, iconScale:{ Monument:1, 'Major City':1.3, Rumor:0.9, Plant:0.7, Enemy:0.7, Ore:0.7, Workstation:1, Chest:1, Dud:0.7 }, boundaryLock:true };
+    const def = { tint:'#1a0a00', tintOpacity:0.5, iconScale:{ Monument:1, 'Major City':1.3, Rumor:0.9, Plant:0.7, Enemy:0.7, Ore:0.7, Workstation:1, Chest:1, Dud:0.7 }, boundaryLock:true, drawingsAboveIcons:true, markerOpacity:1, drawOpacity:0.85 };
     try {
       const s = JSON.parse(localStorage.getItem(SETTINGS_KEY));
       if (!s) return def;
@@ -1198,7 +1245,7 @@ export default function App() {
         s.iconScale['Major City'] = s.iconScale.Circle;
         delete s.iconScale.Circle;
       }
-      return s;
+      return { ...def, ...s };
     } catch { return def; }
   });
 
@@ -1289,14 +1336,14 @@ export default function App() {
 
   const canvasToWorld = (px, py) => ({ x:(px - offset.x)/scale, y:(py - offset.y)/scale });
 
-  // ── Drawing canvas render ─────────────────────────────────────
+  // ── Offscreen draw canvas (composited into main canvas) ───────
   useEffect(() => {
-    const canvas = drawCanvasRef.current;
-    if (!canvas) return;
-    canvas.width  = canvasSize.width;
-    canvas.height = canvasSize.height;
-    const ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    if (!offscreenDrawRef.current) offscreenDrawRef.current = document.createElement('canvas');
+    const oc  = offscreenDrawRef.current;
+    oc.width  = canvasSize.width;
+    oc.height = canvasSize.height;
+    const ctx = oc.getContext('2d');
+    ctx.clearRect(0, 0, oc.width, oc.height);
     const live = paintRef.current?.points?.length ? [...paintStrokes, paintRef.current] : paintStrokes;
     live.forEach(stroke => {
       if (stroke.points.length < 2) return;
@@ -1532,10 +1579,19 @@ export default function App() {
       ctx.globalAlpha = 1;
     }
 
+    // Drawings below icons
+    if (!settings.drawingsAboveIcons && offscreenDrawRef.current) {
+      ctx.save();
+      ctx.globalAlpha = settings.drawOpacity ?? 0.85;
+      ctx.drawImage(offscreenDrawRef.current, 0, 0);
+      ctx.restore();
+    }
+
     // For edit/delete previews, skip the original marker — drawn specially below
     const skipId = (previewItem?.action === 'edit' || previewItem?.action === 'delete')
       ? previewItem.original?.id : null;
 
+    const mo = settings.markerOpacity ?? 1;
     displayMarkers.forEach(m => {
       if (skipId && m.id === skipId) return;
       if (m._hadPremium) {
@@ -1550,10 +1606,18 @@ export default function App() {
       const cx = m.x * scale + offset.x;
       const cy = m.y * scale + offset.y;
       const visible = (!filteredIds || filteredIds.has(m.id)) && (!searchIds || searchIds.has(m.id));
-      ctx.globalAlpha = visible ? 1 : 0.12;
+      ctx.globalAlpha = (visible ? 1 : 0.12) * mo;
       drawMarkerOnCanvas(ctx, m, cx, cy, r, getImg);
     });
     ctx.globalAlpha = 1;
+
+    // Drawings above icons
+    if (settings.drawingsAboveIcons && offscreenDrawRef.current) {
+      ctx.save();
+      ctx.globalAlpha = settings.drawOpacity ?? 0.85;
+      ctx.drawImage(offscreenDrawRef.current, 0, 0);
+      ctx.restore();
+    }
 
     // ── Preview overlay ───────────────────────────────────────────
     if (previewItem) {
@@ -1612,7 +1676,7 @@ export default function App() {
         ctx.restore();
       }
     }
-  }, [canvasSize, displayMarkers, offset, scale, drawTick, getImg, filteredIds, searchIds, settings, previewItem]);
+  }, [canvasSize, displayMarkers, offset, scale, drawTick, getImg, filteredIds, searchIds, settings, previewItem, paintStrokes, paintTick]);
 
   // ── Helpers ───────────────────────────────────────────────────
   const editToggle = () => {
@@ -1712,13 +1776,6 @@ export default function App() {
               <Ico n="log" />
             </button>
           )}
-          <button className={`tb-btn tb-draw${drawOpen?' tb-open':''}`}
-            onClick={() => {
-              if (drawOpen) { paintRef.current = null; setPaintTick(t => t + 1); setDrawEraser(false); }
-              setDrawOpen(v => !v);
-            }} title="Drawing tools">
-            <Ico n="pen" />
-          </button>
           {extras.friends && (
             <button className={`tb-btn${extraOpen==='friends' ? ' tb-open tb-extras' : ' tb-extras'}`}
               onClick={() => setExtraOpen(v => v === 'friends' ? null : 'friends')} title="Friends">
@@ -1850,25 +1907,29 @@ export default function App() {
         <ViewCard marker={viewMarker} sx={viewCard.sx} sy={viewCard.sy} onClose={() => setViewCard(null)} />
       )}
 
-      {/* ── Drawing toolbar ── */}
-      {drawOpen && (
-        <DrawingToolbar
-          color={drawColor} onColor={setDrawColor}
-          width={drawWidth} onWidth={setDrawWidth}
-          eraser={drawEraser} onEraser={setDrawEraser}
-          onClear={() => {
-            paintRef.current = null;
-            setPaintStrokes([]);
-            setPaintTick(t => t + 1);
-            apiDrawClear().catch(() => {});
+      {/* ── Drawing FAB ── */}
+      <div className="draw-fab-wrap">
+        {drawOpen && (
+          <DrawingPanel
+            color={drawColor} onColor={setDrawColor}
+            width={drawWidth} onWidth={setDrawWidth}
+            eraser={drawEraser} onEraser={setDrawEraser}
+            onClear={() => {
+              paintRef.current = null;
+              setPaintStrokes([]);
+              setPaintTick(t => t + 1);
+              apiDrawClear().catch(() => {});
+            }} />
+        )}
+        <button className={`draw-fab${drawOpen ? ' active' : ''}`}
+          onClick={() => {
+            if (drawOpen) { paintRef.current = null; setPaintTick(t => t + 1); setDrawEraser(false); }
+            setDrawOpen(v => !v);
           }}
-          onClose={() => {
-            paintRef.current = null;
-            setPaintTick(t => t + 1);
-            setDrawEraser(false);
-            setDrawOpen(false);
-          }} />
-      )}
+          title={drawOpen ? 'Close drawing tools' : 'Drawing tools'}>
+          <Ico n="pen" />
+        </button>
+      </div>
     </div>
   );
 }

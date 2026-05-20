@@ -954,34 +954,55 @@
   touch-action: none;
 }
 
-/* ── Drawing toolbar ─────────────────────────────────────────── */
-.draw-toolbar {
+/* ── Drawing FAB ─────────────────────────────────────────────── */
+.draw-fab-wrap {
   position: fixed;
-  bottom: 16px; left: 50%; transform: translateX(-50%);
-  display: flex; align-items: center; gap: 8px;
-  background: rgba(8, 13, 22, 0.96);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 14px;
-  padding: 10px 14px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.7);
+  bottom: 20px; right: 20px;
   z-index: 120;
-  animation: dropIn 0.15s ease;
-  user-select: none;
-  max-width: calc(100vw - 32px);
-  flex-wrap: wrap;
-  justify-content: center;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
 }
 
-.draw-toolbar-sep {
-  width: 1px; height: 22px;
-  background: rgba(255,255,255,0.1);
+.draw-fab {
+  width: 46px; height: 46px;
+  border-radius: 50%;
+  background: rgba(10, 16, 26, 0.95);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.5);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.55);
+  transition: all 0.15s;
   flex-shrink: 0;
 }
+.draw-fab:hover { background: rgba(20,30,50,0.97); color: #e8e8e8; transform: scale(1.06); }
+.draw-fab.active {
+  color: #a0c8ff;
+  border-color: rgba(160,200,255,0.4);
+  background: rgba(15,25,50,0.97);
+  box-shadow: 0 4px 18px rgba(100,160,255,0.2);
+}
 
-.draw-colors { display: flex; gap: 5px; align-items: center; }
+.draw-panel {
+  background: rgba(8, 13, 22, 0.97);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.7);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  animation: dropIn 0.15s ease;
+  min-width: 150px;
+  user-select: none;
+}
+
+.draw-colors { display: flex; flex-wrap: wrap; gap: 6px; }
 
 .draw-swatch {
-  width: 18px; height: 18px;
+  width: 20px; height: 20px;
   border-radius: 50%;
   border: 2px solid transparent;
   cursor: pointer;
@@ -992,11 +1013,11 @@
 .draw-swatch:hover { transform: scale(1.2); }
 .draw-swatch.on { border-color: rgba(255,255,255,0.9); transform: scale(1.18); }
 
-.draw-widths { display: flex; gap: 4px; align-items: center; }
+.draw-widths { display: flex; gap: 5px; align-items: center; }
 
 .draw-width-btn {
   display: flex; align-items: center; justify-content: center;
-  width: 28px; height: 28px;
+  width: 30px; height: 28px;
   background: rgba(255,255,255,0.05);
   border: 1px solid rgba(255,255,255,0.1);
   border-radius: 6px;
@@ -1012,12 +1033,14 @@
   width: 14px;
 }
 
+.draw-tools-row { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+
 .draw-tool-btn {
   background: rgba(255,255,255,0.05);
   border: 1px solid rgba(255,255,255,0.1);
   border-radius: 7px;
   color: rgba(255,255,255,0.55);
-  padding: 4px 10px;
+  padding: 5px 10px;
   font-size: 11px; font-weight: 600;
   cursor: pointer;
   white-space: nowrap;
@@ -1033,23 +1056,15 @@
 }
 .draw-erase-all:hover { background: rgba(238,68,68,0.2); }
 
-.draw-close-btn {
-  background: none; border: none;
-  color: rgba(255,255,255,0.3);
-  font-size: 20px; line-height: 1;
-  cursor: pointer; padding: 0 2px;
-  flex-shrink: 0;
+.draw-confirm-text {
+  font-size: 11px; color: rgba(255,255,255,0.45); font-style: italic;
 }
-.draw-close-btn:hover { color: #fff; }
 
-/* Draw button in toolbar */
-.tb-btn.tb-draw { color: rgba(255,255,255,0.5); }
-.tb-btn.tb-draw.tb-open { color: #a0c8ff; border-color: rgba(160,200,255,0.25); background: rgba(160,200,255,0.08); }
-
-/* Mobile drawing toolbar */
+/* Mobile drawing */
 @media (pointer: coarse) {
-  .draw-toolbar { bottom: 12px; padding: 10px 10px; gap: 6px; }
-  .draw-swatch { width: 22px; height: 22px; }
-  .draw-width-btn { width: 34px; height: 34px; }
-  .draw-tool-btn { padding: 7px 12px; font-size: 12px; }
+  .draw-fab-wrap { bottom: 16px; right: 14px; }
+  .draw-fab { width: 52px; height: 52px; }
+  .draw-swatch { width: 24px; height: 24px; }
+  .draw-width-btn { width: 36px; height: 34px; }
+  .draw-tool-btn { padding: 8px 12px; font-size: 12px; }
 }
