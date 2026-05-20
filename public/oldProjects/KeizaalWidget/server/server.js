@@ -46,10 +46,32 @@ pool.query(`
     marker_id    VARCHAR(32)  NOT NULL,
     data         JSON,
     original     JSON,
+    submitted_by VARCHAR(100) DEFAULT NULL,
     submitted_at TIMESTAMP    DEFAULT CURRENT_TIMESTAMP
   )
-`).then(() => console.log('keizaal_pending table ready'))
-  .catch(e  => console.error('Pending table init error:', e.message));
+`).then(() => {
+  console.log('keizaal_pending table ready');
+  // Safe migration for existing installs that lack submitted_by
+  return pool.query(`
+    SELECT COUNT(*) AS cnt FROM information_schema.COLUMNS
+    WHERE TABLE_SCHEMA = DATABASE()
+      AND TABLE_NAME   = 'keizaal_pending'
+      AND COLUMN_NAME  = 'submitted_by'
+  `);
+}).then(([[row]]) => {
+  if (!row.cnt)
+    return pool.query(`ALTER TABLE keizaal_pending ADD COLUMN submitted_by VARCHAR(100) DEFAULT NULL`);
+}).catch(e => console.error('Pending table init error:', e.message));
+
+pool.query(`
+  CREATE TABLE IF NOT EXISTS keizaal_auth_log (
+    id           INT          AUTO_INCREMENT PRIMARY KEY,
+    name         VARCHAR(100) NOT NULL,
+    access_level VARCHAR(20)  NOT NULL,
+    logged_at    TIMESTAMP    DEFAULT CURRENT_TIMESTAMP
+  )
+`).then(() => console.log('keizaal_auth_log table ready'))
+  .catch(e  => console.error('Auth log table init error:', e.message));
 
 // ── SSE broadcast ─────────────────────────────────────────────
 const clients = new Set();
@@ -154,11 +176,11 @@ app.delete('/keizaal/markers/:id', async (req, res) => {
 // POST — submit suggestion (commenter or admin)
 app.post('/keizaal/pending', async (req, res) => {
   if (!authAny(req, res)) return;
-  const { id, action, marker_id, data, original } = req.body;
+  const { id, action, marker_id, data, original, submitted_by } = req.body;
   try {
     await pool.query(
-      'INSERT INTO keizaal_pending (id, action, marker_id, data, original) VALUES (?,?,?,?,?)',
-      [id, action, marker_id, data ? JSON.stringify(data) : null, original ? JSON.stringify(original) : null]
+      'INSERT INTO keizaal_pending (id, action, marker_id, data, original, submitted_by) VALUES (?,?,?,?,?,?)',
+      [id, action, marker_id, data ? JSON.stringify(data) : null, original ? JSON.stringify(original) : null, submitted_by || null]
     );
     broadcast('pending-update', {});
     res.json({ ok: true });
@@ -176,6 +198,7 @@ app.get('/keizaal/pending', async (req, res) => {
       marker_id:    r.marker_id,
       data:         parseJSON(r.data),
       original:     parseJSON(r.original),
+      submitted_by: r.submitted_by || null,
       submitted_at: r.submitted_at,
     })));
   } catch (e) { res.status(500).json({ error: e.message }); }
@@ -215,6 +238,32 @@ app.post('/keizaal/pending/:id/deny', async (req, res) => {
     await pool.query('DELETE FROM keizaal_pending WHERE id=?', [req.params.id]);
     broadcast('pending-update', {});
     res.json({ ok: true });
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+// ── Auth log ──────────────────────────────────────────────────
+
+// POST — log a login event (no auth required — this IS the login)
+app.post('/keizaal/auth-log', async (req, res) => {
+  const { name, accessLevel } = req.body;
+  if (!name || !accessLevel) return res.status(400).json({ error: 'Missing fields' });
+  try {
+    await pool.query(
+      'INSERT INTO keizaal_auth_log (name, access_level) VALUES (?, ?)',
+      [String(name).slice(0, 100), String(accessLevel).slice(0, 20)]
+    );
+    res.json({ ok: true });
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+// GET — fetch auth log (admin only)
+app.get('/keizaal/auth-log', async (req, res) => {
+  if (!auth(req, res)) return;
+  try {
+    const [rows] = await pool.query(
+      'SELECT id, name, access_level, logged_at FROM keizaal_auth_log ORDER BY logged_at DESC LIMIT 500'
+    );
+    res.json(rows);
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 

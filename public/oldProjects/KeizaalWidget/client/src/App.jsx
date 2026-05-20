@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { subscribeMarkers, apiAdd, apiUpdate, apiDelete, apiSuggest, apiGetPending, apiApprovePending, apiDenyPending } from './api';
+import { subscribeMarkers, apiAdd, apiUpdate, apiDelete, apiSuggest, apiGetPending, apiApprovePending, apiDenyPending, apiLogAuth, apiGetAuthLog, setSessionAuth } from './api';
 import './App.css';
 
 // ── Constants ─────────────────────────────────────────────────────────────────
@@ -8,6 +8,27 @@ const SETTINGS_KEY = 'keizaal-settings';
 const EXTRAS_KEY   = 'keizaal-extras';
 const FRIENDS_KEY  = 'keizaal-friends';
 const BACKPACK_KEY = 'keizaal-backpack';
+const SESSION_KEY  = 'kw_session';
+const NAME_KEY     = 'kw_name';
+const SESSION_TTL  = 12 * 60 * 60 * 1000;
+
+function loadSession() {
+  try {
+    const s = JSON.parse(localStorage.getItem(SESSION_KEY));
+    if (s && s.expires > Date.now()) return { name: s.name, level: s.level };
+  } catch {}
+  return null;
+}
+function saveSession(name, level) {
+  localStorage.setItem(SESSION_KEY, JSON.stringify({ name, level, expires: Date.now() + SESSION_TTL }));
+  localStorage.setItem(NAME_KEY, name);
+}
+function clearSession() {
+  localStorage.removeItem(SESSION_KEY);
+}
+function pwForLevel(level) {
+  return level === 'admin' ? PASSWORD_ADMIN : PASSWORD_COMMENTER;
+}
 
 const BACKPACK_CATS = [
   'Weapons','Apparel','Potions','Ingredients','Food',
@@ -24,7 +45,7 @@ const TOOLBAR_H   = 44;
 const PASSWORD_ADMIN     = 'lizard';
 const PASSWORD_COMMENTER = 'bigwetnoodle';
 
-const ENEMIES  = ['Bear','Bloodhound','Cave Bear','Chaurus','Deer','Elementals','Falmer','Falmer Wizard','Falmer Warlord','Frost Skeleton','Frost Troll','Frostbite Spider','Giant','Goats','Horkers','Ice Wolves','Mammoth','Sabre Cat','Skeleton','Slaughterfish','Spriggan','Spriggan Earth Mother','Trolls','Wolves'];
+const ENEMIES  = ['Bear','Bloodhound','Cave Bear','Chaurus','Deer','Elementals','Falmer','Falmer Wizard','Falmer Warlord','Frost Skeleton','Frost Troll','Frostbite Spider','Giant','Goats','Horkers','Ice Wolves','Mammoth','Mudcrabs','Sabre Cat','Skeleton','Slaughterfish','Spriggan','Spriggan Earth Mother','Trolls','Wolves'];
 const PLANTS   = [
   'Ash Creep Cluster','Ashen Grass Pod','Bleeding Crown','Blisterwort',
   'Blue Mountain Flower','Canis Root','Creep Cluster','Crimson Nirnroot',
@@ -35,8 +56,8 @@ const PLANTS   = [
   'Poison Bloom','Purple Mountain Flower','Red Mountain Flower','Scaly Pholiota',
   'Scathecraw','Snowberries','Swamp Fungal Pod','Thistle Branch','Trama Root',
   'Tundra Cotton','White Cap','Yellow Mountain Flower',
-  'Apple','Charred Skeever','Clam','Egg Sac','Honey',
-  'Mammoth Cheese','Namira\'s Rot','Pine Thrush Egg','Torch',
+  'Apple','Charred Skeever','Chicken Egg','Clam','Egg Sac','Honey',
+  'Jazbay','Juniper','Mammoth Cheese','Namira\'s Rot','Pine Thrush Egg','Torch',
 ];
 const ORES     = ['Coal','Copper','Corundum','Dwarven','Ebony','Gold','Iron','Malachite','Moonstone','Orichalcum','Quicksilver','Silver','Steel'];
 
@@ -253,6 +274,7 @@ function Ico({ n, size = 16 }) {
     chevron:  'M6 9l6 6 6-6',
     people:   'M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z',
     bag:      'M19 6h-2c0-2.76-2.24-5-5-5S7 3.24 7 6H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-7-3c1.66 0 3 1.34 3 3h-6c0-1.66 1.34-3 3-3zm0 10c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z',
+    log:      'M3 3h18v2H3zm0 4h18v2H3zm0 4h12v2H3zm0 4h12v2H3zm11 3l5-3-5-3v6z',
   }[n] || '';
   const stroke = n === 'chevron';
   return (
@@ -814,6 +836,7 @@ function PendingItem({ item, onApprove, onDeny, onPreview, isPreviewing }) {
         <span className={`pi-badge pi-${item.action}`}>{item.action}</span>
         <span className="pi-type" style={{ color: TYPE_COLORS[marker?.type] }}>{TYPE_LABELS[marker?.type] || marker?.type}</span>
         {marker?.name && <span className="pi-name">{marker.name}</span>}
+        {item.submitted_by && <span className="pi-submitter">{item.submitted_by}</span>}
         <button className={`pi-eye${isPreviewing ? ' on' : ''}`}
           onClick={() => onPreview(isPreviewing ? null : item)}
           title={isPreviewing ? 'Clear preview' : 'Preview on map'}>
@@ -967,6 +990,103 @@ function BackpackSidebar({ onClose }) {
   );
 }
 
+// ── LoginScreen ───────────────────────────────────────────────────────────────
+function LoginScreen({ onLogin }) {
+  const savedName = localStorage.getItem(NAME_KEY) || '';
+  const [name,  setName]  = useState(savedName);
+  const [pw,    setPw]    = useState('');
+  const [error, setError] = useState('');
+  const pwRef   = useRef(null);
+  const nameRef = useRef(null);
+
+  useEffect(() => {
+    (savedName ? pwRef : nameRef).current?.focus();
+  }, [savedName]);
+
+  const submit = () => {
+    const resolvedName = savedName || name.trim();
+    if (!resolvedName) { setError('In-Game Name is required'); return; }
+    let level = null;
+    if (pw === PASSWORD_ADMIN)     level = 'admin';
+    else if (pw === PASSWORD_COMMENTER) level = 'commenter';
+    if (!level) {
+      setError('Incorrect password');
+      setPw('');
+      setTimeout(() => pwRef.current?.focus(), 0);
+      return;
+    }
+    saveSession(resolvedName, level);
+    setSessionAuth(pw);
+    apiLogAuth({ name: resolvedName, accessLevel: level }).catch(() => {});
+    onLogin({ name: resolvedName, level });
+  };
+
+  return (
+    <div className="login-screen">
+      <div className="login-box">
+        <h1 className="login-title">Keizaal</h1>
+        {savedName
+          ? <p className="login-greeting">Welcome back, <strong>{savedName}</strong></p>
+          : (
+            <div className="login-field">
+              <label className="login-label">In-Game Name</label>
+              <input ref={nameRef} type="text" className="login-input" value={name}
+                placeholder="Your character's name"
+                onChange={e => { setName(e.target.value); setError(''); }}
+                onKeyDown={e => e.key === 'Enter' && pwRef.current?.focus()} />
+            </div>
+          )
+        }
+        <div className="login-field">
+          <label className="login-label">Password</label>
+          <input ref={pwRef} type="password" className={`login-input${error ? ' login-input-err' : ''}`}
+            value={pw} placeholder="••••••"
+            onChange={e => { setPw(e.target.value); setError(''); }}
+            onKeyDown={e => e.key === 'Enter' && submit()} />
+        </div>
+        {error && <p className="login-error">{error}</p>}
+        <button className="login-btn" onClick={submit}>Enter</button>
+      </div>
+    </div>
+  );
+}
+
+// ── LogsPanel ─────────────────────────────────────────────────────────────────
+function LogsPanel() {
+  const [logs,    setLogs]    = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    apiGetAuthLog()
+      .then(r => r.json())
+      .then(d => { if (Array.isArray(d)) setLogs(d); setLoading(false); })
+      .catch(() => setLoading(false));
+  }, []);
+
+  const fmt = ts => {
+    const d = new Date(ts);
+    return d.toLocaleDateString() + ' ' + d.toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
+  };
+
+  return (
+    <div className="tb-panel logs-panel" onPointerDown={e => e.stopPropagation()}>
+      <span className="panel-label">Access Log</span>
+      {loading
+        ? <p className="logs-empty">Loading…</p>
+        : logs.length === 0
+          ? <p className="logs-empty">No entries yet</p>
+          : logs.map(l => (
+              <div key={l.id} className="log-row">
+                <span className="log-name">{l.name}</span>
+                <span className={`log-level log-level-${l.access_level}`}>{l.access_level}</span>
+                <span className="log-time">{fmt(l.logged_at)}</span>
+              </div>
+            ))
+      }
+    </div>
+  );
+}
+
 // ── App ───────────────────────────────────────────────────────────────────────
 export default function App() {
   const canvasRef = useRef(null);
@@ -985,7 +1105,12 @@ export default function App() {
   const [offset, setOffset] = useState({ x:0, y:0 });
   const [markers, setMarkers] = useState([]);
   const [sync, setSync] = useState('connecting'); // 'connecting'|'live'|'error'
-  const [adminUnlocked, setAdminUnlocked] = useState(false);
+  const [authSession, setAuthSession] = useState(() => {
+    const s = loadSession();
+    if (s) setSessionAuth(pwForLevel(s.level));
+    return s;
+  });
+  const adminUnlocked = authSession?.level === 'admin';
 
   const [appMode,      setAppMode]      = useState('view');  // 'view' | 'edit' | 'suggest'
   const [tbPanel,      setTbPanel]      = useState(null);    // 'password'|'filter'|'settings'|null
@@ -1027,8 +1152,12 @@ export default function App() {
     if (extraOpen === 'backpack' && !extras.backpack) setExtraOpen(null);
   }, [extras, extraOpen]);
 
-  // Live server subscription
-  useEffect(() => subscribeMarkers(setMarkers, setSync, () => setPendingTick(t => t + 1)), []);
+  // Live server subscription — only starts once authenticated
+  const isAuthed = !!authSession;
+  useEffect(() => {
+    if (!isAuthed) return;
+    return subscribeMarkers(setMarkers, setSync, () => setPendingTick(t => t + 1));
+  }, [isAuthed]);
 
   // Clear search when leaving view mode
   useEffect(() => { if (appMode !== 'view') setSearchQuery(''); }, [appMode]);
@@ -1350,12 +1479,26 @@ export default function App() {
   }, [canvasSize, displayMarkers, offset, scale, drawTick, getImg, filteredIds, searchIds, settings, previewItem]);
 
   // ── Helpers ───────────────────────────────────────────────────
-  const lockToggle = () => {
-    if (appMode === 'edit' || appMode === 'suggest') {
+  const editToggle = () => {
+    if (appMode !== 'view') {
       setAppMode('view'); setTbPanel(null); setPanel(null); setEditTarget(null); setPendingOpen(false); setPreviewItem(null);
     } else {
-      setTbPanel(t => t === 'password' ? null : 'password');
+      setAppMode(authSession?.level === 'admin' ? 'edit' : 'suggest');
     }
+  };
+
+  const logout = () => {
+    clearSession();
+    setSessionAuth('');
+    setAuthSession(null);
+    setAppMode('view');
+    setMarkers([]);
+    setSync('connecting');
+    setTbPanel(null);
+    setPanel(null);
+    setEditTarget(null);
+    setPendingOpen(false);
+    setPreviewItem(null);
   };
 
   const refreshPending = () => apiGetPending().then(r => r.json()).then(d => { if (Array.isArray(d)) setPending(d); }).catch(() => {});
@@ -1387,16 +1530,24 @@ export default function App() {
   const viewMarker = viewCard ? displayMarkers.find(m => m.id === viewCard.id) : null;
   const filterIsOn = filteredIds !== null;
 
+  if (!authSession) {
+    return <LoginScreen onLogin={session => {
+      setAuthSession(session);
+      setSessionAuth(pwForLevel(session.level));
+    }} />;
+  }
+
   return (
     <div className="app">
       {/* ── Toolbar ── */}
       <div className="toolbar">
         <div className="tb-left">
-          <button className={`tb-btn${appMode==='edit'?' tb-edit':appMode==='suggest'?' tb-suggest':''}`} onClick={lockToggle}
-            title={appMode==='edit' ? 'Lock (return to view)' : appMode==='suggest' ? 'Exit suggest mode' : 'Unlock'}>
-            <Ico n={appMode==='view' ? 'lock' : 'unlock'} />
+          <button className={`tb-btn${appMode==='edit'?' tb-edit':appMode==='suggest'?' tb-suggest':''}`} onClick={editToggle}
+            title={appMode !== 'view' ? 'Return to view' : authSession.level === 'admin' ? 'Enter edit mode' : 'Enter suggest mode'}>
+            <Ico n={appMode !== 'view' ? 'unlock' : 'lock'} />
           </button>
           {appMode === 'view' && <SearchBar value={searchQuery} onChange={setSearchQuery} />}
+          <span className="tb-user">{authSession.name}</span>
         </div>
         <div className="tb-center">
           <span className="tb-title">Keizaal</span>
@@ -1414,6 +1565,12 @@ export default function App() {
               onClick={() => setPendingOpen(v => !v)} title="Pending review">
               <Ico n="review" />
               {pending.length > 0 && <span className="pending-badge-dot">{pending.length}</span>}
+            </button>
+          )}
+          {adminUnlocked && (
+            <button className={`tb-btn${tbPanel==='logs'?' tb-open':''}`}
+              onClick={() => setTbPanel(t => t==='logs' ? null : 'logs')} title="Access log">
+              <Ico n="log" />
             </button>
           )}
           {extras.friends && (
@@ -1443,17 +1600,13 @@ export default function App() {
               </div>
             )}
           </div>
+          <button className="tb-btn tb-logout" onClick={logout} title="Sign out">
+            <Ico n="lock" size={14} />
+          </button>
         </div>
       </div>
 
       {/* ── Toolbar panels ── */}
-      {tbPanel === 'password' && (
-        <div className="tb-drop tb-drop-left">
-          <PasswordPanel
-            onAdmin={()     => { setAppMode('edit'); setAdminUnlocked(true); setTbPanel(null); }}
-            onCommenter={()  => { setAppMode('suggest'); setTbPanel(null); }} />
-        </div>
-      )}
       {tbPanel === 'filter' && (
         <div className="tb-drop tb-drop-right">
           <FilterPanel filter={filter} onChange={setFilter} total={markers.length} visible={visibleCount} adminUnlocked={adminUnlocked} />
@@ -1462,6 +1615,11 @@ export default function App() {
       {tbPanel === 'settings' && (
         <div className="tb-drop tb-drop-right">
           <SettingsPanel settings={settings} onChange={setSettings} extras={extras} onExtrasChange={setExtras} />
+        </div>
+      )}
+      {tbPanel === 'logs' && adminUnlocked && (
+        <div className="tb-drop tb-drop-right">
+          <LogsPanel />
         </div>
       )}
 
@@ -1494,7 +1652,7 @@ export default function App() {
               onSave={data => {
                 const m = { id:generateId(), x:panel.worldX, y:panel.worldY, type:panel.type, ...data };
                 if (appMode === 'suggest')
-                  apiSuggest({ id:generateId(), action:'add', marker_id:m.id, data:m, original:null });
+                  apiSuggest({ id:generateId(), action:'add', marker_id:m.id, data:m, original:null, submitted_by: authSession?.name });
                 else
                   apiAdd(m);
                 setPanel(null);
@@ -1512,14 +1670,14 @@ export default function App() {
               onSave={data => {
                 const updated = { ...editTarget, ...data };
                 if (appMode === 'suggest')
-                  apiSuggest({ id:generateId(), action:'edit', marker_id:updated.id, data:updated, original:editTarget });
+                  apiSuggest({ id:generateId(), action:'edit', marker_id:updated.id, data:updated, original:editTarget, submitted_by: authSession?.name });
                 else
                   apiUpdate(updated);
                 setEditTarget(null);
               }}
               onDelete={() => {
                 if (appMode === 'suggest')
-                  apiSuggest({ id:generateId(), action:'delete', marker_id:editTarget.id, data:null, original:editTarget });
+                  apiSuggest({ id:generateId(), action:'delete', marker_id:editTarget.id, data:null, original:editTarget, submitted_by: authSession?.name });
                 else
                   apiDelete(editTarget.id);
                 setEditTarget(null);

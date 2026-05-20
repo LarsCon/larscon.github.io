@@ -525,6 +525,7 @@
 .pi-delete { background: rgba(238,68,68,0.2);  color: #ff8a8a; }
 .pi-type { font-size: 11px; font-weight: 700; flex-shrink: 0; }
 .pi-name { flex: 1; font-size: 12px; color: rgba(255,255,255,0.6); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pi-submitter { font-size: 10px; color: rgba(126,205,255,0.65); flex-shrink: 0; font-style: italic; }
 .pi-toggle { background: none; border: none; color: rgba(255,255,255,0.3); cursor: pointer; font-size: 10px; margin-left: auto; flex-shrink: 0; }
 .pi-toggle:hover { color: rgba(255,255,255,0.6); }
 .pi-detail { display: flex; flex-direction: column; gap: 3px; padding: 6px 0; border-top: 1px solid rgba(255,255,255,0.06); }
@@ -769,4 +770,125 @@
 
   /* Password panel */
   .pw-row input, .pw-row button { font-size: 16px; padding: 10px; }
+
+  /* Login screen */
+  .login-box { width: 92%; padding: 32px 24px; }
+  .login-input { font-size: 16px; }
 }
+
+/* ── Login screen ────────────────────────────────────────────── */
+.login-screen {
+  position: fixed; inset: 0;
+  background: #080d16;
+  display: flex; align-items: center; justify-content: center;
+  z-index: 9999;
+}
+
+.login-box {
+  width: 340px;
+  background: rgba(12, 18, 30, 0.98);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 16px;
+  padding: 40px 36px;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.8);
+  display: flex; flex-direction: column; gap: 18px;
+}
+
+.login-title {
+  margin: 0;
+  font-size: 22px; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: rgba(255,255,255,0.55);
+  text-align: center;
+}
+
+.login-greeting {
+  margin: 0;
+  font-size: 13px; color: rgba(255,255,255,0.45);
+  text-align: center;
+}
+.login-greeting strong { color: rgba(255,255,255,0.75); }
+
+.login-field { display: flex; flex-direction: column; gap: 6px; }
+
+.login-label {
+  font-size: 10px; font-weight: 600;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+}
+
+.login-input {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 8px; color: #e8e8e8;
+  padding: 10px 12px; font-size: 13px; outline: none;
+  transition: border-color 0.15s, background 0.15s;
+}
+.login-input:focus {
+  border-color: rgba(68,153,255,0.5);
+  background: rgba(255,255,255,0.08);
+}
+.login-input::placeholder { color: rgba(255,255,255,0.25); }
+.login-input-err { border-color: rgba(238,100,100,0.6) !important; animation: shake 0.4s; }
+
+.login-error {
+  margin: 0;
+  font-size: 11px; color: #ff7070; text-align: center;
+}
+
+.login-btn {
+  padding: 11px;
+  background: rgba(68,153,255,0.18);
+  border: 1px solid rgba(68,153,255,0.35);
+  border-radius: 8px; color: #7ecdff;
+  font-size: 13px; font-weight: 600; letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.login-btn:hover {
+  background: rgba(68,153,255,0.28);
+  border-color: rgba(68,153,255,0.55);
+}
+
+/* ── Toolbar user badge + logout ─────────────────────────────── */
+.tb-user {
+  font-size: 11px; color: rgba(255,255,255,0.35);
+  white-space: nowrap; overflow: hidden;
+  max-width: 90px; text-overflow: ellipsis;
+  padding: 0 4px;
+  pointer-events: none;
+}
+
+.tb-logout { color: rgba(255,100,100,0.5); }
+.tb-logout:hover { color: #ff7070; background: rgba(255,64,64,0.08); }
+
+/* ── Logs panel ──────────────────────────────────────────────── */
+.logs-panel { min-width: 300px; max-height: 480px; }
+
+.logs-empty {
+  margin: 8px 0 0;
+  font-size: 12px; color: rgba(255,255,255,0.3);
+  text-align: center; padding: 16px 0;
+}
+
+.log-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: baseline;
+  gap: 8px;
+  padding: 7px 4px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  font-size: 12px;
+}
+.log-row:last-child { border-bottom: none; }
+
+.log-name { color: rgba(255,255,255,0.75); font-weight: 500; truncate: ellipsis; }
+
+.log-level {
+  font-size: 9px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+  padding: 2px 6px; border-radius: 10px;
+}
+.log-level-admin    { background: rgba(238,68,68,0.15);  color: #ff8080; }
+.log-level-commenter { background: rgba(68,153,255,0.15); color: #7ecdff; }
+
+.log-time { font-size: 10px; color: rgba(255,255,255,0.28); white-space: nowrap; }

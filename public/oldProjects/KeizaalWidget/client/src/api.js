@@ -1,9 +1,12 @@
-const BASE           = 'https://thetraderspot.com';
-const AUTH           = 'lizard';
-const COMMENTER_AUTH = 'bigwetnoodle';
+const BASE = 'https://thetraderspot.com';
 
-const headers          = { 'Content-Type': 'application/json', 'X-KW-Auth': AUTH };
-const commenterHeaders = { 'Content-Type': 'application/json', 'X-KW-Auth': COMMENTER_AUTH };
+// Set by App after successful login; api calls use whatever is current
+let _pw = '';
+export function setSessionAuth(pw) { _pw = pw; }
+
+const json = () => ({ 'Content-Type': 'application/json' });
+const auth = () => ({ 'Content-Type': 'application/json', 'X-KW-Auth': _pw });
+const hdr  = () => ({ 'X-KW-Auth': _pw });
 
 export function subscribeMarkers(onData, onStatus, onPendingUpdate) {
   let current = [];
@@ -41,14 +44,18 @@ export function subscribeMarkers(onData, onStatus, onPendingUpdate) {
 }
 
 // Admin marker mutations
-export const apiAdd    = (m)  => fetch(`${BASE}/keizaal/markers`,         { method:'POST',   headers, body: JSON.stringify(m) });
-export const apiUpdate = (m)  => fetch(`${BASE}/keizaal/markers/${m.id}`, { method:'PUT',    headers, body: JSON.stringify(m) });
-export const apiDelete = (id) => fetch(`${BASE}/keizaal/markers/${id}`,   { method:'DELETE', headers });
+export const apiAdd    = (m)  => fetch(`${BASE}/keizaal/markers`,         { method:'POST',   headers: auth(), body: JSON.stringify(m) });
+export const apiUpdate = (m)  => fetch(`${BASE}/keizaal/markers/${m.id}`, { method:'PUT',    headers: auth(), body: JSON.stringify(m) });
+export const apiDelete = (id) => fetch(`${BASE}/keizaal/markers/${id}`,   { method:'DELETE', headers: auth() });
 
-// Commenter suggestions
-export const apiSuggest = (p) => fetch(`${BASE}/keizaal/pending`, { method:'POST', headers: commenterHeaders, body: JSON.stringify(p) });
+// Suggestions
+export const apiSuggest = (p) => fetch(`${BASE}/keizaal/pending`, { method:'POST', headers: auth(), body: JSON.stringify(p) });
 
 // Admin pending management
-export const apiGetPending     = ()   => fetch(`${BASE}/keizaal/pending`,             { headers: { 'X-KW-Auth': AUTH } });
-export const apiApprovePending = (id) => fetch(`${BASE}/keizaal/pending/${id}/approve`, { method:'POST', headers: { 'X-KW-Auth': AUTH } });
-export const apiDenyPending    = (id) => fetch(`${BASE}/keizaal/pending/${id}/deny`,    { method:'POST', headers: { 'X-KW-Auth': AUTH } });
+export const apiGetPending     = ()   => fetch(`${BASE}/keizaal/pending`,               { headers: hdr() });
+export const apiApprovePending = (id) => fetch(`${BASE}/keizaal/pending/${id}/approve`, { method:'POST', headers: hdr() });
+export const apiDenyPending    = (id) => fetch(`${BASE}/keizaal/pending/${id}/deny`,    { method:'POST', headers: hdr() });
+
+// Auth log
+export const apiLogAuth    = (body) => fetch(`${BASE}/keizaal/auth-log`, { method:'POST', headers: json(), body: JSON.stringify(body) });
+export const apiGetAuthLog = ()     => fetch(`${BASE}/keizaal/auth-log`, { headers: hdr() });
