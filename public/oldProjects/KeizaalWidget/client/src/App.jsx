@@ -812,11 +812,13 @@ function ViewCard({ marker, sx, sy, onClose }) {
   if (cx + W > window.innerWidth  - 8) cx = sx - W - 20;
   if (cy < TOOLBAR_H + 8)              cy = TOOLBAR_H + 8;
   if (cy + 340 > window.innerHeight - 8) cy = window.innerHeight - 348;
+  // "Single" markers (no subsections) benefit from the type label; complex ones already label themselves
+  const hasSections = !!(marker.chest || marker.enemies?.length || marker.plants?.length || marker.nodes?.length || marker.workstations?.length);
   return (
     <div className="view-card" style={{ left: Math.max(8, cx), top: cy }}
       onPointerDown={e => e.stopPropagation()}>
-      <div className="vc-head">
-        <span className="vc-type" style={{ color: TYPE_COLORS[marker.type] }}>{TYPE_LABELS[marker.type] || marker.type}</span>
+      <div className={`vc-head${hasSections && !marker.name ? ' vc-head-bare' : ''}`}>
+        {!hasSections && <span className="vc-type" style={{ color: TYPE_COLORS[marker.type] }}>{TYPE_LABELS[marker.type] || marker.type}</span>}
         {marker.name && <span className="vc-name">{marker.name}</span>}
         <button className="vc-x" onClick={onClose}>×</button>
       </div>
@@ -1212,7 +1214,7 @@ function LogsSidebar({ onClose }) {
 }
 
 // ── DrawingPanel ──────────────────────────────────────────────────────────────
-function DrawingPanel({ color, onColor, width, onWidth, eraser, onEraser, onClear, isAdmin = false }) {
+function DrawingPanel({ color, onColor, width, onWidth, eraser, onEraser, onClear, onUndo, canUndo = false, isAdmin = false }) {
   const [confirmClear, setConfirmClear] = useState(false);
   return (
     <div className="draw-panel">
@@ -1234,6 +1236,8 @@ function DrawingPanel({ color, onColor, width, onWidth, eraser, onEraser, onClea
       <div className="draw-tools-row">
         <button className={`draw-tool-btn${eraser ? ' on' : ''}`}
           onClick={() => onEraser(v => !v)}>Eraser</button>
+        <button className="draw-tool-btn draw-undo-btn" onClick={onUndo} disabled={!canUndo}
+          title="Undo last stroke (Ctrl+Z)">Undo</button>
         {isAdmin && (confirmClear ? (
           <>
             <span className="draw-confirm-text">Sure?</span>
@@ -1329,7 +1333,7 @@ export default function App() {
       setMarkers, setSync,
       () => setPendingTick(t => t + 1),
       stroke => setPaintStrokes(prev => prev.some(s => s.id === stroke.id) ? prev : [...prev, stroke]),
-      () => { setPaintStrokes([]); myStrokeIdsRef.current = []; },
+      () => { setPaintStrokes([]); myStrokeIdsRef.current = []; setOwnUndoDepth(0); },
       ({ id }) => setPaintStrokes(prev => prev.filter(s => s.id !== id))
     );
   }, [isAuthed]);
@@ -1343,23 +1347,30 @@ export default function App() {
       .catch(() => {});
   }, [isAuthed]);
 
-  // Ctrl+Z — undo last stroke drawn by this user this session
+  // Undo last stroke drawn by this user this session (shared by Ctrl+Z and the Undo button)
+  const undoStroke = useCallback(() => {
+    const ids = myStrokeIdsRef.current;
+    if (!ids.length) return;
+    const id = ids[ids.length - 1];
+    myStrokeIdsRef.current = ids.slice(0, -1);
+    setOwnUndoDepth(v => Math.max(0, v - 1));
+    setPaintStrokes(prev => prev.filter(s => s.id !== id));
+    apiDrawRemoveStroke(id).catch(() => {});
+  }, []);
+
+  // Ctrl+Z / ⌘Z keyboard shortcut
   useEffect(() => {
     if (!isAuthed) return;
     const onKey = e => {
       if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) {
-        const ids = myStrokeIdsRef.current;
-        if (!ids.length) return;
+        if (!myStrokeIdsRef.current.length) return;
         e.preventDefault();
-        const id = ids[ids.length - 1];
-        myStrokeIdsRef.current = ids.slice(0, -1);
-        setPaintStrokes(prev => prev.filter(s => s.id !== id));
-        apiDrawRemoveStroke(id).catch(() => {});
+        undoStroke();
       }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [isAuthed]);
+  }, [isAuthed, undoStroke]);
 
   // Clear search when leaving view mode
   useEffect(() => { if (appMode !== 'view') setSearchQuery(''); }, [appMode]);
@@ -1404,12 +1415,13 @@ export default function App() {
   }, []);
 
   const [drawTick,     setDrawTick]     = useState(0);
-  const [paintStrokes, setPaintStrokes] = useState([]);
-  const [drawOpen,     setDrawOpen]     = useState(false);
-  const [drawColor,    setDrawColor]    = useState('#ff4444');
-  const [drawWidth,    setDrawWidth]    = useState(1);
-  const [drawEraser,   setDrawEraser]   = useState(false);
-  const [paintTick,    setPaintTick]    = useState(0);
+  const [paintStrokes,  setPaintStrokes]  = useState([]);
+  const [ownUndoDepth,  setOwnUndoDepth]  = useState(0);  // # of own strokes undoable
+  const [drawOpen,      setDrawOpen]      = useState(false);
+  const [drawColor,     setDrawColor]     = useState('#ff4444');
+  const [drawWidth,     setDrawWidth]     = useState(1);
+  const [drawEraser,    setDrawEraser]    = useState(false);
+  const [paintTick,     setPaintTick]     = useState(0);
 
   const doClamp = useCallback((ox, oy, sc) => {
     if (!settings.boundaryLock) return { x: ox, y: oy };
@@ -1469,6 +1481,7 @@ export default function App() {
     if (stroke.points.length > 0) {
       setPaintStrokes(prev => prev.some(s => s.id === stroke.id) ? prev : [...prev, stroke]);
       myStrokeIdsRef.current = [...myStrokeIdsRef.current, stroke.id];
+      setOwnUndoDepth(v => v + 1);
       apiDrawStroke(stroke).catch(() => {});
     }
     setPaintTick(t => t + 1);
@@ -2014,6 +2027,7 @@ export default function App() {
             color={drawColor} onColor={setDrawColor}
             width={drawWidth} onWidth={setDrawWidth}
             eraser={drawEraser} onEraser={setDrawEraser}
+            onUndo={undoStroke} canUndo={ownUndoDepth > 0}
             isAdmin={adminUnlocked}
             onClear={() => {
               paintRef.current = null;

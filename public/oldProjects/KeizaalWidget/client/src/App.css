@@ -459,6 +459,12 @@
   margin-left: auto; flex-shrink: 0;
 }
 .vc-x:hover { color: #fff; }
+/* No-name complex markers: collapse header to just the × button */
+.vc-head-bare {
+  padding: 4px 8px 0;
+  border-bottom: none;
+  min-height: unset;
+}
 .vc-body { padding: 0; display: flex; flex-direction: column; }
 .vc-chest {
   padding: 7px 13px; font-size: 11px; font-weight: 600;
@@ -1146,6 +1152,11 @@
 }
 .draw-tool-btn:hover { background: rgba(255,255,255,0.1); color: #e8e8e8; }
 .draw-tool-btn.on { background: rgba(255,215,0,0.15); border-color: rgba(255,215,0,0.35); color: #ffd700; }
+
+.draw-undo-btn:disabled {
+  opacity: 0.3; cursor: default;
+}
+.draw-undo-btn:not(:disabled):hover { background: rgba(68,153,255,0.15); border-color: rgba(68,153,255,0.3); color: #7ecdff; }
 
 .draw-erase-all {
   background: rgba(238,68,68,0.1);
