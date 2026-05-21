@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { subscribeMarkers, apiAdd, apiUpdate, apiDelete, apiSuggest, apiGetPending, apiApprovePending, apiDenyPending, apiLogAuth, apiGetAuthLog, apiGetDraw, apiDrawStroke, apiDrawClear, setSessionAuth } from './api';
+import { subscribeMarkers, apiAdd, apiUpdate, apiDelete, apiSuggest, apiGetPending, apiApprovePending, apiDenyPending, apiLogAuth, apiGetAuthLog, apiGetDraw, apiDrawStroke, apiDrawRemoveStroke, apiDrawClear, setSessionAuth } from './api';
 import './App.css';
 
 // ── Constants ─────────────────────────────────────────────────────────────────
@@ -1212,7 +1212,7 @@ function LogsSidebar({ onClose }) {
 }
 
 // ── DrawingPanel ──────────────────────────────────────────────────────────────
-function DrawingPanel({ color, onColor, width, onWidth, eraser, onEraser, onClear }) {
+function DrawingPanel({ color, onColor, width, onWidth, eraser, onEraser, onClear, isAdmin = false }) {
   const [confirmClear, setConfirmClear] = useState(false);
   return (
     <div className="draw-panel">
@@ -1234,7 +1234,7 @@ function DrawingPanel({ color, onColor, width, onWidth, eraser, onEraser, onClea
       <div className="draw-tools-row">
         <button className={`draw-tool-btn${eraser ? ' on' : ''}`}
           onClick={() => onEraser(v => !v)}>Eraser</button>
-        {confirmClear ? (
+        {isAdmin && (confirmClear ? (
           <>
             <span className="draw-confirm-text">Sure?</span>
             <button className="draw-tool-btn draw-erase-all"
@@ -1245,7 +1245,7 @@ function DrawingPanel({ color, onColor, width, onWidth, eraser, onEraser, onClea
         ) : (
           <button className="draw-tool-btn draw-erase-all"
             onClick={() => setConfirmClear(true)}>Clear All</button>
-        )}
+        ))}
       </div>
     </div>
   );
@@ -1256,6 +1256,7 @@ export default function App() {
   const canvasRef        = useRef(null);
   const drawCanvasRef    = useRef(null);
   const paintRef         = useRef(null);
+  const myStrokeIdsRef   = useRef([]);   // IDs of strokes drawn by this user this session (for Ctrl+Z)
   const offscreenDrawRef = useRef(null);
   const mapImgRef        = useRef(null);
   const imgDims   = useRef({ w: 0, h: 0 });
@@ -1328,7 +1329,8 @@ export default function App() {
       setMarkers, setSync,
       () => setPendingTick(t => t + 1),
       stroke => setPaintStrokes(prev => prev.some(s => s.id === stroke.id) ? prev : [...prev, stroke]),
-      () => setPaintStrokes([])
+      () => { setPaintStrokes([]); myStrokeIdsRef.current = []; },
+      ({ id }) => setPaintStrokes(prev => prev.filter(s => s.id !== id))
     );
   }, [isAuthed]);
 
@@ -1339,6 +1341,24 @@ export default function App() {
       .then(r => r.json())
       .then(strokes => { if (Array.isArray(strokes)) setPaintStrokes(strokes); })
       .catch(() => {});
+  }, [isAuthed]);
+
+  // Ctrl+Z — undo last stroke drawn by this user this session
+  useEffect(() => {
+    if (!isAuthed) return;
+    const onKey = e => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) {
+        const ids = myStrokeIdsRef.current;
+        if (!ids.length) return;
+        e.preventDefault();
+        const id = ids[ids.length - 1];
+        myStrokeIdsRef.current = ids.slice(0, -1);
+        setPaintStrokes(prev => prev.filter(s => s.id !== id));
+        apiDrawRemoveStroke(id).catch(() => {});
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
   }, [isAuthed]);
 
   // Clear search when leaving view mode
@@ -1448,6 +1468,7 @@ export default function App() {
     paintRef.current = null;
     if (stroke.points.length > 0) {
       setPaintStrokes(prev => prev.some(s => s.id === stroke.id) ? prev : [...prev, stroke]);
+      myStrokeIdsRef.current = [...myStrokeIdsRef.current, stroke.id];
       apiDrawStroke(stroke).catch(() => {});
     }
     setPaintTick(t => t + 1);
@@ -1829,7 +1850,8 @@ export default function App() {
           <span className="tb-user">{authSession.name}</span>
         </div>
         <div className="tb-center">
-          <span className="tb-title">Children of the Hist</span>
+          <span className="tb-title tb-title-long">Children of the Hist</span>
+          <span className="tb-title tb-title-short">CotH</span>
           <span className={`sync-dot sync-${sync}`} title={{ live:'Live sync', connecting:'Connecting…', error:'Sync error' }[sync]} />
         </div>
         <div className="tb-right">
@@ -1992,6 +2014,7 @@ export default function App() {
             color={drawColor} onColor={setDrawColor}
             width={drawWidth} onWidth={setDrawWidth}
             eraser={drawEraser} onEraser={setDrawEraser}
+            isAdmin={adminUnlocked}
             onClear={() => {
               paintRef.current = null;
               setPaintStrokes([]);

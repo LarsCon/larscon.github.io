@@ -260,6 +260,13 @@ app.post('/keizaal/draw/stroke', (req, res) => {
   res.json({ ok: true });
 });
 
+app.delete('/keizaal/draw/stroke/:id', (req, res) => {
+  if (!authAny(req, res)) return;
+  drawStrokes = drawStrokes.filter(s => s.id !== req.params.id);
+  broadcast('draw-remove', { id: req.params.id });
+  res.json({ ok: true });
+});
+
 app.post('/keizaal/draw/clear', (req, res) => {
   if (!authAny(req, res)) return;
   drawStrokes = [];

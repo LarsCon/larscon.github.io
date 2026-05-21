@@ -8,7 +8,7 @@ const json = () => ({ 'Content-Type': 'application/json' });
 const auth = () => ({ 'Content-Type': 'application/json', 'X-KW-Auth': _pw });
 const hdr  = () => ({ 'X-KW-Auth': _pw });
 
-export function subscribeMarkers(onData, onStatus, onPendingUpdate, onDrawStroke, onDrawClear) {
+export function subscribeMarkers(onData, onStatus, onPendingUpdate, onDrawStroke, onDrawClear, onDrawRemove) {
   let current = [];
   onStatus('connecting');
 
@@ -43,6 +43,9 @@ export function subscribeMarkers(onData, onStatus, onPendingUpdate, onDrawStroke
   es.addEventListener('draw-clear', () => {
     if (onDrawClear) onDrawClear();
   });
+  es.addEventListener('draw-remove', e => {
+    if (onDrawRemove) onDrawRemove(JSON.parse(e.data));
+  });
 
   es.onerror = () => onStatus('error');
 
@@ -67,6 +70,7 @@ export const apiLogAuth    = (body) => fetch(`${BASE}/keizaal/auth-log`, { metho
 export const apiGetAuthLog = ()     => fetch(`${BASE}/keizaal/auth-log`, { headers: hdr() });
 
 // Drawing
-export const apiGetDraw    = ()       => fetch(`${BASE}/keizaal/draw/state`);
-export const apiDrawStroke = (stroke) => fetch(`${BASE}/keizaal/draw/stroke`, { method:'POST', headers: auth(), body: JSON.stringify(stroke) });
-export const apiDrawClear  = ()       => fetch(`${BASE}/keizaal/draw/clear`,  { method:'POST', headers: auth() });
+export const apiGetDraw          = ()       => fetch(`${BASE}/keizaal/draw/state`);
+export const apiDrawStroke       = (stroke) => fetch(`${BASE}/keizaal/draw/stroke`,       { method:'POST',   headers: auth(), body: JSON.stringify(stroke) });
+export const apiDrawRemoveStroke = (id)     => fetch(`${BASE}/keizaal/draw/stroke/${id}`, { method:'DELETE', headers: auth() });
+export const apiDrawClear        = ()       => fetch(`${BASE}/keizaal/draw/clear`,        { method:'POST',   headers: auth() });
