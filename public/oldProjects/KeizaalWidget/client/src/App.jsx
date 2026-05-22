@@ -45,7 +45,7 @@ const TOOLBAR_H   = 44;
 const PASSWORD_ADMIN     = 'lizard';
 const PASSWORD_COMMENTER = 'bigwetnoodle';
 
-const ENEMIES  = ['Bear','Bloodhound','Cave Bear','Chaurus','Corrupted Shade','Deer','Elementals','Falmer','Falmer Wizard','Falmer Warlord','Frost Skeleton','Frost Troll','Frostbite Spider','Ghost','Giant','Goats','Horkers','Ice Wolves','Mammoth','Mudcrabs','Sabre Cat','Skeleton','Slaughterfish','Spriggan','Spriggan Earth Mother','Trolls','Wolves'];
+const ENEMIES  = ['Bear','Bloodhound','Cave Bear','Chaurus','Corrupted Shade','Deer','Elementals','Elk','Falmer','Falmer Wizard','Falmer Warlord','Flame Atronach','Frost Atronach','Frost Skeleton','Frost Troll','Frostbite Spider','Ghost','Giant','Goats','Horkers','Ice Wolves','Mammoth','Mudcrabs','Rabbit','Sabre Cat','Skeleton','Slaughterfish','Snow Wolf','Spriggan','Spriggan Earth Mother','Trolls','Wolves'];
 const PLANTS   = [
   'Ash Creep Cluster','Ashen Grass Pod','Bleeding Crown','Blisterwort',
   'Blue Mountain Flower','Canis Root','Creep Cluster','Crimson Nirnroot',
@@ -59,7 +59,7 @@ const PLANTS   = [
   'Apple','Charred Skeever','Chicken Egg','Clam','Egg Sac','Honey',
   'Jazbay','Juniper','Mammoth Cheese','Namira\'s Rot','Pine Thrush Egg','Torch',
 ];
-const ORES     = ['Coal','Copper','Corundum','Dwarven','Ebony','Gold','Iron','Malachite','Moonstone','Orichalcum','Quicksilver','Silver','Steel'];
+const ORES     = ['Clay','Coal','Copper','Corundum','Dwarven','Ebony','Gold','Iron','Malachite','Moonstone','Orichalcum','Quicksilver','Silver','Steel'];
 
 const PREMIUM  = new Set(['Torch','Dwarven','Ebony','Moonstone','Quicksilver']);
 
