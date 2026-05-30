@@ -1445,7 +1445,7 @@ export default function App() {
       ctx.save();
       ctx.globalCompositeOperation = stroke.eraser ? 'destination-out' : 'source-over';
       ctx.strokeStyle = stroke.eraser ? 'rgba(0,0,0,1)' : stroke.color;
-      ctx.lineWidth   = stroke.width;
+      ctx.lineWidth   = stroke.width * scale;
       ctx.lineCap     = 'round';
       ctx.lineJoin    = 'round';
       ctx.beginPath();
