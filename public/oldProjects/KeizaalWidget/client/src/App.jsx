@@ -1041,6 +1041,18 @@ function BackpackSidebar({ onClose }) {
   );
 }
 
+function getOrCreateDeviceId() {
+  const KEY = 'keizaal-device-id';
+  let id = localStorage.getItem(KEY);
+  if (!id) {
+    id = typeof crypto?.randomUUID === 'function'
+      ? crypto.randomUUID()
+      : Date.now().toString(36) + Math.random().toString(36).slice(2);
+    localStorage.setItem(KEY, id);
+  }
+  return id;
+}
+
 // ── LoginScreen ───────────────────────────────────────────────────────────────
 function LoginScreen({ onLogin }) {
   const savedName = localStorage.getItem(NAME_KEY) || '';
@@ -1068,7 +1080,12 @@ function LoginScreen({ onLogin }) {
     }
     saveSession(resolvedName, level);
     setSessionAuth(pw);
-    apiLogAuth({ name: resolvedName, accessLevel: level }).catch(() => {});
+    apiLogAuth({
+      name:        resolvedName,
+      accessLevel: level,
+      deviceId:    getOrCreateDeviceId(),
+      newDevice:   !savedName,   // true when name was typed fresh = new device
+    }).catch(() => {});
     onLogin({ name: resolvedName, level });
   };
 
@@ -1158,9 +1175,10 @@ function LogsSidebar({ onClose }) {
     const map = {};
     logs.forEach(l => {
       const canonical = normName(l.name);
-      if (!map[canonical]) map[canonical] = { name: canonical, entries: [], rawNames: new Set() };
+      if (!map[canonical]) map[canonical] = { name: canonical, entries: [], rawNames: new Set(), deviceIds: new Set() };
       map[canonical].entries.push(l);
       map[canonical].rawNames.add(l.name);
+      if (l.device_id) map[canonical].deviceIds.add(l.device_id);
     });
     return Object.values(map)
       .map(u => {
@@ -1172,6 +1190,7 @@ function LogsSidebar({ onClose }) {
           level:       sorted[0]?.access_level,
           isNew:       sorted.length === 1,
           mergedNames: [...u.rawNames].filter(n => n !== u.name),
+          deviceCount: u.deviceIds.size,
         };
       })
       .sort((a, b) => new Date(b.lastLogin) - new Date(a.lastLogin));
@@ -1252,6 +1271,7 @@ function LogsSidebar({ onClose }) {
                       {mergeMode && <span className={`log-merge-check${selected ? ' on' : ''}`}>{selected ? '✓' : ''}</span>}
                       <span className="log-name">{u.name}</span>
                       <span className={`log-level log-level-${u.level}`}>{u.level}</span>
+                      {u.deviceCount > 1 && <span className="log-device-count">{u.deviceCount} devices</span>}
                       <span className="log-time">{fmt(u.lastLogin)}</span>
                       {!mergeMode && <span className={`log-user-chevron${expanded ? ' open' : ''}`}><Ico n="chevron" size={11} /></span>}
                     </div>
@@ -1261,9 +1281,10 @@ function LogsSidebar({ onClose }) {
                     {expanded && !mergeMode && (
                       <div className="log-user-entries">
                         {u.entries.map(l => (
-                          <div key={l.id} className="log-entry-sub">
+                          <div key={l.id} className={`log-entry-sub${l.new_device ? ' log-entry-newdev' : ''}`}>
                             <span className="log-entry-raw-name">{l.name !== u.name ? l.name : ''}</span>
                             <span className={`log-level log-level-${l.access_level}`}>{l.access_level}</span>
+                            {l.new_device && <span className="log-newdev-badge log-newdev-sm">new device</span>}
                             <span className="log-time">{fmt(l.logged_at)}</span>
                           </div>
                         ))}
@@ -1279,10 +1300,11 @@ function LogsSidebar({ onClose }) {
           filteredLogs.length === 0
             ? <p className="logs-empty">{lq ? 'No results' : 'No entries yet'}</p>
             : filteredLogs.map(l => (
-                <div key={l.id} className={`log-row${firstTimers.has(l.name) ? ' log-row-new' : ''}`}>
+                <div key={l.id} className={`log-row${firstTimers.has(l.name) ? ' log-row-new' : ''}${l.new_device ? ' log-row-newdev' : ''}`}>
                   <span className="log-name">{l.name}</span>
                   <span className={`log-level log-level-${l.access_level}`}>{l.access_level}</span>
-                  <span className="log-time">{fmt(l.logged_at)}</span>
+                  {l.new_device ? <span className="log-newdev-badge">new device</span> : <span className="log-time">{fmt(l.logged_at)}</span>}
+                  {l.new_device && <span className="log-time log-time-newdev">{fmt(l.logged_at)}</span>}
                 </div>
               ))
         )}

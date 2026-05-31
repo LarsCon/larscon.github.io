@@ -71,7 +71,18 @@ pool.query(`
     logged_at    TIMESTAMP    DEFAULT CURRENT_TIMESTAMP
   )
 `).then(() => console.log('keizaal_auth_log table ready'))
-  .catch(e  => console.error('Auth log table init error:', e.message));
+  .then(() => pool.query(`
+    SELECT COUNT(*) AS cnt FROM information_schema.COLUMNS
+    WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'keizaal_auth_log' AND COLUMN_NAME = 'device_id'
+  `))
+  .then(([[row]]) => {
+    if (!row.cnt) return pool.query(`
+      ALTER TABLE keizaal_auth_log
+        ADD COLUMN device_id    VARCHAR(64)  DEFAULT NULL,
+        ADD COLUMN new_device   TINYINT(1)   NOT NULL DEFAULT 0
+    `);
+  })
+  .catch(e => console.error('Auth log migration error:', e.message));
 
 pool.query(`
   CREATE TABLE IF NOT EXISTS keizaal_user_merges (
@@ -336,12 +347,12 @@ app.delete('/keizaal/user-merges/:canonical', async (req, res) => {
 
 // POST — log a login event (no auth required — this IS the login)
 app.post('/keizaal/auth-log', async (req, res) => {
-  const { name, accessLevel } = req.body;
+  const { name, accessLevel, deviceId, newDevice } = req.body;
   if (!name || !accessLevel) return res.status(400).json({ error: 'Missing fields' });
   try {
     await pool.query(
-      'INSERT INTO keizaal_auth_log (name, access_level) VALUES (?, ?)',
-      [String(name).slice(0, 100), String(accessLevel).slice(0, 20)]
+      'INSERT INTO keizaal_auth_log (name, access_level, device_id, new_device) VALUES (?, ?, ?, ?)',
+      [String(name).slice(0, 100), String(accessLevel).slice(0, 20), deviceId ? String(deviceId).slice(0, 64) : null, newDevice ? 1 : 0]
     );
     res.json({ ok: true });
   } catch (e) { res.status(500).json({ error: e.message }); }
@@ -352,7 +363,7 @@ app.get('/keizaal/auth-log', async (req, res) => {
   if (!auth(req, res)) return;
   try {
     const [rows] = await pool.query(
-      'SELECT id, name, access_level, logged_at FROM keizaal_auth_log ORDER BY logged_at DESC LIMIT 500'
+      'SELECT id, name, access_level, device_id, new_device, logged_at FROM keizaal_auth_log ORDER BY logged_at DESC LIMIT 500'
     );
     res.json(rows);
   } catch (e) { res.status(500).json({ error: e.message }); }
