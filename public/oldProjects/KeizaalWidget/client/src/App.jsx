@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { subscribeMarkers, apiAdd, apiUpdate, apiDelete, apiSuggest, apiGetPending, apiApprovePending, apiDenyPending, apiLogAuth, apiGetAuthLog, apiGetDraw, apiDrawStroke, apiDrawRemoveStroke, apiDrawClear, setSessionAuth } from './api';
+import { subscribeMarkers, apiAdd, apiUpdate, apiDelete, apiSuggest, apiGetPending, apiApprovePending, apiDenyPending, apiLogAuth, apiGetAuthLog, apiGetUserMerges, apiSetUserMerge, apiDeleteUserMerge, apiGetDraw, apiDrawStroke, apiDrawRemoveStroke, apiDrawClear, setSessionAuth } from './api';
 import './App.css';
 
 // ── Constants ─────────────────────────────────────────────────────────────────
@@ -61,7 +61,6 @@ const PLANTS   = [
 ];
 const ORES     = ['Clay','Coal','Copper','Corundum','Dwarven','Ebony','Gold','Iron','Malachite','Moonstone','Orichalcum','Quicksilver','Silver','Steel'];
 
-const PREMIUM  = new Set(['Torch','Dwarven','Ebony','Moonstone','Quicksilver']);
 
 const PAINT_COLORS = ['#ff4444','#ff9900','#ffee44','#55cc55','#44aaff','#aa66ff','#ff66bb','#ffffff'];
 const PAINT_WIDTHS = [1, 2, 4, 8];
@@ -592,8 +591,8 @@ function FilterPanel({ filter, onChange, total = 0, visible = 0, adminUnlocked =
   // Keep items present on map, plus anything already selected (so selected chips don't vanish)
   const avail = (set, all, sel) => all.filter(x => (set?.has(x) ?? true) || sel.includes(x));
   const visibleTypes = TYPES.filter(t => !presentOptions || presentOptions.types.has(t) || filter.types.includes(t));
-  const allPlants = adminUnlocked ? PLANTS : PLANTS.filter(p => !PREMIUM.has(p));
-  const allOres   = adminUnlocked ? ORES   : ORES.filter(o => !PREMIUM.has(o));
+  const allPlants = PLANTS;
+  const allOres   = ORES;
   return (
     <div className="tb-panel filter-panel" onPointerDown={e => e.stopPropagation()}>
       <div className="fp-count">
@@ -1114,12 +1113,40 @@ function LogsSidebar({ onClose }) {
   const [userView,     setUserView]     = useState(false);
   const [expandedUser, setExpandedUser] = useState(null);
 
+  // Merge state — server-persisted, admin-managed
+  // Format: { "Canonical Name": ["alias1", "alias2", ...] }
+  const [merges, setMerges] = useState({});
+  const [mergeMode,     setMergeMode]     = useState(false);
+  const [mergeSelected, setMergeSelected] = useState(new Set());
+  const [mergePicking,  setMergePicking]  = useState(null); // names[] awaiting canonical choice
+
   useEffect(() => {
     apiGetAuthLog()
       .then(r => r.json())
       .then(d => { if (Array.isArray(d)) setLogs(d); setLoading(false); })
       .catch(() => setLoading(false));
+    apiGetUserMerges()
+      .then(r => r.json())
+      .then(data => {
+        if (Array.isArray(data)) {
+          const map = {};
+          data.forEach(({ canonical, aliases }) => { map[canonical] = aliases; });
+          setMerges(map);
+        }
+      })
+      .catch(() => {});
   }, []);
+
+  // alias → canonical reverse lookup (case-insensitive)
+  const aliasMap = useMemo(() => {
+    const map = {};
+    Object.entries(merges).forEach(([canonical, aliases]) => {
+      aliases.forEach(a => { map[a.toLowerCase()] = canonical; });
+    });
+    return map;
+  }, [merges]);
+
+  const normName = useCallback(name => aliasMap[name.toLowerCase()] || name, [aliasMap]);
 
   const firstTimers = useMemo(() => {
     const counts = {};
@@ -1130,19 +1157,49 @@ function LogsSidebar({ onClose }) {
   const users = useMemo(() => {
     const map = {};
     logs.forEach(l => {
-      if (!map[l.name]) map[l.name] = { name: l.name, entries: [] };
-      map[l.name].entries.push(l);
+      const canonical = normName(l.name);
+      if (!map[canonical]) map[canonical] = { name: canonical, entries: [], rawNames: new Set() };
+      map[canonical].entries.push(l);
+      map[canonical].rawNames.add(l.name);
     });
     return Object.values(map)
-      .map(u => ({
-        name:      u.name,
-        entries:   u.entries,           // server returns DESC, so [0] = most recent
-        lastLogin: u.entries[0].logged_at,
-        level:     u.entries[0].access_level,
-        isNew:     u.entries.length === 1,
-      }))
+      .map(u => {
+        const sorted = [...u.entries].sort((a, b) => new Date(b.logged_at) - new Date(a.logged_at));
+        return {
+          name:        u.name,
+          entries:     sorted,
+          lastLogin:   sorted[0]?.logged_at,
+          level:       sorted[0]?.access_level,
+          isNew:       sorted.length === 1,
+          mergedNames: [...u.rawNames].filter(n => n !== u.name),
+        };
+      })
       .sort((a, b) => new Date(b.lastLogin) - new Date(a.lastLogin));
-  }, [logs]);
+  }, [logs, normName]);
+
+  const doMerge = (names, canonical) => {
+    const nm = { ...merges };
+    const all = new Set(names);
+    names.forEach(name => {
+      // Absorb aliases if this name was previously a canonical
+      if (nm[name] && name !== canonical) { nm[name].forEach(a => all.add(a)); delete nm[name]; }
+      // Remove this name from any other canonical's alias list
+      Object.keys(nm).forEach(can => {
+        if (can !== canonical) nm[can] = nm[can].filter(a => a.toLowerCase() !== name.toLowerCase());
+      });
+    });
+    all.delete(canonical);
+    const aliases = [...all];
+    nm[canonical] = aliases;
+    setMerges(nm);
+    setMergeMode(false); setMergeSelected(new Set()); setMergePicking(null);
+    apiSetUserMerge(canonical, aliases).catch(() => {});
+  };
+
+  const doSplit = canonical => {
+    const nm = { ...merges }; delete nm[canonical]; setMerges(nm);
+    apiDeleteUserMerge(canonical).catch(() => {});
+  };
 
   const fmt = ts => {
     const d = new Date(ts);
@@ -1150,10 +1207,16 @@ function LogsSidebar({ onClose }) {
   };
 
   const lq = q.trim().toLowerCase();
-  const filteredLogs  = lq ? logs.filter(l  => l.name.toLowerCase().includes(lq) || l.access_level.toLowerCase().includes(lq))  : logs;
-  const filteredUsers = lq ? users.filter(u => u.name.toLowerCase().includes(lq) || u.level.toLowerCase().includes(lq)) : users;
+  const filteredLogs  = lq ? logs.filter(l => l.name.toLowerCase().includes(lq) || l.access_level.toLowerCase().includes(lq)) : logs;
+  const filteredUsers = lq
+    ? users.filter(u => u.name.toLowerCase().includes(lq) || u.level.toLowerCase().includes(lq) || u.mergedNames.some(n => n.toLowerCase().includes(lq)))
+    : users;
 
-  const switchView = v => { setUserView(v); setExpandedUser(null); };
+  const switchView = v => { setUserView(v); setExpandedUser(null); setMergeMode(false); setMergeSelected(new Set()); setMergePicking(null); };
+  const toggleMergeMode = () => { setMergeMode(v => !v); setMergeSelected(new Set()); setMergePicking(null); };
+  const toggleSelect = name => setMergeSelected(prev => { const s = new Set(prev); s.has(name) ? s.delete(name) : s.add(name); return s; });
+
+  const selectedArr = [...mergeSelected];
 
   return (
     <div className="logs-sidebar">
@@ -1163,6 +1226,11 @@ function LogsSidebar({ onClose }) {
           <button className={`logs-view-btn${!userView ? ' on' : ''}`} onClick={() => switchView(false)}>Live</button>
           <button className={`logs-view-btn${userView  ? ' on' : ''}`} onClick={() => switchView(true)}>Users</button>
         </div>
+        {userView && (
+          <button className={`logs-merge-btn${mergeMode ? ' on' : ''}`} onClick={toggleMergeMode} title="Combine users">
+            {mergeMode ? 'Done' : 'Merge'}
+          </button>
+        )}
         <button className="extra-close" onClick={onClose}>×</button>
       </div>
       <input className="logs-search" value={q} onChange={e => setQ(e.target.value)} placeholder="Search name or level…" />
@@ -1174,24 +1242,34 @@ function LogsSidebar({ onClose }) {
             ? <p className="logs-empty">{lq ? 'No results' : 'No entries yet'}</p>
             : filteredUsers.map(u => {
                 const expanded = expandedUser === u.name;
+                const selected = mergeSelected.has(u.name);
                 return (
-                  <div key={u.name} className={`log-user-card${u.isNew ? ' log-row-new' : ''}`}>
-                    <div className="log-user-head" onClick={() => setExpandedUser(v => v === u.name ? null : u.name)}>
+                  <div key={u.name}
+                    className={`log-user-card${u.isNew ? ' log-row-new' : ''}${mergeMode ? ' log-user-selectable' : ''}${selected ? ' log-user-selected' : ''}`}
+                    onClick={mergeMode ? () => toggleSelect(u.name) : undefined}>
+                    <div className="log-user-head"
+                      onClick={mergeMode ? undefined : () => setExpandedUser(v => v === u.name ? null : u.name)}>
+                      {mergeMode && <span className={`log-merge-check${selected ? ' on' : ''}`}>{selected ? '✓' : ''}</span>}
                       <span className="log-name">{u.name}</span>
                       <span className={`log-level log-level-${u.level}`}>{u.level}</span>
                       <span className="log-time">{fmt(u.lastLogin)}</span>
-                      <span className={`log-user-chevron${expanded ? ' open' : ''}`}>
-                        <Ico n="chevron" size={11} />
-                      </span>
+                      {!mergeMode && <span className={`log-user-chevron${expanded ? ' open' : ''}`}><Ico n="chevron" size={11} /></span>}
                     </div>
-                    {expanded && (
+                    {u.mergedNames.length > 0 && (
+                      <div className="log-merged-aliases">also: {u.mergedNames.join(', ')}</div>
+                    )}
+                    {expanded && !mergeMode && (
                       <div className="log-user-entries">
                         {u.entries.map(l => (
                           <div key={l.id} className="log-entry-sub">
+                            <span className="log-entry-raw-name">{l.name !== u.name ? l.name : ''}</span>
                             <span className={`log-level log-level-${l.access_level}`}>{l.access_level}</span>
                             <span className="log-time">{fmt(l.logged_at)}</span>
                           </div>
                         ))}
+                        {u.mergedNames.length > 0 && (
+                          <button className="log-split-btn" onClick={() => doSplit(u.name)}>Split combined users</button>
+                        )}
                       </div>
                     )}
                   </div>
@@ -1209,6 +1287,28 @@ function LogsSidebar({ onClose }) {
               ))
         )}
       </div>
+      {mergeMode && (
+        mergePicking ? (
+          <div className="log-merge-bar">
+            <span className="log-merge-label">Keep which name?</span>
+            <div className="log-merge-picks">
+              {mergePicking.map(name => (
+                <button key={name} className="log-merge-pick-btn" onClick={() => doMerge(mergePicking, name)}>{name}</button>
+              ))}
+              <button className="log-merge-cancel" onClick={() => setMergePicking(null)}>✕</button>
+            </div>
+          </div>
+        ) : mergeSelected.size >= 2 ? (
+          <div className="log-merge-bar">
+            <span className="log-merge-label">{mergeSelected.size} selected</span>
+            <button className="log-merge-action" onClick={() => setMergePicking(selectedArr)}>Combine →</button>
+          </div>
+        ) : (
+          <div className="log-merge-bar log-merge-hint">
+            <span className="log-merge-label">Tap users to select</span>
+          </div>
+        )
+      )}
     </div>
   );
 }
@@ -1492,15 +1592,7 @@ export default function App() {
   };
 
   // Strip premium items from display when not admin-unlocked
-  const displayMarkers = useMemo(() => {
-    if (adminUnlocked) return markers;
-    return markers.map(m => {
-      const plants = (m.plants || []).filter(p => !PREMIUM.has(p.name));
-      const nodes  = (m.nodes  || []).filter(o => !PREMIUM.has(o.name));
-      const _hadPremium = plants.length < (m.plants?.length || 0) || nodes.length < (m.nodes?.length || 0);
-      return { ...m, plants, nodes, _hadPremium };
-    });
-  }, [markers, adminUnlocked]);
+  const displayMarkers = markers;
 
   // What's actually on the map (drives filter option visibility)
   const presentOptions = useMemo(() => {
@@ -1914,11 +2006,9 @@ export default function App() {
               </div>
             )}
           </div>
-          {adminUnlocked && (
-            <button className="tb-btn tb-logout" onClick={logout} title="Sign out">
-              <Ico n="logout" size={16} />
-            </button>
-          )}
+          <button className="tb-btn tb-logout" onClick={logout} title="Sign out">
+            <Ico n="logout" size={16} />
+          </button>
         </div>
       </div>
 

@@ -69,6 +69,11 @@ export const apiDenyPending    = (id) => fetch(`${BASE}/keizaal/pending/${id}/de
 export const apiLogAuth    = (body) => fetch(`${BASE}/keizaal/auth-log`, { method:'POST', headers: json(), body: JSON.stringify(body) });
 export const apiGetAuthLog = ()     => fetch(`${BASE}/keizaal/auth-log`, { headers: hdr() });
 
+// User merges (admin only)
+export const apiGetUserMerges   = ()                   => fetch(`${BASE}/keizaal/user-merges`,                                  { headers: hdr() });
+export const apiSetUserMerge    = (canonical, aliases) => fetch(`${BASE}/keizaal/user-merges`,                                  { method: 'POST',   headers: auth(), body: JSON.stringify({ canonical, aliases }) });
+export const apiDeleteUserMerge = (canonical)          => fetch(`${BASE}/keizaal/user-merges/${encodeURIComponent(canonical)}`, { method: 'DELETE', headers: auth() });
+
 // Drawing
 export const apiGetDraw          = ()       => fetch(`${BASE}/keizaal/draw/state`);
 export const apiDrawStroke       = (stroke) => fetch(`${BASE}/keizaal/draw/stroke`,       { method:'POST',   headers: auth(), body: JSON.stringify(stroke) });

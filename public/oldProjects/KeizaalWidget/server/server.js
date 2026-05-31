@@ -73,6 +73,15 @@ pool.query(`
 `).then(() => console.log('keizaal_auth_log table ready'))
   .catch(e  => console.error('Auth log table init error:', e.message));
 
+pool.query(`
+  CREATE TABLE IF NOT EXISTS keizaal_user_merges (
+    canonical VARCHAR(100) NOT NULL,
+    alias     VARCHAR(100) NOT NULL,
+    PRIMARY KEY (alias)
+  )
+`).then(() => console.log('keizaal_user_merges table ready'))
+  .catch(e  => console.error('User merges table init error:', e.message));
+
 // ── SSE broadcast ─────────────────────────────────────────────
 const clients = new Set();
 
@@ -272,6 +281,55 @@ app.post('/keizaal/draw/clear', (req, res) => {
   drawStrokes = [];
   broadcast('draw-clear', {});
   res.json({ ok: true });
+});
+
+// ── User merges ───────────────────────────────────────────────
+
+// GET — fetch all merge mappings (admin only)
+app.get('/keizaal/user-merges', async (req, res) => {
+  if (!auth(req, res)) return;
+  try {
+    const [rows] = await pool.query('SELECT canonical, alias FROM keizaal_user_merges');
+    const map = {};
+    rows.forEach(r => {
+      if (!map[r.canonical]) map[r.canonical] = [];
+      map[r.canonical].push(r.alias);
+    });
+    res.json(Object.entries(map).map(([canonical, aliases]) => ({ canonical, aliases })));
+  } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+// POST — set a merge: canonical + all its aliases (admin only)
+app.post('/keizaal/user-merges', async (req, res) => {
+  if (!auth(req, res)) return;
+  const { canonical, aliases } = req.body;
+  if (!canonical || !Array.isArray(aliases)) return res.status(400).json({ error: 'Bad request' });
+  const conn = await pool.getConnection();
+  try {
+    await conn.beginTransaction();
+    await conn.query('DELETE FROM keizaal_user_merges WHERE canonical = ?', [canonical]);
+    if (aliases.length > 0) {
+      await conn.query('DELETE FROM keizaal_user_merges WHERE alias IN (?)', [aliases]);
+      await conn.query(
+        'INSERT INTO keizaal_user_merges (canonical, alias) VALUES ?',
+        [aliases.map(a => [canonical, a])]
+      );
+    }
+    await conn.commit();
+    res.json({ ok: true });
+  } catch(e) {
+    await conn.rollback();
+    res.status(500).json({ error: e.message });
+  } finally { conn.release(); }
+});
+
+// DELETE — remove all aliases for a canonical (split), admin only
+app.delete('/keizaal/user-merges/:canonical', async (req, res) => {
+  if (!auth(req, res)) return;
+  try {
+    await pool.query('DELETE FROM keizaal_user_merges WHERE canonical = ?', [req.params.canonical]);
+    res.json({ ok: true });
+  } catch(e) { res.status(500).json({ error: e.message }); }
 });
 
 // ── Auth log ──────────────────────────────────────────────────
