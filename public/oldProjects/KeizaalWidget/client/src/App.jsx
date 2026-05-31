@@ -1284,7 +1284,7 @@ function LogsSidebar({ onClose }) {
                           <div key={l.id} className={`log-entry-sub${l.new_device ? ' log-entry-newdev' : ''}`}>
                             <span className="log-entry-raw-name">{l.name !== u.name ? l.name : ''}</span>
                             <span className={`log-level log-level-${l.access_level}`}>{l.access_level}</span>
-                            {l.new_device && <span className="log-newdev-badge log-newdev-sm">new device</span>}
+                            {!!l.new_device && <span className="log-newdev-badge log-newdev-sm">new device</span>}
                             <span className="log-time">{fmt(l.logged_at)}</span>
                           </div>
                         ))}
@@ -1304,7 +1304,7 @@ function LogsSidebar({ onClose }) {
                   <span className="log-name">{l.name}</span>
                   <span className={`log-level log-level-${l.access_level}`}>{l.access_level}</span>
                   {l.new_device ? <span className="log-newdev-badge">new device</span> : <span className="log-time">{fmt(l.logged_at)}</span>}
-                  {l.new_device && <span className="log-time log-time-newdev">{fmt(l.logged_at)}</span>}
+                  {!!l.new_device && <span className="log-time log-time-newdev">{fmt(l.logged_at)}</span>}
                 </div>
               ))
         )}
