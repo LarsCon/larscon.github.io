@@ -1259,66 +1259,68 @@ function LogsSidebar({ onClose }) {
         ) : userView ? (
           filteredUsers.length === 0
             ? <p className="logs-empty">{lq ? 'No results' : 'No entries yet'}</p>
-            : filteredUsers.map(u => {
-                const expanded = expandedUser === u.name;
-                const selected = mergeSelected.has(u.name);
-                return (
-                  <div key={u.name}
-                    className={`log-user-card${u.isNew ? ' log-row-new' : ''}${mergeMode ? ' log-user-selectable' : ''}${selected ? ' log-user-selected' : ''}`}
-                    onClick={mergeMode ? () => toggleSelect(u.name) : undefined}>
-                    <div className="log-user-head"
-                      onClick={mergeMode ? undefined : () => setExpandedUser(v => v === u.name ? null : u.name)}>
-                      {mergeMode && <span className={`log-merge-check${selected ? ' on' : ''}`}>{selected ? '✓' : ''}</span>}
-                      <div className="log-user-info">
-                        <div className="log-user-name-row">
+            : <>
+                <div className="log-thead log-thead-users">
+                  <span>Name</span>
+                  <span>Level</span>
+                  <span>Last Seen</span>
+                  <span />
+                </div>
+                {filteredUsers.map(u => {
+                  const expanded = expandedUser === u.name;
+                  const selected = mergeSelected.has(u.name);
+                  return (
+                    <div key={u.name} className={`log-user-group${u.isNew ? ' log-row-first' : ''}${selected ? ' log-user-selected' : ''}`}>
+                      <div className={`log-user-row${mergeMode ? ' log-user-selectable' : ''}`}
+                        onClick={mergeMode ? () => toggleSelect(u.name) : () => setExpandedUser(v => v === u.name ? null : u.name)}>
+                        <div className="log-name-cell">
+                          {mergeMode && <span className={`log-merge-check${selected ? ' on' : ''}`}>{selected ? '✓' : '○'}</span>}
                           <span className="log-name">{u.name}</span>
-                          <span className={`log-level log-level-${u.level}`}>{u.level}</span>
+                          {u.deviceCount > 1 && <span className="log-device-count">{u.deviceCount}d</span>}
+                          {u.mergedNames.length > 0 && <span className="log-alias-hint">+{u.mergedNames.length}</span>}
                         </div>
-                        <div className="log-user-meta-row">
-                          {u.deviceCount > 1 && <span className="log-device-count">{u.deviceCount} devices</span>}
-                          <span className="log-time">{fmt(u.lastLogin)}</span>
-                        </div>
+                        <span className={`log-level log-level-${u.level}`}>{u.level}</span>
+                        <span className="log-time">{fmt(u.lastLogin)}</span>
+                        {!mergeMode && <span className={`log-user-chevron${expanded ? ' open' : ''}`}><Ico n="chevron" size={10} /></span>}
                       </div>
-                      {!mergeMode && <span className={`log-user-chevron${expanded ? ' open' : ''}`}><Ico n="chevron" size={11} /></span>}
-                    </div>
-                    {u.mergedNames.length > 0 && (
-                      <div className="log-merged-aliases">also: {u.mergedNames.join(', ')}</div>
-                    )}
-                    {expanded && !mergeMode && (
-                      <div className="log-user-entries">
-                        {u.entries.map(l => (
-                          <div key={l.id} className={`log-entry-sub${l.new_device ? ' log-entry-newdev' : ''}`}>
-                            <div className="log-entry-sub-left">
+                      {expanded && !mergeMode && (
+                        <div className="log-user-history">
+                          {u.entries.map(l => (
+                            <div key={l.id} className={`log-sub-row${l.new_device ? ' log-sub-newdev' : ''}`}>
                               <span className={`log-level log-level-${l.access_level}`}>{l.access_level}</span>
                               {!!l.new_device && <span className="log-newdev-badge log-newdev-sm">new device</span>}
                               {l.name !== u.name && <span className="log-entry-raw-name">{l.name}</span>}
+                              <span className="log-time">{fmt(l.logged_at)}</span>
                             </div>
-                            <span className="log-time">{fmt(l.logged_at)}</span>
-                          </div>
-                        ))}
-                        {u.mergedNames.length > 0 && (
-                          <button className="log-split-btn" onClick={() => doSplit(u.name)}>Split combined users</button>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                );
-              })
+                          ))}
+                          {u.mergedNames.length > 0 && (
+                            <button className="log-split-btn" onClick={() => doSplit(u.name)}>Split combined users</button>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </>
         ) : (
           filteredLogs.length === 0
             ? <p className="logs-empty">{lq ? 'No results' : 'No entries yet'}</p>
-            : filteredLogs.map(l => (
-                <div key={l.id} className={`log-row${firstTimers.has(l.name) ? ' log-row-new' : ''}${l.new_device ? ' log-row-newdev' : ''}`}>
-                  <div className="log-row-main">
+            : <>
+                <div className="log-thead log-thead-live">
+                  <span />
+                  <span>Name</span>
+                  <span>Level</span>
+                  <span>Time</span>
+                </div>
+                {filteredLogs.map(l => (
+                  <div key={l.id} className={`log-row${firstTimers.has(l.name) ? ' log-row-first' : ''}${l.new_device ? ' log-row-newdev' : ''}`}>
+                    <span className="log-dot">{!!l.new_device && '●'}</span>
                     <span className="log-name">{l.name}</span>
                     <span className={`log-level log-level-${l.access_level}`}>{l.access_level}</span>
-                  </div>
-                  <div className="log-row-meta">
-                    {!!l.new_device && <span className="log-newdev-badge">new device</span>}
                     <span className="log-time">{fmt(l.logged_at)}</span>
                   </div>
-                </div>
-              ))
+                ))}
+              </>
         )}
       </div>
       {mergeMode && (
