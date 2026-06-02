@@ -1269,10 +1269,16 @@ function LogsSidebar({ onClose }) {
                     <div className="log-user-head"
                       onClick={mergeMode ? undefined : () => setExpandedUser(v => v === u.name ? null : u.name)}>
                       {mergeMode && <span className={`log-merge-check${selected ? ' on' : ''}`}>{selected ? '✓' : ''}</span>}
-                      <span className="log-name">{u.name}</span>
-                      <span className={`log-level log-level-${u.level}`}>{u.level}</span>
-                      {u.deviceCount > 1 && <span className="log-device-count">{u.deviceCount} devices</span>}
-                      <span className="log-time">{fmt(u.lastLogin)}</span>
+                      <div className="log-user-info">
+                        <div className="log-user-name-row">
+                          <span className="log-name">{u.name}</span>
+                          <span className={`log-level log-level-${u.level}`}>{u.level}</span>
+                        </div>
+                        <div className="log-user-meta-row">
+                          {u.deviceCount > 1 && <span className="log-device-count">{u.deviceCount} devices</span>}
+                          <span className="log-time">{fmt(u.lastLogin)}</span>
+                        </div>
+                      </div>
                       {!mergeMode && <span className={`log-user-chevron${expanded ? ' open' : ''}`}><Ico n="chevron" size={11} /></span>}
                     </div>
                     {u.mergedNames.length > 0 && (
@@ -1282,9 +1288,11 @@ function LogsSidebar({ onClose }) {
                       <div className="log-user-entries">
                         {u.entries.map(l => (
                           <div key={l.id} className={`log-entry-sub${l.new_device ? ' log-entry-newdev' : ''}`}>
-                            <span className="log-entry-raw-name">{l.name !== u.name ? l.name : ''}</span>
-                            <span className={`log-level log-level-${l.access_level}`}>{l.access_level}</span>
-                            {!!l.new_device && <span className="log-newdev-badge log-newdev-sm">new device</span>}
+                            <div className="log-entry-sub-left">
+                              <span className={`log-level log-level-${l.access_level}`}>{l.access_level}</span>
+                              {!!l.new_device && <span className="log-newdev-badge log-newdev-sm">new device</span>}
+                              {l.name !== u.name && <span className="log-entry-raw-name">{l.name}</span>}
+                            </div>
                             <span className="log-time">{fmt(l.logged_at)}</span>
                           </div>
                         ))}
@@ -1301,10 +1309,14 @@ function LogsSidebar({ onClose }) {
             ? <p className="logs-empty">{lq ? 'No results' : 'No entries yet'}</p>
             : filteredLogs.map(l => (
                 <div key={l.id} className={`log-row${firstTimers.has(l.name) ? ' log-row-new' : ''}${l.new_device ? ' log-row-newdev' : ''}`}>
-                  <span className="log-name">{l.name}</span>
-                  <span className={`log-level log-level-${l.access_level}`}>{l.access_level}</span>
-                  {l.new_device ? <span className="log-newdev-badge">new device</span> : <span className="log-time">{fmt(l.logged_at)}</span>}
-                  {!!l.new_device && <span className="log-time log-time-newdev">{fmt(l.logged_at)}</span>}
+                  <div className="log-row-main">
+                    <span className="log-name">{l.name}</span>
+                    <span className={`log-level log-level-${l.access_level}`}>{l.access_level}</span>
+                  </div>
+                  <div className="log-row-meta">
+                    {!!l.new_device && <span className="log-newdev-badge">new device</span>}
+                    <span className="log-time">{fmt(l.logged_at)}</span>
+                  </div>
                 </div>
               ))
         )}

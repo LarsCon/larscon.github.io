@@ -913,7 +913,7 @@
 
 /* ── Logs sidebar ────────────────────────────────────────────── */
 .logs-sidebar {
-  position: fixed; top: 44px; right: 0; bottom: 0; width: 320px;
+  position: fixed; top: 44px; right: 0; bottom: 0; width: 360px;
   background: rgba(8, 13, 22, 0.97);
   border-left: 1px solid rgba(255,255,255,0.08);
   z-index: 140;
@@ -952,10 +952,7 @@
 }
 
 .log-row {
-  display: grid;
-  grid-template-columns: 1fr auto auto auto;
-  align-items: center;
-  gap: 8px;
+  display: flex; flex-direction: column; gap: 4px;
   padding: 8px 10px;
   border-radius: 7px;
   border: 1px solid rgba(255,255,255,0.05);
@@ -964,6 +961,8 @@
   transition: background 0.12s;
 }
 .log-row:hover { background: rgba(255,255,255,0.06); }
+.log-row-main { display: flex; align-items: center; gap: 6px; }
+.log-row-meta { display: flex; align-items: center; gap: 6px; justify-content: flex-end; }
 
 .log-row-new {
   border-color: rgba(80,200,100,0.3);
@@ -993,7 +992,7 @@
   white-space: nowrap; flex-shrink: 0;
 }
 
-.log-name { color: rgba(255,255,255,0.8); font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.log-name { color: rgba(255,255,255,0.8); font-weight: 500; }
 
 .log-level {
   font-size: 9px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
@@ -1032,16 +1031,16 @@
 }
 
 .log-user-head {
-  display: grid;
-  grid-template-columns: 1fr auto auto auto;
-  align-items: center;
-  gap: 8px;
+  display: flex; align-items: center; gap: 8px;
   padding: 9px 10px;
   font-size: 12px;
   cursor: pointer;
   transition: background 0.12s;
 }
 .log-user-head:hover { background: rgba(255,255,255,0.05); }
+.log-user-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.log-user-name-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.log-user-meta-row { display: flex; align-items: center; gap: 6px; }
 
 .log-user-chevron {
   color: rgba(255,255,255,0.25);
@@ -1061,12 +1060,13 @@
 }
 
 .log-entry-sub {
-  display: flex; align-items: center; gap: 8px;
+  display: flex; align-items: center; justify-content: space-between;
   padding: 5px 12px 5px 20px;
   font-size: 11px;
   color: rgba(255,255,255,0.45);
 }
 .log-entry-sub .log-level { font-size: 8px; padding: 1px 5px; }
+.log-entry-sub-left { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
 .log-entry-raw-name {
   font-size: 10px; color: rgba(255,255,255,0.3); font-style: italic;
   min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
