@@ -1,11 +1,11 @@
 import { useRef, useState, useCallback, useEffect } from 'react'
 import { useWindowManager } from '../../context/WindowManagerContext'
 import { useNavigation } from '../../context/NavigationContext'
+import { TASKBAR_HEIGHT } from '../../config/layout'
 import styles from './Window.module.css'
 
 const MIN_WIDTH = 200
 const MIN_HEIGHT = 120
-const TASKBAR_HEIGHT = 48
 
 export default function Window({ windowData, isActive, children }) {
   const {
@@ -24,14 +24,16 @@ export default function Window({ windowData, isActive, children }) {
       const btn = document.querySelector(`[data-window-id="${windowData.id}"]`)
       if (btn) {
         const btnRect = btn.getBoundingClientRect()
-        const x = btnRect.left + btnRect.width / 2 - windowData.position.x
-        const y = btnRect.top + btnRect.height / 2 - windowData.position.y
+        const posX = windowData.isMaximized ? 0 : windowData.position.x
+        const posY = windowData.isMaximized ? 0 : windowData.position.y
+        const x = btnRect.left + btnRect.width / 2 - posX
+        const y = btnRect.top + btnRect.height / 2 - posY
         setTransformOrigin(`${x}px ${y}px`)
       } else {
         setTransformOrigin('50% 100%')
       }
     }
-  }, [windowData.animState, windowData.id, windowData.position.x, windowData.position.y])
+  }, [windowData.animState, windowData.id, windowData.isMaximized, windowData.position.x, windowData.position.y])
 
   const handleAnimationEnd = useCallback(() => {
     if (windowData.animState === 'minimizing') {
@@ -203,10 +205,10 @@ export default function Window({ windowData, isActive, children }) {
       className={classNames}
       data-tour-id={`window-${windowData.appId}`}
       style={{
-        left: windowData.position.x,
-        top: windowData.position.y,
-        width: windowData.size.width,
-        height: windowData.size.height,
+        left: windowData.isMaximized ? 0 : windowData.position.x,
+        top: windowData.isMaximized ? 0 : windowData.position.y,
+        width: windowData.isMaximized ? '100%' : windowData.size.width,
+        height: windowData.isMaximized ? '100%' : windowData.size.height,
         zIndex: windowData.zIndex,
         display: windowData.isMinimized ? 'none' : 'flex',
         ...(windowData.animState && { transformOrigin }),

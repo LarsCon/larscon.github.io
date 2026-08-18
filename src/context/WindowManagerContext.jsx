@@ -1,4 +1,5 @@
-import { createContext, useContext, useReducer, useCallback } from 'react'
+import { createContext, useContext, useReducer, useCallback, useEffect } from 'react'
+import { TASKBAR_HEIGHT } from '../config/layout'
 
 const WindowManagerContext = createContext(null)
 
@@ -13,6 +14,24 @@ const ACTIONS = {
   RESIZE: 'RESIZE',
   ANIMATE_MINIMIZE: 'ANIMATE_MINIMIZE',
   ANIMATION_COMPLETE: 'ANIMATION_COMPLETE',
+  VIEWPORT_RESIZE: 'VIEWPORT_RESIZE',
+}
+
+function getDesktopArea() {
+  return {
+    width: window.innerWidth,
+    height: window.innerHeight - TASKBAR_HEIGHT,
+  }
+}
+
+// Fit a window's stored rect inside the desktop area: shrink if too big,
+// then pull it back on-screen if it hangs past an edge.
+function clampRect(position, size, desk) {
+  const width = Math.min(size.width, desk.width)
+  const height = Math.min(size.height, desk.height)
+  const x = Math.max(0, Math.min(position.x, desk.width - width))
+  const y = Math.max(0, Math.min(position.y, desk.height - height))
+  return { position: { x, y }, size: { width, height } }
 }
 
 function generateId() {
@@ -45,19 +64,21 @@ function windowReducer(state, action) {
       const id = generateId()
       const { appId, title, icon, defaultSize } = action.payload
       const offsetIndex = state.windows.length % 8
+      const desk = getDesktopArea()
+      const { position, size } = clampRect(
+        { x: 60 + offsetIndex * 30, y: 40 + offsetIndex * 30 },
+        defaultSize || { width: 600, height: 400 },
+        desk
+      )
       const newWindow = {
         id,
         appId,
         title,
         icon,
-        position: {
-          x: 60 + offsetIndex * 30,
-          y: 40 + offsetIndex * 30,
-        },
-        size: defaultSize || { width: 600, height: 400 },
+        position,
+        size,
         isMinimized: false,
         isMaximized: false,
-        preMaximizeRect: null,
         animState: null,
         zIndex: state.nextZIndex,
       }
@@ -118,18 +139,14 @@ function windowReducer(state, action) {
     }
 
     case ACTIONS.MAXIMIZE: {
+      // Only the flag flips — Window.jsx renders maximized windows at 100%
+      // of the desktop, so they track viewport resizes automatically. The
+      // stored position/size are untouched and become the restore rect.
       return {
         ...state,
         windows: state.windows.map(w =>
           w.id === action.payload.id
-            ? {
-                ...w,
-                isMaximized: true,
-                preMaximizeRect: { position: w.position, size: w.size },
-                position: { x: 0, y: 0 },
-                size: { width: window.innerWidth, height: window.innerHeight - 48 },
-                zIndex: state.nextZIndex,
-              }
+            ? { ...w, isMaximized: true, zIndex: state.nextZIndex }
             : w
         ),
         activeWindowId: action.payload.id,
@@ -148,15 +165,8 @@ function windowReducer(state, action) {
           if (w.isMinimized) {
             return { ...w, isMinimized: false, animState: 'restoring', zIndex: state.nextZIndex }
           }
-          if (w.isMaximized && w.preMaximizeRect) {
-            return {
-              ...w,
-              isMaximized: false,
-              position: w.preMaximizeRect.position,
-              size: w.preMaximizeRect.size,
-              preMaximizeRect: null,
-              zIndex: state.nextZIndex,
-            }
+          if (w.isMaximized) {
+            return { ...w, isMaximized: false, zIndex: state.nextZIndex }
           }
           return { ...w, zIndex: state.nextZIndex }
         }),
@@ -200,6 +210,23 @@ function windowReducer(state, action) {
       }
     }
 
+    case ACTIONS.VIEWPORT_RESIZE: {
+      const desk = action.payload
+      let changed = false
+      const windows = state.windows.map(w => {
+        const { position, size } = clampRect(w.position, w.size, desk)
+        if (
+          position.x === w.position.x && position.y === w.position.y &&
+          size.width === w.size.width && size.height === w.size.height
+        ) {
+          return w
+        }
+        changed = true
+        return { ...w, position, size }
+      })
+      return changed ? { ...state, windows } : state
+    }
+
     case ACTIONS.RESIZE: {
       return {
         ...state,
@@ -222,6 +249,14 @@ function windowReducer(state, action) {
 
 export function WindowManagerProvider({ children }) {
   const [state, dispatch] = useReducer(windowReducer, initialState)
+
+  useEffect(() => {
+    const handleResize = () => {
+      dispatch({ type: ACTIONS.VIEWPORT_RESIZE, payload: getDesktopArea() })
+    }
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   const openWindow = useCallback((appConfig) => {
     dispatch({ type: ACTIONS.OPEN, payload: appConfig })
