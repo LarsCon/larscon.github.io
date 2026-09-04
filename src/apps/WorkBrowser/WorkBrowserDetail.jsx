@@ -40,6 +40,17 @@ export default function WorkBrowserDetail({ item }) {
 
         <p className={styles.description}>{item.description}</p>
 
+        {item.caseStudy && item.caseStudy.length > 0 && (
+          <div className={styles.caseStudy}>
+            {item.caseStudy.map(section => (
+              <section key={section.heading} className={styles.caseSection}>
+                <h3 className={styles.caseHeading}>{section.heading}</h3>
+                <p className={styles.caseText}>{section.text}</p>
+              </section>
+            ))}
+          </div>
+        )}
+
         {item.tags.length > 0 && (
           <div className={styles.tags}>
             {item.tags.map(t => (

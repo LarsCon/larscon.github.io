@@ -25,7 +25,7 @@ const appRegistry = [
     title: 'Resume',
     icon: 'resume.svg',
     description: 'View and download my resume.',
-    externalUrl: 'https://drive.google.com/file/d/1bMBkPyt4bbTAp-KvzPOeXYmKwynTJZuB/view?usp=sharing',
+    externalUrl: '/resume.pdf',
     component: DummyApp,
     defaultSize: { width: 500, height: 380 },
   },

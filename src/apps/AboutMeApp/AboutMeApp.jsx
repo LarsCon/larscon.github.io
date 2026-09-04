@@ -14,7 +14,7 @@ const FACTS = [
   { label: 'Based in', value: 'Indiana' },
   { label: 'Degree', value: 'B.A. in Interactive Media, Indiana University' },
   { label: 'Current Role', value: 'Full-Stack Product Designer & Developer at OsTech' },
-  { label: 'Title', value: 'Product Designer' },
+  { label: 'Title', value: 'Creative Technologist' },
 ]
 
 const BRANDS = [
@@ -45,9 +45,9 @@ export default function AboutMeApp() {
           </div>
           <div className={styles.heroText}>
             <h1 className={styles.name}>Lars Conard</h1>
-            <p className={styles.title}>Product Designer</p>
+            <p className={styles.title}>Creative Technologist</p>
             <p className={styles.tagline}>
-              Building with technology since childhood, from hardware to code to full-on interactive experiences!
+              Designer and developer who builds the whole thing, from the first sketch to the hardware it runs on.
             </p>
           </div>
         </div>
@@ -60,10 +60,10 @@ export default function AboutMeApp() {
             Welcome to my website, thanks for stopping by! I've been building with technology since childhood, progressing from hardware to code to full-on interactive experiences! With a background spanning configuring & installation, mentorship, multimedia design for major brands, and full stack product development, I bring a rare combination of skills to the table.
           </p>
           <p className={styles.bio}>
-            My career has spanned large-scale IT projects, mentorship & team management, to personal 1:1 product development/marketing/design. Today, I work as a full-stack product designer and developer at OsTech, turning vague ideas into real, marketable digital products! In my freetime at home, I'm truly (and happily) glued to my craft, working full time on recreational and freelancing projects.
+            My career has spanned large-scale IT projects, mentorship & team management, to personal 1:1 product development/marketing/design. Today, I work as a full-stack product designer and developer at OsTech, turning vague ideas into real, marketable digital products! In my free time at home, I'm truly (and happily) glued to my craft, working full time on recreational and freelancing projects.
           </p>
           <p className={styles.bio}>
-            My education after high school began at IUPUI, where I entered an IT degree path, a path I was obsessed with since my first Dell PC. Midway into my Junior year, my life came to a screeching halt. My sister had passed, I couldn't maintain my grades, and I withdrew from my second semester. With my friends and family, I fought through it, and started my journey again at Eleven Fifty certification school and Herron School of Art & Design, where I explored coding and design respectively. I eventually chose Indiana University in Bloomington as my university, and graduated in 2024 with a Bachelors of Arts in Interactive Media.
+            My education after high school began at IUPUI, where I entered an IT degree path, a path I was obsessed with since my first Dell PC. Midway into my Junior year, my life came to a screeching halt. My sister had passed, I couldn't maintain my grades, and I withdrew from my second semester. With my friends and family, I fought through it, and started my journey again at Eleven Fifty certification school and Herron School of Art & Design, where I explored coding and design respectively. I eventually chose Indiana University in Bloomington as my university, and graduated in 2024 with a Bachelor of Arts in Interactive Media.
           </p>
           <p className={styles.bio}>
             My personality is hands-on and driven, steeped in southern hospitality, and above all, understanding. I've been acknowledged for my skills, leadership, and especially drive more times than I can count. I make a difference in anything and everything I do; my best is the only gear I have. If you like what you see, you know where to find me :)
