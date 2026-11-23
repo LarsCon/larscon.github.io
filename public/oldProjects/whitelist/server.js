@@ -3,7 +3,11 @@ const { exec } = require('child_process');
 
 const app = express();
 const PORT = 5001;
-const WHITELIST_PASSWORD = process.env.WHITELIST_PASSWORD || 'CHANGE_ME';
+const WHITELIST_PASSWORD = process.env.WHITELIST_PASSWORD;
+if (!WHITELIST_PASSWORD) {
+    console.error('Missing WHITELIST_PASSWORD environment variable. Refusing to start.');
+    process.exit(1);
+}
 const SCREEN_NAME = 'minecraft';
 
 // CORS - must be before express.json()
@@ -31,7 +35,13 @@ app.post('/api/validate-password', (req, res) => {
 
 // Whitelist endpoint
 app.post('/api/whitelist', (req, res) => {
-    const { username } = req.body;
+    const { username, password } = req.body;
+
+    // The access code must be checked here too. Checking it only in
+    // /api/validate-password lets anyone skip step 1 and call this directly.
+    if (password !== WHITELIST_PASSWORD) {
+        return res.status(401).json({ error: 'Invalid access code' });
+    }
 
     if (!username) {
         return res.status(400).json({ error: 'Username is required' });

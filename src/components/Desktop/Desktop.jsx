@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useWindowManager } from '../../context/WindowManagerContext'
 import { getApp } from '../../config/appRegistry'
 import appRegistry from '../../config/appRegistry'
@@ -7,7 +8,16 @@ import Window from '../Window/Window'
 import styles from './Desktop.module.css'
 
 export default function Desktop() {
-  const { windows, activeWindowId } = useWindowManager()
+  const { windows, activeWindowId, openWindow } = useWindowManager()
+
+  // Open the featured work on load so visitors see projects before they
+  // have to learn the desktop. openWindow focuses instead of duplicating.
+  useEffect(() => {
+    const app = getApp('work-browser')
+    if (app) {
+      openWindow({ appId: app.id, title: app.title, icon: app.icon, defaultSize: app.defaultSize })
+    }
+  }, [openWindow])
 
   return (
     <div className={styles.desktop}>

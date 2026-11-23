@@ -17,7 +17,7 @@ Most portfolios are a template with a grid. This one is meant to be the first pi
 - **Theming** with user-adjustable settings that persist
 - **Per-window navigation stack** so an app can push detail views (portfolio item, job, degree) without leaving its window
 - **Mobile shell**: a separate layout for phones driven by the same app registry
-- **Portfolio browser** with a curated "Top Work" tier, category filters, and case studies on the top projects
+- **Portfolio browser** that opens on a curated Featured view, with category filters and an archive (curation lives in `FEATURED_IDS` / `ARCHIVED_IDS` in `src/data/portfolioData.js`)
 - **Embedded games and a music player**, because it's a desktop
 
 ## Stack
@@ -40,6 +40,7 @@ npm run preview  # serve the production build locally
 ```
 index.html                 meta tags, Open Graph, noscript fallback
 public/                    static assets, resume.pdf, og.png
+resume/                    resume source (resume.html) and build.sh, which regenerates public/resume.pdf
 src/
   App.jsx                  desktop shell
   config/appRegistry.js    every app on the desktop, one entry each

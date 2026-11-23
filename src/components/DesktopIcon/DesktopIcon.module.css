@@ -20,6 +20,11 @@
   border-color: rgba(255, 255, 255, 0.3);
 }
 
+.icon:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
 .iconImage {
   width: 40px;
   height: 40px;

@@ -7,7 +7,6 @@ export default function SplashCurtain() {
   const [seen] = useState(() => {
     try { return localStorage.getItem(STORAGE_KEY) === '1' } catch { return false }
   })
-  const [countdown, setCountdown] = useState(3)
   const [dismissing, setDismissing] = useState(false)
 
   const dismiss = useCallback(() => {
@@ -15,13 +14,6 @@ export default function SplashCurtain() {
     setDismissing(true)
     try { localStorage.setItem(STORAGE_KEY, '1') } catch {}
   }, [dismissing])
-
-  useEffect(() => {
-    if (seen) return
-    if (countdown <= 0) return
-    const t = setTimeout(() => setCountdown(c => c - 1), 1000)
-    return () => clearTimeout(t)
-  }, [countdown, seen])
 
   useEffect(() => {
     if (seen) return
@@ -43,8 +35,6 @@ export default function SplashCurtain() {
 
   if (seen) return null
 
-  const ready = countdown <= 0
-
   return (
     <div className={`${styles.curtain} ${dismissing ? styles.curtainOut : ''}`}
       onAnimationEnd={dismissing ? (e) => {
@@ -64,13 +54,11 @@ export default function SplashCurtain() {
         </p>
 
         <button
-          className={`${styles.btn} ${ready ? styles.btnReady : ''}`}
-          disabled={!ready}
-          onClick={ready ? dismiss : undefined}
+          className={`${styles.btn} ${styles.btnReady}`}
+          onClick={dismiss}
+          autoFocus
         >
-          <span key={countdown} className={styles.btnText}>
-            {ready ? 'No Thanks' : `${countdown}...`}
-          </span>
+          <span className={styles.btnText}>Continue</span>
         </button>
       </div>
     </div>

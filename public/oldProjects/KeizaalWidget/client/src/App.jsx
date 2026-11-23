@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { subscribeMarkers, apiAdd, apiUpdate, apiDelete, apiSuggest, apiGetPending, apiApprovePending, apiDenyPending, apiLogAuth, apiGetAuthLog, apiGetUserMerges, apiSetUserMerge, apiDeleteUserMerge, apiGetDraw, apiDrawStroke, apiDrawRemoveStroke, apiDrawClear, setSessionAuth } from './api';
+import { subscribeMarkers, apiAdd, apiUpdate, apiDelete, apiSuggest, apiGetPending, apiApprovePending, apiDenyPending, apiLogAuth, apiGetAuthLog, apiGetUserMerges, apiSetUserMerge, apiDeleteUserMerge, apiGetDraw, apiDrawStroke, apiDrawRemoveStroke, apiDrawClear, setSessionAuth, apiLogin } from './api';
 import './App.css';
 
 // ── Constants ─────────────────────────────────────────────────────────────────
@@ -15,19 +15,17 @@ const SESSION_TTL  = 12 * 60 * 60 * 1000;
 function loadSession() {
   try {
     const s = JSON.parse(localStorage.getItem(SESSION_KEY));
-    if (s && s.expires > Date.now()) return { name: s.name, level: s.level };
+    // Sessions saved before server-side login have no `auth`; make those log in again.
+    if (s && s.expires > Date.now() && s.auth) return { name: s.name, level: s.level, auth: s.auth };
   } catch {}
   return null;
 }
-function saveSession(name, level) {
-  localStorage.setItem(SESSION_KEY, JSON.stringify({ name, level, expires: Date.now() + SESSION_TTL }));
+function saveSession(name, level, auth) {
+  localStorage.setItem(SESSION_KEY, JSON.stringify({ name, level, auth, expires: Date.now() + SESSION_TTL }));
   localStorage.setItem(NAME_KEY, name);
 }
 function clearSession() {
   localStorage.removeItem(SESSION_KEY);
-}
-function pwForLevel(level) {
-  return level === 'admin' ? PASSWORD_ADMIN : PASSWORD_COMMENTER;
 }
 
 const BACKPACK_CATS = [
@@ -42,8 +40,6 @@ const WORKSTATIONS = [
 const IMG_BASE      = '/oldProjects/KeizaalWidget/images/landmarks/';
 const CITY_IMG_BASE = '/oldProjects/KeizaalWidget/images/majorcities/';
 const TOOLBAR_H   = 44;
-const PASSWORD_ADMIN     = 'lizard';
-const PASSWORD_COMMENTER = 'bigwetnoodle';
 
 const ENEMIES  = ['Bear','Bloodhound','Cave Bear','Chaurus','Corrupted Shade','Deer','Elementals','Elk','Falmer','Falmer Wizard','Falmer Warlord','Flame Atronach','Frost Atronach','Frost Skeleton','Frost Troll','Frostbite Spider','Ghost','Giant','Goats','Horkers','Ice Wolves','Mammoth','Mudcrabs','Rabbit','Sabre Cat','Skeleton','Slaughterfish','Snow Wolf','Spriggan','Spriggan Earth Mother','Trolls','Wolves'];
 const PLANTS   = [
@@ -513,32 +509,6 @@ function SearchBar({ value, onChange, onLongPress, zeroResults = false }) {
       {zeroResults && (open || value) && (
         <div className="brelf-hint">Talk to Brelf if you're looking for that</div>
       )}
-    </div>
-  );
-}
-
-// ── PasswordPanel ─────────────────────────────────────────────────────────────
-function PasswordPanel({ onAdmin, onCommenter }) {
-  const [pw, setPw]       = useState('');
-  const [error, setError] = useState(false);
-  const ref = useRef(null);
-  useEffect(() => { ref.current?.focus(); }, []);
-  const submit = () => {
-    if (pw === PASSWORD_ADMIN)     { onAdmin(); }
-    else if (pw === PASSWORD_COMMENTER) { onCommenter(); }
-    else { setError(true); setPw(''); setTimeout(() => setError(false), 700); }
-  };
-  return (
-    <div className="tb-panel pw-panel" onPointerDown={e => e.stopPropagation()}>
-      <span className="panel-label">Enter Password</span>
-      <div className="pw-row">
-        <input ref={ref} type="password" value={pw} placeholder="••••••"
-          className={error ? 'shake' : ''}
-          onChange={e => { setPw(e.target.value); setError(false); }}
-          onKeyDown={e => e.key === 'Enter' && submit()} />
-        <button onClick={submit}>→</button>
-      </div>
-      {error && <span className="pw-error">Incorrect</span>}
     </div>
   );
 }
@@ -1066,19 +1036,23 @@ function LoginScreen({ onLogin }) {
     (savedName ? pwRef : nameRef).current?.focus();
   }, [savedName]);
 
-  const submit = () => {
+  const submit = async () => {
     const resolvedName = savedName || name.trim();
     if (!resolvedName) { setError('In-Game Name is required'); return; }
     let level = null;
-    if (pw === PASSWORD_ADMIN)     level = 'admin';
-    else if (pw === PASSWORD_COMMENTER) level = 'commenter';
+    try {
+      level = await apiLogin(pw);
+    } catch {
+      setError('Could not reach the server. Try again.');
+      return;
+    }
     if (!level) {
       setError('Incorrect password');
       setPw('');
       setTimeout(() => pwRef.current?.focus(), 0);
       return;
     }
-    saveSession(resolvedName, level);
+    saveSession(resolvedName, level, pw);
     setSessionAuth(pw);
     apiLogAuth({
       name:        resolvedName,
@@ -1086,7 +1060,7 @@ function LoginScreen({ onLogin }) {
       deviceId:    getOrCreateDeviceId(),
       newDevice:   !savedName,   // true when name was typed fresh = new device
     }).catch(() => {});
-    onLogin({ name: resolvedName, level });
+    onLogin({ name: resolvedName, level, auth: pw });
   };
 
   return (
@@ -1415,7 +1389,7 @@ export default function App() {
   const [sync, setSync] = useState('connecting'); // 'connecting'|'live'|'error'
   const [authSession, setAuthSession] = useState(() => {
     const s = loadSession();
-    if (s) setSessionAuth(pwForLevel(s.level));
+    if (s) setSessionAuth(s.auth);
     return s;
   });
   const adminUnlocked = authSession?.level === 'admin';
@@ -1974,7 +1948,7 @@ export default function App() {
   if (!authSession) {
     return <LoginScreen onLogin={session => {
       setAuthSession(session);
-      setSessionAuth(pwForLevel(session.level));
+      setSessionAuth(session.auth);
     }} />;
   }
 

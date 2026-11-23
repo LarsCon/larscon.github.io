@@ -23,11 +23,23 @@ const productsData = [
     title: 'Keizaal Widget - Skyrim Map',
     price: 'Free',
     images: ['/oldProjects/KeizaalWidget/images/map1.png'],
+    // Original description (outdated — the widget now has an Express/MySQL backend):
+    // 'A static Skyrim map widget that lets users place and edit markers, zoom, and pan. Designed for GitHub Pages-style hosting without a backend.',
     description:
-      'A static Skyrim map widget that lets users place and edit markers, zoom, and pan. Designed for GitHub Pages-style hosting without a backend.',
+      'A live, shared Skyrim map for a multiplayer community: players place and edit markers, zoom and pan, and see each other\'s changes in real time. React front end on GitHub Pages, Express and MySQL API on my own Linux server, with server-side logins for editors and commenters.',
     link: 'oldProjects/KeizaalWidget/client/dist/index.html',
     linkLabel: 'Try It',
-  }
+  },
+  {
+    id: 'terraria-playmat',
+    title: 'Terraria Board Game Playmat',
+    price: 'On Etsy',
+    images: ['Playmat/1.jpg', 'Playmat/2.jpg', 'Playmat/3.jpg', 'Playmat/4.jpg'],
+    description:
+      'A CNC-cut pocketed playmat for the Terraria Board Game, designed in Illustrator and cut on a CNC machine I built. The official one is hard to find, so I make and sell my own.',
+    link: 'https://lcbuildsstore.etsy.com/listing/4465523514/terraria-board-game-plastic-pocketed',
+    linkLabel: 'View on Etsy',
+  },
 ]
 
 export default productsData

@@ -30,10 +30,17 @@ export default function DesktopIcon({ app }) {
     <div
       className={styles.icon}
       onClick={handleClick}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault()
+          handleClick()
+        }
+      }}
       data-tour-id={`icon-${app.id}`}
+      role="button"
       tabIndex={0}
     >
-      <img className={styles.iconImage} src={iconSrc} alt={app.title} draggable={false} />
+      <img className={styles.iconImage} src={iconSrc} alt="" draggable={false} />
       <span className={styles.label}>{app.title}</span>
     </div>
   )

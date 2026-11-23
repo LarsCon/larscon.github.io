@@ -1,10 +1,11 @@
 import { memo, useState, useMemo, useCallback } from 'react'
 import { useNavigation } from '../../context/NavigationContext'
-import portfolioItems, { getImageUrl } from '../../data/portfolioData'
+import portfolioItems, { getImageUrl, FEATURED_IDS, ARCHIVED_IDS } from '../../data/portfolioData'
 import WorkBrowserDetail from './WorkBrowserDetail'
 import styles from './WorkBrowser.module.css'
 
 const categories = [
+  'Featured',
   'All',
   'Design',
   'Programming',
@@ -14,8 +15,26 @@ const categories = [
   'Educational',
   'Professional',
   'Recreational',
+  'Archive',
 ]
 const PAGE_SIZE = 12
+
+const featuredRank = new Map(FEATURED_IDS.map((id, i) => [id, i]))
+
+// Featured items first (in curated order), then everything else in data order.
+const ranked = [...portfolioItems].sort((a, b) =>
+  (featuredRank.get(a.id) ?? Infinity) - (featuredRank.get(b.id) ?? Infinity)
+)
+
+function itemsFor(filter) {
+  if (filter === 'Featured') return ranked.filter(item => featuredRank.has(item.id))
+  if (filter === 'Archive') return portfolioItems.filter(item => ARCHIVED_IDS.has(item.id))
+  const current = ranked.filter(item => !ARCHIVED_IDS.has(item.id))
+  if (filter === 'All') return current
+  return current.filter(item =>
+    item.categories.some(c => c.toLowerCase() === filter.toLowerCase())
+  )
+}
 
 const ExternalLinkIcon = memo(function ExternalLinkIcon() {
   return (
@@ -31,7 +50,20 @@ const PortfolioCard = memo(function PortfolioCard({ item, onOpen }) {
   const hasLink = item.link && item.link !== '#'
 
   return (
-    <div className={styles.card} onClick={() => onOpen(item)}>
+    <div
+      className={styles.card}
+      role="button"
+      tabIndex={0}
+      aria-label={`Open ${item.title}`}
+      onClick={() => onOpen(item)}
+      onKeyDown={(e) => {
+        if (e.target !== e.currentTarget) return
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault()
+          onOpen(item)
+        }
+      }}
+    >
       <div className={styles.cardImageWrap}>
         <img
           className={styles.cardImage}
@@ -46,6 +78,7 @@ const PortfolioCard = memo(function PortfolioCard({ item, onOpen }) {
             target="_blank"
             rel="noopener noreferrer"
             title="Live project"
+            aria-label={`${item.title}: open live project`}
             onClick={(e) => e.stopPropagation()}
           >
             <ExternalLinkIcon />
@@ -66,15 +99,10 @@ const PortfolioCard = memo(function PortfolioCard({ item, onOpen }) {
 
 export default function WorkBrowser() {
   const { push } = useNavigation()
-  const [activeFilter, setActiveFilter] = useState('All')
+  const [activeFilter, setActiveFilter] = useState('Featured')
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE)
 
-  const filtered = useMemo(() => {
-    if (activeFilter === 'All') return portfolioItems
-    return portfolioItems.filter(item =>
-      item.categories.some(c => c.toLowerCase() === activeFilter.toLowerCase())
-    )
-  }, [activeFilter])
+  const filtered = useMemo(() => itemsFor(activeFilter), [activeFilter])
 
   const visible = filtered.slice(0, visibleCount)
   const hasMore = visibleCount < filtered.length
@@ -99,7 +127,7 @@ export default function WorkBrowser() {
             >
               {cat}
             </button>
-            {cat === 'All' && <span className={styles.separator} />}
+            {(cat === 'All' || cat === 'Recreational') && <span className={styles.separator} />}
           </span>
         ))}
       </div>

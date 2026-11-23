@@ -2,10 +2,21 @@
 const express = require('express');
 const mysql   = require('mysql2/promise');
 
+// Secrets come from the environment (set them in PM2 / a .env on the server),
+// never from this file: it is served publicly and committed to a public repo.
+function requireEnv(name) {
+  const value = process.env[name];
+  if (!value) {
+    console.error(`Missing required environment variable ${name}. Refusing to start.`);
+    process.exit(1);
+  }
+  return value;
+}
+
 const app          = express();
-const PORT         = 3002;
-const PW           = 'lizard';
-const COMMENTER_PW = 'bigwetnoodle';
+const PORT         = Number(process.env.KW_PORT) || 3002;
+const PW           = requireEnv('KW_EDITOR_PASSWORD');
+const COMMENTER_PW = requireEnv('KW_COMMENTER_PASSWORD');
 
 // CORS — allow GitHub Pages and local dev
 app.use((req, res, next) => {
@@ -18,10 +29,10 @@ app.use((req, res, next) => {
 app.use(express.json());
 
 const pool = mysql.createPool({
-  host:             'localhost',
-  user:             'tradespot_admin',
-  password:         'sourbison',
-  database:         'widget',
+  host:             process.env.DB_HOST || 'localhost',
+  user:             requireEnv('DB_USER'),
+  password:         requireEnv('DB_PASSWORD'),
+  database:         process.env.DB_NAME || 'widget',
   waitForConnections: true,
   connectionLimit:  10,
 });
@@ -341,6 +352,16 @@ app.delete('/keizaal/user-merges/:canonical', async (req, res) => {
     await pool.query('DELETE FROM keizaal_user_merges WHERE canonical = ?', [req.params.canonical]);
     res.json({ ok: true });
   } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+// ── Login ─────────────────────────────────────────────────────
+// The client sends the password here and gets back its access level.
+// Passwords live only in the server's environment, never in client code.
+app.post('/keizaal/login', (req, res) => {
+  const { password } = req.body || {};
+  if (password && password === PW)           return res.json({ level: 'admin' });
+  if (password && password === COMMENTER_PW) return res.json({ level: 'commenter' });
+  res.status(401).json({ error: 'Incorrect password' });
 });
 
 // ── Auth log ──────────────────────────────────────────────────

@@ -5,6 +5,20 @@ let _pw = '';
 export function setSessionAuth(pw) { _pw = pw; }
 
 const json = () => ({ 'Content-Type': 'application/json' });
+
+// Ask the server which access level a password grants. Resolves to
+// 'admin' | 'commenter', or null when the password is wrong.
+export async function apiLogin(password) {
+  const r = await fetch(`${BASE}/keizaal/login`, {
+    method: 'POST',
+    headers: json(),
+    body: JSON.stringify({ password }),
+  });
+  if (r.status === 401) return null;
+  if (!r.ok) throw new Error(`Login failed (${r.status})`);
+  const { level } = await r.json();
+  return level === 'admin' || level === 'commenter' ? level : null;
+}
 const auth = () => ({ 'Content-Type': 'application/json', 'X-KW-Auth': _pw });
 const hdr  = () => ({ 'X-KW-Auth': _pw });
 

@@ -1,0 +1,144 @@
+<!doctype html>
+<!--
+  Source for public/resume.pdf. Edit this file, then regenerate the PDF:
+    resume/build.sh        (Git Bash)
+  Kept outside public/ so the HTML itself is not deployed.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Lars Conard - Resume</title>
+<style>
+  @page { size: Letter; margin: 0.42in 0.5in; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: Calibri, Carlito, "Segoe UI", Arial, sans-serif;
+    font-size: 10pt;
+    line-height: 1.2;
+    color: #111;
+  }
+  a { color: inherit; text-decoration: none; }
+  /* The portfolio link is the one thing that should jump off the page. */
+  a.site { color: #0b4f9c; font-weight: 700; text-decoration: underline; text-underline-offset: 1.5pt; }
+  h1 { font-size: 21pt; margin: 0; line-height: 1.05; }
+  .headline { font-size: 11pt; margin: 1pt 0 2pt; font-weight: 600; color: #333; }
+  .contact { font-size: 9.5pt; color: #444; }
+  /* No letter-spacing: it makes ATS text extraction read "S K I L L S". */
+  h2 {
+    font-size: 10pt;
+    text-transform: uppercase;
+    margin: 7pt 0 3pt;
+    padding-bottom: 1.5pt;
+    border-bottom: 1.2pt solid #111;
+  }
+  p { margin: 0; }
+  .skills p { margin: 1pt 0; }
+  .job { margin-top: 4pt; break-inside: avoid; }
+  .job-head { display: flex; justify-content: space-between; gap: 12pt; }
+  .job-head .where { white-space: nowrap; color: #333; }
+  ul { margin: 1pt 0 0; padding-left: 13pt; }
+  li { margin: 0.5pt 0; }
+  .edu p { margin: 1.5pt 0; }
+</style>
+</head>
+<body>
+
+<h1>Lars Conard</h1>
+<p class="headline">Creative Technologist · Portfolio: <a class="site" href="https://larsconard.com">larsconard.com</a></p>
+<p class="contact">
+  Indianapolis, IN (open to relocation) · <a href="mailto:lars.conard@gmail.com">lars.conard@gmail.com</a> · <a href="https://github.com/LarsCon">github.com/LarsCon</a> · <a href="https://www.linkedin.com/in/larsvconard/">linkedin.com/in/larsvconard</a>
+</p>
+
+<h2>Summary</h2>
+<p>
+  Creative technologist and full-stack developer who takes ideas from concept to shipped product. Designer and developer
+  at OsTech (part-time): shipped Reblade, an Android and iOS app, and multiple production client sites. Background spans Unity
+  museum installations, national lottery launch campaigns, and full-stack products on self-administered Linux servers.
+  See the work at <a class="site" href="https://larsconard.com">larsconard.com</a>, a portfolio built as an interactive desktop OS.
+</p>
+
+<h2>Skills</h2>
+<div class="skills">
+  <p><strong>Development:</strong> JavaScript, React, Node.js, Express, Vite, Python, SQL, Java, C#, HTML, CSS, WordPress, Git</p>
+  <p><strong>Interactive &amp; real-time:</strong> Unity, Godot, Unreal, Construct 3, Arduino, touchscreen and kiosk installations</p>
+  <p><strong>Infrastructure:</strong> Linux (Ubuntu), Nginx, PM2, MySQL, DNS and SSL; low-voltage AV and network installation</p>
+  <p><strong>Design &amp; media:</strong> Figma, Illustrator, Photoshop, InDesign, After Effects, Premiere Pro, Blender, Rhino 7, motion graphics</p>
+  <p><strong>Fabrication:</strong> CNC (custom-built machine), FDM and resin 3D printing, laser cutting</p>
+</div>
+
+<h2>Experience</h2>
+
+<div class="job">
+  <div class="job-head"><strong>OsTech — Full-Stack Product Designer &amp; Developer (Part-time)</strong><span class="where">Remote · Aug 2025 – Present</span></div>
+  <ul>
+    <li>Handle end-to-end work for client projects: research, design, development, deployment, and maintenance</li>
+    <li>Designed, developed, published, and maintain Reblade, a Beyblade battle-recording app for Android and iOS</li>
+    <li>Build and maintain multiple production client websites</li>
+  </ul>
+</div>
+
+<div class="job">
+  <div class="job-head"><strong>Tyler Automotive — Service Writer</strong><span class="where">Indianapolis, IN · Feb 2026 – Present</span></div>
+  <ul>
+    <li>Translate technician diagnoses into plain-language estimates for customers and manage the shop's repair queue</li>
+  </ul>
+</div>
+
+<div class="job">
+  <div class="job-head"><strong>IGT (International Game Technology) — Multimedia Designer, Internship</strong><span class="where">Remote · Dec 2023 – Mar 2025</span></div>
+  <ul>
+    <li>Embedded with brand teams for Powerball, Hoosier Lottery, Georgia Lottery, New York Lottery, and Caribbean Lottery</li>
+    <li>Produced game-launch campaigns (how-to-play video, point-of-sale advertising), branding, documentation, animation, and video used across US and Caribbean markets</li>
+    <li>Developed web components for retailer accounting workflows in HTML, CSS, and JavaScript</li>
+  </ul>
+</div>
+
+<div class="job">
+  <div class="job-head"><strong>Indiana University — Undergraduate Teaching Assistant &amp; Lab Instructor</strong><span class="where">Bloomington, IN · Spring 2024</span></div>
+  <ul>
+    <li>Instructed a 30-student, 200-level multimedia course as an undergraduate; led live demos in Adobe Creative Cloud</li>
+  </ul>
+</div>
+
+<div class="job">
+  <div class="job-head"><strong>Brain Twins — Product Designer, Contract</strong><span class="where">Remote · May 2022 – Aug 2023</span></div>
+  <ul>
+    <li>Built touchscreen Unity installations for public museum exhibits, including the hardware framing that houses them</li>
+    <li>Built a multi-PC testing rig mirroring exhibit hardware to reproduce issues and troubleshoot installations remotely</li>
+    <li>Designed and rigged 3D models for animated exhibit content</li>
+  </ul>
+</div>
+
+<div class="job">
+  <div class="job-head"><strong>Indiana Daily Student — Web Developer &amp; IT Support</strong><span class="where">Bloomington, IN · Aug 2022 – May 2023</span></div>
+  <ul>
+    <li>Built article directories and special-coverage landing pages in HTML/CSS/JS, including the publication's Roe v. Wade explainer (specials.idsnews.com), still live</li>
+    <li>Integrated digital content into the CMS; tracked changes with Git; onboarded new hires on software and hardware</li>
+  </ul>
+</div>
+
+<div class="job">
+  <div class="job-head"><strong>Shoemaker Motion Picture — Low-Voltage Technician</strong><span class="where">Indiana · 2016 – 2023, recurring</span></div>
+  <ul>
+    <li>Designed and installed audio, network, and AV control systems for schools and businesses; configured and deployed servers</li>
+  </ul>
+</div>
+
+<h2>Selected Projects</h2>
+<ul>
+  <li><strong><a class="site" href="https://larsconard.com">larsconard.com</a></strong> — My portfolio, built as a desktop OS in React 19 and Vite: custom window manager, themes, and mobile shell, no UI library. Projects, design work, and playable games all live there</li>
+  <li><strong>The Trader's Spot</strong> (<a href="https://thetraderspot.com">thetraderspot.com</a>) — Full-stack trading-card marketplace, live in alpha, with an embeddable shop widget: JavaScript front end, Python and SQL back end, self-hosted on Ubuntu with Nginx and PM2</li>
+  <li><strong>Keizaal Map</strong> — Live multi-user Skyrim map for a gaming community: React client, Express and MySQL API with real-time updates and server-side logins</li>
+  <li><strong>Terraria board game playmat</strong> — Pocketed playmat designed in Illustrator and cut on a CNC machine I built; sold on Etsy</li>
+</ul>
+
+<h2>Education</h2>
+<div class="edu">
+  <p><strong>Indiana University Bloomington</strong> — B.A. in Media, concentration in Interactive and Digital Media, December 2024 · Two-time National Student Advertising Competition team lead (30-student team)</p>
+  <p>Coursework: Web and Mobile Design, Prototyping with Arduino Tools, Game Technology, HCI/Interaction Design, Graphic Design</p>
+  <p><strong>Eleven Fifty Academy</strong> — Programming Certification, 2019</p>
+</div>
+
+</body>
+</html>
